@@ -1,6 +1,6 @@
-import * as Mongoose from "mongoose";
+import { Schema } from "mongoose";
 
-const MatchSchema = new Mongoose.Schema({
+export const MatchSchema = new Schema({
     board_ident: {String, required: true},
     players_info: [
         {
@@ -10,5 +10,3 @@ const MatchSchema = new Mongoose.Schema({
         }
       ]
 });
-
-export default MatchSchema;

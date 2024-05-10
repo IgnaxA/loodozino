@@ -1,9 +1,7 @@
-import * as Mongoose from "mongoose";
+import { Schema } from "mongoose";
 
-const MatchSchema = new Mongoose.Schema({
+export const MatchSchema = new Schema({
     board_ident: {String, required: true},
     created_at: {Date, required: true},
     board_name: {String, required: true}
 });
-
-export default MatchSchema;
