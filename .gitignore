@@ -1,0 +1,6 @@
+node_modules
+.env
+.idea
+build
+.prettierrc
+eslint.config.mjs
