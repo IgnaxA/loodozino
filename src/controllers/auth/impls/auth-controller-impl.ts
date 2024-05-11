@@ -15,7 +15,7 @@ export class AuthControllerImpl implements AuthController {
 
     public async signIn(req: Request, res: Response): Promise<void> {
         try {
-            const requestData: AuthControllerDTOInput = await this.getInputDTO(req);
+            const requestData: AuthControllerDTOInput = this.getInputDTO(req);
 
             const responseData: AuthControllerDTOOutput = await this.authService
                 .verifyUser(requestData);
@@ -28,7 +28,7 @@ export class AuthControllerImpl implements AuthController {
 
     public async signUp(req: Request, res: Response): Promise<void> {
         try {
-            const requestData: AuthControllerDTOInput = await this.getInputDTO(req);
+            const requestData: AuthControllerDTOInput = this.getInputDTO(req);
 
             const responseData: AuthControllerDTOOutput = await this.authService
                 .createUser(requestData);
@@ -39,7 +39,7 @@ export class AuthControllerImpl implements AuthController {
         }
     }
 
-    private async getInputDTO(req: Request): Promise<AuthControllerDTOInput> {
+    private getInputDTO(req: Request): AuthControllerDTOInput {
         const requestBody: AuthApiInput = req.body;
         const requestData: AuthControllerDTOInput = new AuthControllerDTOInput();
 
