@@ -5,4 +5,10 @@ export class Assert {
             throw new Error(msg);
         }
     }
+
+    public static isError(obj: any): void {
+        if (!(obj instanceof Error)) {
+            throw new Error("Error occurred while parsing error");
+        }
+    }
 }

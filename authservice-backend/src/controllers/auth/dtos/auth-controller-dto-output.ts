@@ -3,7 +3,7 @@ export class AuthControllerDTOOutput {
     private refreshToken: string = "";
     private accessToken: string = "";
 
-    public setSignInOutput(refreshToken: string, accessToken: string): void {
+    constructor(refreshToken: string, accessToken: string) {
         this.refreshToken = refreshToken;
         this.accessToken = accessToken;
     }

@@ -1,11 +1,10 @@
 import {Response} from "express";
+import {Assert} from "./assert";
 
 export class ErrorHandler {
 
     public static setError(res: Response, error: any): void {
-        if (!(error instanceof Error)) {
-            throw new Error("Error occurred while parsing error");
-        }
+        Assert.isError(error);
 
         res
             .status(500)

@@ -3,7 +3,7 @@ export class AuthControllerDTOInput {
     private userEmail: string = "";
     private userPassword: string = "";
 
-    public setSignInInput(userEmail: string, userPassword: string): void {
+    constructor(userEmail: string, userPassword: string) {
         this.userEmail = userEmail;
         this.userPassword = userPassword;
     }
