@@ -3,7 +3,7 @@ import {Request, Response} from "express";
 import {AuthControllerDTOInput} from "../dtos/auth-controller-dto-input";
 import {AuthService} from "../../../services/auth-service";
 import {AuthControllerDTOOutput} from "../dtos/auth-controller-dto-output";
-import {TokenExpiryParse, TokensExpiry} from "../../../configs/token-expiry-parse";
+import {TokenExpiryParse, TokenExpiryConfig} from "../../../configs/token-expiry-parse";
 import {ErrorHandler} from "../../../handlers/error-handler";
 
 export class AuthControllerImpl implements AuthController {
@@ -49,24 +49,24 @@ export class AuthControllerImpl implements AuthController {
     }
 
     private setAPIResponse(res: Response, responseData: AuthControllerDTOOutput): void {
-        const tokensExpiry: TokensExpiry = TokenExpiryParse.getTokensExpiry();
+        const tokenExpiryConfig: TokenExpiryConfig = TokenExpiryParse.getTokensExpiryConfig();
 
         res
             .status(200)
             .cookie('refresh_token', responseData.getRefreshToken(), {
                 httpOnly: true,
                 secure: true,
-                maxAge: 1000 * tokensExpiry.refreshTokenExpiry
+                maxAge: 1000 * tokenExpiryConfig.REFRESH_TOKEN_EXPIRY
             })
             .cookie('access_token', responseData.getAccessToken(), {
                 httpOnly: true,
                 secure: true,
-                maxAge: 1000 * tokensExpiry.accessTokenExpiry
+                maxAge: 1000 * tokenExpiryConfig.ACCESS_TOKEN_EXPIRY
             });
     }
 }
 
 interface AuthApiInput {
-    userEmail: String;
-    userPassword: String;
+    userEmail: string;
+    userPassword: string;
 }

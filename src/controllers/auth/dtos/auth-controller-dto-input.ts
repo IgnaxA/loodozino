@@ -1,18 +1,18 @@
 
 export class AuthControllerDTOInput {
-    private userEmail: String = "";
-    private userPassword: String = "";
+    private userEmail: string = "";
+    private userPassword: string = "";
 
-    public setSignInInput(userEmail: String, userPassword: String): void {
+    public setSignInInput(userEmail: string, userPassword: string): void {
         this.userEmail = userEmail;
         this.userPassword = userPassword;
     }
 
-    public getUserEmail(): String {
+    public getUserEmail(): string {
         return this.userEmail;
     }
 
-    public getUserPassword(): String {
+    public getUserPassword(): string {
         return this.userPassword;
     }
 }

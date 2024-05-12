@@ -1,18 +1,18 @@
 
 export class AuthControllerDTOOutput {
-    private refreshToken: String = "";
-    private accessToken: String = "";
+    private refreshToken: string = "";
+    private accessToken: string = "";
 
-    public setSignInOutput(refreshToken: String, accessToken: String): void {
+    public setSignInOutput(refreshToken: string, accessToken: string): void {
         this.refreshToken = refreshToken;
         this.accessToken = accessToken;
     }
 
-    public getRefreshToken(): String {
+    public getRefreshToken(): string {
         return this.refreshToken;
     }
 
-    public getAccessToken(): String {
+    public getAccessToken(): string {
         return this.accessToken;
     }
 }

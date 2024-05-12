@@ -1,18 +1,26 @@
 import express, {Express} from "express"
-import {StartUp, StartUpParse} from "./configs/start-up-parse";
+import {StartUpConfig, StartUpParse} from "./configs/start-up-parse";
 import {AuthRouter} from "./routes/auth-router";
 import {AuthController} from "./controllers/auth/auth-controller";
 import {AuthService} from "./services/auth-service";
 import {AuthServiceImpl} from "./services/impls/auth-service-impl";
 import {AuthControllerImpl} from "./controllers/auth/impls/auth-controller-impl";
+import {Cryptor} from "./crypto/cryptor/cryptor";
+import {CryptorImpl} from "./crypto/cryptor/impls/cryptor-impl";
+import {AuthJWT} from "./crypto/json-web-token/auth-jwt";
+import {AuthJWTImpl} from "./crypto/json-web-token/impls/auth-jwt-impl";
 
 const APIPrefix: string = "/api";
 const app: Express = express();
 
-const startUp: StartUp = StartUpParse.getStartUpConfig();
-const PORT: number = startUp.PORT;
+const startUpConfig: StartUpConfig = StartUpParse.getStartUpConfig();
+const PORT: number = startUpConfig.PORT;
+
+const cryptor: Cryptor = new CryptorImpl();
+const authJWT: AuthJWT = new AuthJWTImpl();
 
 const authService: AuthService = new AuthServiceImpl();
+
 const authController: AuthController = new AuthControllerImpl(authService);
 const authRouter: AuthRouter = new AuthRouter(authController);
 authRouter.setRouter();

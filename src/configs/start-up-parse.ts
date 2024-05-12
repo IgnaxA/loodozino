@@ -1,13 +1,16 @@
 
 export class StartUpParse {
-    private static readonly startUp: StartUp;
+    private static readonly startUpConfig: StartUpConfig;
 
-    public static getStartUpConfig(): StartUp {
-        this.startUp.PORT = process.env.PORT ? Number(process.env.PORT) : 8080;
-        return this.startUp;
+    public static getStartUpConfig(): StartUpConfig {
+        this.startUpConfig.PORT = process.env.PORT
+            ? Number(process.env.PORT)
+            : 8080;
+
+        return this.startUpConfig;
     }
 }
 
-export interface StartUp {
+export interface StartUpConfig {
     PORT: number;
 }
