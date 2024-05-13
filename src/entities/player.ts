@@ -27,3 +27,4 @@ export class Player {
         return this.visible_history;
     }
 }
+
