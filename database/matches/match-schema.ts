@@ -2,11 +2,17 @@ import { Schema } from "mongoose";
 
 export const MatchSchema = new Schema({
     board_ident: {String, required: true},
-    players_info: [
+    player_amount: {Number, required: true},
+    players: 
+    [
+        {String, required: true}
+    ],
+    actions: 
+    [
         {
-            player_login: {String},
-            hand: {Array},
-            bets: {Array},
+            login: {String, required: true},
+            action_type: {String, required: true},
+            bet: {Number}
         }
-      ]
+    ]
 });

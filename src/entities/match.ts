@@ -1,23 +1,37 @@
-import { Player_Info } from "./player_info";
+import { Action } from "./action";
 
 export class Match {
     private board_ident: String;
-    private players_info: Array<Player_Info>;
+    private player_amount: Number;
+    private players: Array<String>;
+    private actions: Array<Action>;
     
     constructor () {
         this.board_ident = "";
-        this.players_info = new Array<Player_Info>;
+        this.player_amount = 0;
+        this.players = new Array<String>();
+        this.actions = new Array<Action>();
     }
-    public setMatch(board_ident: String, players_info: Array<Player_Info>) {
+    public setMatch(board_ident: String, player_amount: Number, players: Array<String>, actions: Array<Action>) {
         this.board_ident = board_ident;
-        this.players_info = players_info;
+        this.player_amount = player_amount;
+        this.players = players;
+        this.actions = actions;
     }
   
     public getMatchIdent(): String {
         return this.board_ident;
     }
   
-    public getMatchPlayersInfo(): Array<Player_Info> {
-        return this.players_info;
+    public getMatchPlayerAmount(): Number {
+        return this.player_amount;
+    }
+
+    public getMatchPlayers(): Array<String> {
+        return this.players;
+    }
+
+    public getMatchActions(): Array<Action> {
+        return this.actions;
     }
 }
