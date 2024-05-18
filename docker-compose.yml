@@ -4,26 +4,28 @@ networks:
   authservice_app:
 
 services:
-  authservice_back:
-    image: ignaxa/authservice_back:latest
-    container_name: authservice_back
-    build:
-      context: ./authservice-backend
-    networks:
-      authservice_app:
-    ports:
-      - "8080:8080"
+#  authservice_back:
+#    image: ignaxa/authservice_back:latest
+#    container_name: authservice_back
+#    build:
+#      context: ./authservice-backend
+#    networks:
+#      authservice_app:
+#    ports:
+#      - "8080:8080"
 
   authservice_db:
     image: ignaxa/authservice_db:latest
     container_name: authservice_db
+    env_file:
+      - ./authservice-backend/src/.env
     build:
       context: ./authservice-db
     networks:
       authservice_app:
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: authservice_db
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
       - "5432:5432"

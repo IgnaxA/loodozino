@@ -3,8 +3,8 @@ import {Request, Response} from "express";
 import {AuthControllerDTOInput} from "../dtos/auth-controller-dto-input";
 import {AuthService} from "../../../services/auth/auth-service";
 import {AuthControllerDTOOutput} from "../dtos/auth-controller-dto-output";
-import {TokenExpiryParse, TokenExpiryConfig} from "../../../configs/token-expiry-parse";
-import {ErrorHandler} from "../../../handlers/error-handler";
+import {TokenExpiryParse, TokenExpiryConfig} from "../../../configs/utils/token-expiry-parse";
+import {ErrorHandler} from "../../../utils/error-handler";
 
 export class AuthControllerImpl implements AuthController {
     private readonly authService: AuthService;
@@ -40,11 +40,20 @@ export class AuthControllerImpl implements AuthController {
     }
 
     private getInputDTO(req: Request): AuthControllerDTOInput {
-        const requestBody: AuthApiInput = req.body;
-        const requestData: AuthControllerDTOInput = new AuthControllerDTOInput(requestBody.userEmail,
-                                                                               requestBody.userPassword);
+        try {
+            const requestBody: AuthApiInput = req.body;
+            const requestData: AuthControllerDTOInput = new AuthControllerDTOInput()
+                .setInput(requestBody.userEmail,
+                          requestBody.userPassword,
+                          requestBody.userDevice,
+                          requestBody.userIp);
 
-        return requestData;
+            return requestData;
+        } catch (err: any) {
+            ErrorHandler.throwError(err, "Error occured while parsing request body");
+        }
+
+        return new AuthControllerDTOInput();
     }
 
     private setAPIResponse(res: Response, responseData: AuthControllerDTOOutput): void {
@@ -68,4 +77,6 @@ export class AuthControllerImpl implements AuthController {
 interface AuthApiInput {
     userEmail: string;
     userPassword: string;
+    userDevice: string;
+    userIp: string;
 }

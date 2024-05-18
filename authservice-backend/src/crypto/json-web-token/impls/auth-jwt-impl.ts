@@ -1,28 +1,23 @@
 import {AuthJWT} from "../auth-jwt";
 import jwt from "jsonwebtoken";
-import {JWTConfig, JWTParse} from "../../../configs/jwt-parse";
-import {TokenExpiryConfig, TokenExpiryParse} from "../../../configs/token-expiry-parse";
+import {JWTConfig, JWTParse} from "../../../configs/utils/jwt-parse";
+import {TokenExpiryConfig, TokenExpiryParse} from "../../../configs/utils/token-expiry-parse";
 
 export class AuthJWTImpl implements AuthJWT {
-    private readonly secretWord: string;
-    private readonly refreshTokenExpiry: number;
-    private readonly accessTokenExpiry: number;
+    private readonly jwtConfig: JWTConfig;
+    private readonly tokenExpiryConfig: TokenExpiryConfig;
 
     constructor() {
-        const jwtConfig: JWTConfig = JWTParse.getJWTConfig();
-        const tokenExpiryConfig: TokenExpiryConfig = TokenExpiryParse.getTokensExpiryConfig();
-
-        this.secretWord = jwtConfig.SECRET_WORD;
-        this.refreshTokenExpiry = tokenExpiryConfig.REFRESH_TOKEN_EXPIRY;
-        this.accessTokenExpiry = tokenExpiryConfig.ACCESS_TOKEN_EXPIRY;
+        this.jwtConfig = JWTParse.getJWTConfig();
+        this.tokenExpiryConfig = TokenExpiryParse.getTokensExpiryConfig();
     }
 
     public createToken(userData: string[], tokenType: Token): string {
         const tokenExpiry: number = tokenType === Token.Refresh
-            ? this.refreshTokenExpiry
-            : this.accessTokenExpiry;
+            ? this.tokenExpiryConfig.REFRESH_TOKEN_EXPIRY
+            : this.tokenExpiryConfig.ACCESS_TOKEN_EXPIRY;
 
-        return jwt.sign(userData, this.secretWord, {
+        return jwt.sign(userData, this.jwtConfig.SECRET_WORD, {
             expiresIn: tokenExpiry
         });
     }

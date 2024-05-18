@@ -1,14 +1,17 @@
+import {ParseHelper} from "../../utils/parse-helper";
 
 
 export class CryptorParse {
     private static readonly crpytorConfig: CrpytorConfig;
 
     public static getCryptorConfig(): CrpytorConfig {
-        this.crpytorConfig.SALT_ROUNDS = process.env.SALT_ROUNDS
-            ? Number(process.env.SALT_ROUNDS)
-            : 10;
+        this.varParse();
 
         return this.crpytorConfig;
+    }
+
+    private static varParse(): void {
+        this.crpytorConfig.SALT_ROUNDS = ParseHelper.parseNumber(process.env.SALT_ROUNDS);
     }
 }
 

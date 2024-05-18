@@ -12,4 +12,9 @@ export class ErrorHandler {
                 "message": error.message
             });
     }
+
+    public static throwError(err: any, msg: string): void {
+        Assert.isError(err);
+        throw new Error(msg);
+    }
 }

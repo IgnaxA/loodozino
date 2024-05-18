@@ -1,5 +1,5 @@
 import express, {Express} from "express"
-import {StartUpConfig, StartUpParse} from "./configs/start-up-parse";
+import {StartUpConfig, StartUpParse} from "./configs/utils/start-up-parse";
 import {AuthRouter} from "./routes/auth-router";
 import {AuthController} from "./controllers/auth/auth-controller";
 import {AuthService} from "./services/auth/auth-service";
@@ -27,7 +27,7 @@ const authRouter: AuthRouter = new AuthRouter(authController);
 authRouter.setRouter();
 
 app.use(APIPrefix, authRouter.getRouter());
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 app.listen(PORT, (err: void | Error): void => {
     err ? console.log(err) : console.log(`Listening ${PORT} port`);

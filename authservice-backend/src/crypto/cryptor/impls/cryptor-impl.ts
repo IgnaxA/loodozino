@@ -1,14 +1,13 @@
 import {Cryptor} from "../cryptor";
-import {CryptorParse, CrpytorConfig} from "../../../configs/cryptor-parse";
+import {CryptorParse, CrpytorConfig} from "../../../configs/utils/cryptor-parse";
 import bcrypt from "bcrypt";
-import {Assert} from "../../../handlers/assert";
+import {Assert} from "../../../utils/assert";
 
 export class CryptorImpl implements Cryptor {
-    private readonly saltRounds: number;
+    private readonly cryptorConfig: CrpytorConfig;
 
     constructor() {
-        const cryptorConfig: CrpytorConfig = CryptorParse.getCryptorConfig();
-        this.saltRounds = cryptorConfig.SALT_ROUNDS;
+        this.cryptorConfig = CryptorParse.getCryptorConfig();
     }
 
     public async comparePasswords(password: string, hashedPassword: string): Promise<boolean> {
@@ -23,6 +22,6 @@ export class CryptorImpl implements Cryptor {
         Assert.notNull(password, "Inputted password must not be null");
 
         return await bcrypt
-            .hash(password, this.saltRounds);
+            .hash(password, this.cryptorConfig.SALT_ROUNDS);
     }
 }
