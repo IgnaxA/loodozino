@@ -1,10 +1,10 @@
 import {Cryptor} from "../cryptor";
-import {CryptorParse, CrpytorConfig} from "../../../configs/utils/cryptor-parse";
+import {CryptorParse, CryptorConfig} from "../../../configs/utils/cryptor-parse";
 import bcrypt from "bcrypt";
 import {Assert} from "../../../utils/assert";
 
 export class CryptorImpl implements Cryptor {
-    private readonly cryptorConfig: CrpytorConfig;
+    private readonly cryptorConfig: CryptorConfig;
 
     constructor() {
         this.cryptorConfig = CryptorParse.getCryptorConfig();

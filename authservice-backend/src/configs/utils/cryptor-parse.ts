@@ -2,9 +2,9 @@ import {ParseHelper} from "../../utils/parse-helper";
 
 
 export class CryptorParse {
-    private static readonly crpytorConfig: CrpytorConfig;
+    private static readonly crpytorConfig: CryptorConfig = {} as CryptorConfig;
 
-    public static getCryptorConfig(): CrpytorConfig {
+    public static getCryptorConfig(): CryptorConfig {
         this.varParse();
 
         return this.crpytorConfig;
@@ -15,6 +15,6 @@ export class CryptorParse {
     }
 }
 
-export interface CrpytorConfig {
+export interface CryptorConfig {
     SALT_ROUNDS: number;
 }

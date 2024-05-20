@@ -1,7 +1,7 @@
 import {ParseHelper} from "../../utils/parse-helper";
 
 export class JWTParse {
-    private static readonly jwtConfig: JWTConfig;
+    private static readonly jwtConfig: JWTConfig = {} as JWTConfig;
 
     public static getJWTConfig(): JWTConfig {
         this.varParse();

@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "prod": "node --env-file=.env ./build/server.js",
-    "dev": "nodemon --env-file=.env ./build/server.js",
+    "prod": "node --env-file=/src/.env ./build/server.js",
+    "dev": "nodemon --env-file=/src/.env ./build/server.js",
     "build": "tsc --project ./"
   },
   "repository": {

@@ -1,7 +1,7 @@
 import {ParseHelper} from "../../utils/parse-helper";
 
 export class StartUpParse {
-    private static readonly startUpConfig: StartUpConfig;
+    private static readonly startUpConfig: StartUpConfig = {} as StartUpConfig;
 
     public static getStartUpConfig(): StartUpConfig {
         this.varParse();

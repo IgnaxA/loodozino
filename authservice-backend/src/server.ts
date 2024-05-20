@@ -20,7 +20,7 @@ const PORT: number = startUpConfig.PORT;
 const cryptor: Cryptor = new CryptorImpl();
 const authJWT: AuthJWT = new AuthJWTImpl();
 
-const authService: AuthService = new AuthServiceImpl();
+const authService: AuthService = new AuthServiceImpl(cryptor, authJWT);
 
 const authController: AuthController = new AuthControllerImpl(authService);
 const authRouter: AuthRouter = new AuthRouter(authController);

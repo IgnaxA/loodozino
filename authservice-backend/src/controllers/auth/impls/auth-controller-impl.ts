@@ -50,9 +50,8 @@ export class AuthControllerImpl implements AuthController {
 
             return requestData;
         } catch (err: any) {
-            ErrorHandler.throwError(err, "Error occured while parsing request body");
+            ErrorHandler.throwError(err, "Error occurred while parsing request body");
         }
-
         return new AuthControllerDTOInput();
     }
 

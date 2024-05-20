@@ -6,18 +6,16 @@ export class ParseHelper {
 
     public static parseBoolean(val: any): boolean {
         Assert.notNullOrUndefined(val, this.notNullOrUndefinedMessage);
-        Assert.isBoolean(val);
 
         const actVal: boolean | undefined = this.booleanVal.get(<string>val);
 
-        Assert.notNull(actVal, "Error occurred while parsing boolean");
+        Assert.notNullOrUndefined(actVal, "Error occurred while parsing boolean");
 
         return <boolean>actVal;
     }
 
     public static parseString(val: any): string {
         Assert.notNullOrUndefined(val, this.notNullOrUndefinedMessage);
-        Assert.isString(val);
 
         return <string>val;
     }
@@ -26,6 +24,6 @@ export class ParseHelper {
         Assert.notNullOrUndefined(val, this.notNullOrUndefinedMessage);
         Assert.isNumber(val);
 
-        return <number>val;
+        return Number(val);
     }
 }

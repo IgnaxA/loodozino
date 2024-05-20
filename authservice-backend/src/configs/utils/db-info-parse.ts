@@ -1,7 +1,7 @@
 import {ParseHelper} from "../../utils/parse-helper";
 
 export class DbInfoParse {
-    private static readonly dbConfig: DBConfig;
+    private static readonly dbConfig: DBConfig = {} as DBConfig;
 
     public static getDBConfig(): DBConfig {
         this.varParse();

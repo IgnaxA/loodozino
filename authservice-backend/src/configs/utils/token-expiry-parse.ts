@@ -1,7 +1,7 @@
 import {ParseHelper} from "../../utils/parse-helper";
 
 export class TokenExpiryParse {
-    private static readonly tokenExpiryConfig: TokenExpiryConfig;
+    private static readonly tokenExpiryConfig: TokenExpiryConfig = {} as TokenExpiryConfig;
 
     public static getTokensExpiryConfig(): TokenExpiryConfig {
         this.varParse();

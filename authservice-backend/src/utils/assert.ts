@@ -12,6 +12,11 @@ export class Assert {
         }
     }
 
+    public static isBoolean(obj: any): void {
+        if (!(obj instanceof Boolean)) {
+            throw new Error("Object is not a bool");
+        }
+    }
     public static isString(obj: any): void {
         if (!(obj instanceof String)) {
             throw new Error("Object is not a string");
@@ -19,14 +24,8 @@ export class Assert {
     }
 
     public static isNumber(obj: any): void {
-        if (!(obj instanceof Number)) {
+        if (Number.isNaN(obj)) {
             throw new Error("Object is not a number");
-        }
-    }
-
-    public static isBoolean(obj: any): void {
-        if (!(obj instanceof Boolean)) {
-            throw new Error("Object is not a boolean");
         }
     }
 
