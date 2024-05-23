@@ -13,7 +13,7 @@ export class AuthControllerImpl implements AuthController {
         this.authService = authService;
     }
 
-    public async signIn(req: Request, res: Response): Promise<void> {
+    public signIn = async (req: Request, res: Response): Promise<void> => {
         try {
             const requestData: AuthControllerDTOInput = this.getInputDTO(req);
 
@@ -26,7 +26,7 @@ export class AuthControllerImpl implements AuthController {
         }
     }
 
-    public async signUp(req: Request, res: Response): Promise<void> {
+    public signUp = async (req: Request, res: Response): Promise<void> => {
         try {
             const requestData: AuthControllerDTOInput = this.getInputDTO(req);
 
@@ -69,7 +69,8 @@ export class AuthControllerImpl implements AuthController {
                 httpOnly: true,
                 secure: true,
                 maxAge: 1000 * tokenExpiryConfig.ACCESS_TOKEN_EXPIRY
-            });
+            })
+            .json();
     }
 }
 

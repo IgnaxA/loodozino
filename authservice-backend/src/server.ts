@@ -9,13 +9,22 @@ import {Cryptor} from "./crypto/cryptor/cryptor";
 import {CryptorImpl} from "./crypto/cryptor/impls/cryptor-impl";
 import {AuthJWT} from "./crypto/json-web-token/auth-jwt";
 import {AuthJWTImpl} from "./crypto/json-web-token/impls/auth-jwt-impl";
-import bodyParser from "body-parser";
+import {PostgresTransactionRunner} from "./repository/transaction-runners/impls/postgres-transaction-runner";
+import {TransactionRunner} from "./repository/transaction-runners/transaction-runner";
+import {MigrationRunner} from "./migration-runner/migration-runner";
 
 const APIPrefix: string = "/api";
 const app: Express = express();
+app.use(express.json());
 
 const startUpConfig: StartUpConfig = StartUpParse.getStartUpConfig();
 const PORT: number = startUpConfig.PORT;
+const isProd: boolean = startUpConfig.PROD;
+
+const transactionRunner: TransactionRunner = new PostgresTransactionRunner();
+const migrationRunner: MigrationRunner = new MigrationRunner(transactionRunner);
+
+migrationRunner.run(isProd);
 
 const cryptor: Cryptor = new CryptorImpl();
 const authJWT: AuthJWT = new AuthJWTImpl();
@@ -27,7 +36,6 @@ const authRouter: AuthRouter = new AuthRouter(authController);
 authRouter.setRouter();
 
 app.use(APIPrefix, authRouter.getRouter());
-app.use(bodyParser.json());
 
 app.listen(PORT, (err: void | Error): void => {
     err ? console.log(err) : console.log(`Listening ${PORT} port`);
