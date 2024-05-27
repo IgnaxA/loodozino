@@ -1,10 +1,10 @@
 import {AuthController} from "../auth-controller";
 import {Request, Response} from "express";
 import {AuthControllerDTOInput} from "../dtos/auth-controller-dto-input";
-import {AuthService} from "../../../services/auth/auth-service";
+import {AuthService} from "../../services/auth-service";
 import {AuthControllerDTOOutput} from "../dtos/auth-controller-dto-output";
-import {TokenExpiryParse, TokenExpiryConfig} from "../../../configs/utils/token-expiry-parse";
-import {ErrorHandler} from "../../../utils/error-handler";
+import {TokenExpiryParse, TokenExpiryConfig} from "../../configs/utils/token-expiry-parse";
+import {ErrorHandler} from "../../utils/error-handler";
 
 export class AuthControllerImpl implements AuthController {
     private readonly authService: AuthService;

@@ -1,10 +1,10 @@
 import express, {Express} from "express"
 import {StartUpConfig, StartUpParse} from "./configs/utils/start-up-parse";
 import {AuthRouter} from "./routes/auth-router";
-import {AuthController} from "./controllers/auth/auth-controller";
-import {AuthService} from "./services/auth/auth-service";
-import {AuthServiceImpl} from "./services/auth/impls/auth-service-impl";
-import {AuthControllerImpl} from "./controllers/auth/impls/auth-controller-impl";
+import {AuthController} from "./controllers/auth-controller";
+import {AuthService} from "./services/auth-service";
+import {AuthServiceImpl} from "./services/impls/auth-service-impl";
+import {AuthControllerImpl} from "./controllers/impls/auth-controller-impl";
 import {Cryptor} from "./crypto/cryptor/cryptor";
 import {CryptorImpl} from "./crypto/cryptor/impls/cryptor-impl";
 import {AuthJWT} from "./crypto/json-web-token/auth-jwt";
