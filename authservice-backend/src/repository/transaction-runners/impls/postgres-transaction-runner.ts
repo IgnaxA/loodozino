@@ -3,6 +3,7 @@ import {PostgresDriver} from "../../../configs/db/impls/postgres-driver";
 import {TransactionRunner} from "../transaction-runner";
 import {Assert} from "../../../utils/assert";
 import {ErrorHandler} from "../../../utils/error-handler";
+import {QueryConstructor} from "../../queries/query-constructor";
 
 
 export class PostgresTransactionRunner implements TransactionRunner {
@@ -13,7 +14,7 @@ export class PostgresTransactionRunner implements TransactionRunner {
         this.pool = postgresDriver.getDriver();
     }
 
-    public run(queries: Array<string>): void {
+    public run(queries: Array<QueryConstructor>): void {
         this.pool.connect((err: Error | undefined, client: PoolClient | undefined): void => {
             if (err != undefined) {
                 throw err;
@@ -22,8 +23,8 @@ export class PostgresTransactionRunner implements TransactionRunner {
             Assert.notNullOrUndefined(client, "Cant get pg client");
 
             try {
-                queries.forEach(async (query: string): Promise<void> => {
-                    await client?.query(query);
+                queries.forEach(async (queryConstructor: QueryConstructor): Promise<void> => {
+                    await client?.query(queryConstructor.getQuery(), queryConstructor.getParameters());
                 });
             } catch (err: any) {
                 ErrorHandler.throwError(err, "Transaction failed");

@@ -2,6 +2,7 @@ import {TransactionRunner} from "../repository/transaction-runners/transaction-r
 import {resolve} from "path";
 import fs from "fs";
 import {ErrorHandler} from "../utils/error-handler";
+import {QueryConstructor} from "../repository/queries/query-constructor";
 
 export class MigrationRunner {
     private readonly transactionRunner: TransactionRunner;
@@ -40,7 +41,7 @@ export class MigrationRunner {
     private prepareAndRun(filePath: string): void {
         try {
 
-            const queries: Array<string> = this.getQueries(filePath);
+            const queries: Array<QueryConstructor> = this.getQueries(filePath);
 
             this.transactionRunner.run(queries);
 
@@ -49,31 +50,34 @@ export class MigrationRunner {
         }
     }
 
-    private getQueries(filePath: string): Array<string> {
+    private getQueries(filePath: string): Array<QueryConstructor> {
         try {
             const fileBody: string = fs.readFileSync(filePath, {encoding: 'utf-8'});
 
-            const preparedQueries: Array<string> = this.prepareQueries(fileBody);
+            const preparedQueries: Array<QueryConstructor> = this.prepareQueries(fileBody);
 
             return preparedQueries;
         } catch (err: any) {
             ErrorHandler.throwError(err, "Something went wrong while parsing migration file");
         }
-        return new Array<string>();
+        return new Array<QueryConstructor>();
     }
 
-    private prepareQueries(fileBody: string): Array<string> {
+    private prepareQueries(fileBody: string): Array<QueryConstructor> {
         const queries: Array<string> = fileBody.replace(/\n|\r/g, '')
                                                .split(';');
 
-        const preparedQueries: Array<string> = new Array<string>();
+        const preparedQueries: Array<QueryConstructor> = new Array<QueryConstructor>();
 
         for (let i: number = 0; i < queries.length; ++i) {
             if (queries[i] == null || queries[i].length == 0) {
                 continue;
             }
 
-            preparedQueries.push(queries[i] + ';');
+            const queryConstructor: QueryConstructor = new QueryConstructor();
+            queryConstructor.setQuery(queries[i] + ';')
+
+            preparedQueries.push(queryConstructor);
         }
 
         return preparedQueries;

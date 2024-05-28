@@ -1,4 +1,5 @@
+import {QueryConstructor} from "../queries/query-constructor";
 
 export interface TransactionRunner {
-    run(queries: Array<string>): void;
+    run(queries: Array<QueryConstructor>): void;
 }

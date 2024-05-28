@@ -12,7 +12,7 @@ export class AuthRepositoryImpl implements AuthRepository {
         const password: string = userDto.getPassword();
         const accessLevel: number = userDto.getAccessLevel();
 
-        const query: string = "INSERT INTO users(user_email, user_password, user_access_level) VALUES ($1, $2, $3);";
+        const query: string = "INSERT INTO users(user_email, user_password, user_access_level) VALUES($1, $2, $3);";
         const parameters: Array<any> = new Array<any>(email, password, accessLevel);
 
         queryConstructor.setQuery(query);
