@@ -3,23 +3,23 @@ import { Action } from "./action";
 export class Match {
     private match_ident: String;
     private board_ident: String;
-    private player_count: number;
-    private players: Array<String>;
+    private user_count: number;
+    private users: Array<String>;
     private actions: Array<Action>;
     
     constructor () {
         this.match_ident = "";
         this.board_ident = "";
-        this.player_count = 0;
-        this.players = new Array<String>();
+        this.user_count = 0;
+        this.users = new Array<String>();
         this.actions = new Array<Action>();
     }
 
-    public setMatch(match_ident: String, board_ident: String, player_count: number, players:Array<String>, actions: Array<Action>) {
+    public setMatch(match_ident: String, board_ident: String, user_count: number, users:Array<String>, actions: Array<Action>) {
         this.match_ident = match_ident;
         this.board_ident = board_ident;
-        this.player_count = player_count;
-        this.players = players;
+        this.user_count = user_count;
+        this.users = users;
         this.actions = actions;
     }
 
@@ -31,12 +31,12 @@ export class Match {
         return this.board_ident;
     }
 
-    public getMatchPlayerCount(): number {
-        return this.player_count;
+    public getMatchUserCount(): number {
+        return this.user_count;
     }
 
-    public getMatchPlayers(): Array<String> {
-        return this.players;
+    public getMatchUsers(): Array<String> {
+        return this.users;
     }
 
     public getMatchActions(): Array<Action> {

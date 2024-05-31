@@ -3,16 +3,16 @@ import { Schema } from "mongoose";
 export const MatchSchema = new Schema({
     match_ident: {String, required: true},
     board_ident: {String, required: true},
-    player_amount: {Number, required: true},
-    players: 
+    user_count: {Number, required: true},
+    users: 
     [
-        {String, required: true}
+        {String}
     ],
     actions: 
     [
         {
-            player_login: {String, required: true},
-            action_type: {String, required: true},
+            user_login: {String},
+            action_type: {String},
             bet_size: {Number}
         }
     ]
