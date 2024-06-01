@@ -13,8 +13,8 @@ export class SettingsControllerImpl implements SettingsController {
     
     public getSettings = async(req: Request, res: Response) : Promise<void> => {
         try {
-            const settings_ident: string = req.body;
-            const settings = await this.settingsService.getSettings(settings_ident);
+            const user_ident: string = req.body;
+            const settings = await this.settingsService.getSettings(user_ident);
             this.setAPIResponse(res, settings);
 
         } catch (err: any) {
