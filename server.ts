@@ -10,6 +10,13 @@ import { SettingsRouter } from "./src/routes/settings-router";
 import mongoose from "mongoose";
 import { SettingsRepository } from "./src/repositories/settings-repository";
 import { SettingsRepositoryImpl } from "./src/repositories/implementations/settings-repository-impl";
+import { BoardRepository } from "./src/repositories/board-repository";
+import { BoardService } from "./src/services/board-service";
+import { BoardController } from "./src/controllers/board-controller";
+import { BoardRouter } from "./src/routes/board-router";
+import { BoardRepositoryImpl } from "./src/repositories/implementations/board-repository-impl";
+import { BoardServiceImpl } from "./src/services/impls/board-service-impl";
+import { BoardControllerImpl } from "./src/controllers/implementations/board-controller-impl";
 
 const APIPrefix: string = "/api";
 const app: Express = express();
@@ -28,6 +35,14 @@ const settingsRouter: SettingsRouter = new SettingsRouter(settingsController);
 settingsRouter.setRouter();
 
 app.use(APIPrefix, settingsRouter.getRouter());
+
+const boardRepository: BoardRepository = new BoardRepositoryImpl();
+const boardService: BoardService = new BoardServiceImpl(boardRepository);
+const boardController: BoardController = new BoardControllerImpl(boardService);
+const boardRouter: BoardRouter = new BoardRouter(boardController);
+boardRouter.setRouter();
+
+app.use(APIPrefix, boardRouter.getRouter());
 
 app.listen(PORT, (err: void | Error): void => {
     err ? console.log(err) : console.log(`Listening ${PORT} port`);
