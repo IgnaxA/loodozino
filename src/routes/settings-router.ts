@@ -11,10 +11,10 @@ export class SettingsRouter {
     }
 
     public setRouter(): void {
-        this.settingsRouter.get("/get_settings_by_user_ident", this.settingsController.getSettingsByUserIdent);
+        this.settingsRouter.get("/get_settings", this.settingsController.getSettings);
         this.settingsRouter.post("/edit_visible_history", this.settingsController.editVisibleHistory);
         this.settingsRouter.post("/create_settings", this.settingsController.createSettings);
-        this.settingsRouter.delete("/remove_settings", this.settingsController.removeSettingsByUserIdent);
+        this.settingsRouter.delete("/remove_settings", this.settingsController.removeSettings);
     }
 
     public getRouter(): Router {

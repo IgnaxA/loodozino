@@ -4,7 +4,7 @@ import { EditVisibleHistoryPayload, ISettings } from "../contracts/settings";
 
 export interface SettingsService {
     createSettings(settings: ISettings) : Promise<void>;
-    getSettingsByUserIdent(user_ident: string): Promise<ISettings>;
+    getSettings(user_ident: string): Promise<ISettings>;
     editVisibleHistory(editHistoryPayload: EditVisibleHistoryPayload): Promise<ISettings>;
-    removeSettingsByUserIdent(user_ident: string): Promise<ISettings>;
+    removeSettings(user_ident: string): Promise<ISettings>;
 }

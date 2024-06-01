@@ -15,15 +15,15 @@ export class SettingsServiceImpl implements SettingsService {
         await this.settingsRepository.createSettings(settings);
     }
 
-    public async getSettingsByUserIdent(user_ident: string): Promise<ISettings> {
+    public async getSettings(user_ident: string): Promise<ISettings> {
         // check na user_ident == null
-        return await this.settingsRepository.getSettingsByUserIdent(user_ident);
+        return await this.settingsRepository.getSettings(user_ident);
     }
     public async editVisibleHistory(editHistoryPayload: EditVisibleHistoryPayload): Promise<ISettings>{
         return await this.settingsRepository.editVisibleHistory(editHistoryPayload);
     }
-    public async removeSettingsByUserIdent(user_ident: string): Promise<ISettings>{
+    public async removeSettings(user_ident: string): Promise<ISettings>{
         // check na user_ident == null
-        return await this.settingsRepository.removeSettingsByUserIdent(user_ident);
+        return await this.settingsRepository.removeSettings(user_ident);
     }
 }
