@@ -14,7 +14,7 @@ export class SettingsRepositoryImpl implements SettingsRepository {
         await settingsModel.save();
     }
 
-    public async getSettingsByUserIdent(user_ident: String): Promise<ISettings> {
+    public async getSettings(user_ident: String): Promise<ISettings> {
         const settings = await SettingsModel.findOne(user_ident);
         Assert.notNullOrUndefined(settings, "This settings do not exist");
         const settingsInterface: ISettings = new SettingsModel(settings);
@@ -30,7 +30,7 @@ export class SettingsRepositoryImpl implements SettingsRepository {
         return settingsInterface;
     }
 
-    public async removeSettingsByUserIdent(user_ident: String): Promise<ISettings> {
+    public async removeSettings(user_ident: String): Promise<ISettings> {
         const settings = await SettingsModel.findOneAndDelete(user_ident);
 
         const settingsInterface: ISettings = new SettingsModel(settings);

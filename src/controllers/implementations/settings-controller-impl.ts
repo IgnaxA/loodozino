@@ -12,10 +12,10 @@ export class SettingsControllerImpl implements SettingsController {
         this.settingsService = settingsService;
     };
     
-    public getSettingsByUserIdent = async(req: Request, res: Response) : Promise<void> => {
+    public getSettings = async(req: Request, res: Response) : Promise<void> => {
         try {
             const user_ident: string = req.body;
-            const settings = await this.settingsService.getSettingsByUserIdent(user_ident);
+            const settings = await this.settingsService.getSettings(user_ident);
             this.setAPIResponse(res, settings);
 
         } catch (err: any) {
@@ -46,10 +46,10 @@ export class SettingsControllerImpl implements SettingsController {
         }
     }
 
-    public removeSettingsByUserIdent = async(req: Request, res: Response) : Promise<void> => {
+    public removeSettings = async(req: Request, res: Response) : Promise<void> => {
         try {
             const user_ident: string = req.body;
-            const settings = await this.settingsService.removeSettingsByUserIdent(user_ident);
+            const settings = await this.settingsService.removeSettings(user_ident);
             this.setAPIResponse(res, settings);
 
         } catch (err: any) {
