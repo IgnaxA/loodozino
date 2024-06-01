@@ -1,4 +1,3 @@
-import { response } from "express";
 import { SettingsService } from "../../services/settings-service";
 import { SettingsController } from "../settings-controller";
 import { Request, Response } from "express-serve-static-core";
@@ -14,8 +13,8 @@ export class SettingsControllerImpl implements SettingsController {
     
     public getSettings = async(req: Request, res: Response) : Promise<void> => {
         try {
-            const user_ident: string = req.body;
-            const settings = await this.settingsService.getSettings(user_ident);
+            const match_ident: string = req.body;
+            const settings = await this.settingsService.getSettings(match_ident);
             this.setAPIResponse(res, settings);
 
         } catch (err: any) {

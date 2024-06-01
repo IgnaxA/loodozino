@@ -1,19 +1,29 @@
-import { Schema } from "mongoose";
+import { model, Model, Schema } from "mongoose";
+import { IMatch } from "../contracts/match";
 
-export const MatchSchema = new Schema({
-    match_ident: {String, required: true},
-    board_ident: {String, required: true},
-    user_count: {Number, required: true},
+const MatchSchema = new Schema({
+    match_ident: {type: String, required: true},
+    board_ident: {type: String, required: true},
+    user_count: {type: Number, required: true},
     users: 
     [
-        {String}
+        {type: String}
     ],
     actions: 
     [
         {
-            user_login: {String},
-            action_type: {String},
-            bet_size: {Number}
+            user_ident: {type: String},
+            action_type: {type: String},
+            bet_size: {type: Number}
+        }
+    ],
+    match_results:
+    [
+        {
+            user_ident: {type: String},
+            chips_difference: {type: Number}
         }
     ]
 });
+
+export const MatchModel: Model<IMatch> = model<IMatch>('matches', MatchSchema);

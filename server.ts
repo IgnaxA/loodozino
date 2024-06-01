@@ -17,6 +17,13 @@ import { BoardRouter } from "./src/routes/board-router";
 import { BoardRepositoryImpl } from "./src/repositories/implementations/board-repository-impl";
 import { BoardServiceImpl } from "./src/services/impls/board-service-impl";
 import { BoardControllerImpl } from "./src/controllers/implementations/board-controller-impl";
+import { MatchRepository } from "./src/repositories/match-repository";
+import { MatchRepositoryImpl } from "./src/repositories/implementations/match-repository-impl";
+import { MatchServiceImpl } from "./src/services/impls/match-service-impl";
+import { MatchService } from "./src/services/match-service";
+import { MatchController } from "./src/controllers/match-controller";
+import { MatchControllerImpl } from "./src/controllers/implementations/match-controller-impl";
+import { MatchRouter } from "./src/routes/match-router";
 
 const APIPrefix: string = "/api";
 const app: Express = express();
@@ -43,6 +50,14 @@ const boardRouter: BoardRouter = new BoardRouter(boardController);
 boardRouter.setRouter();
 
 app.use(APIPrefix, boardRouter.getRouter());
+
+const matchRepository: MatchRepository = new MatchRepositoryImpl();
+const matchService: MatchService = new MatchServiceImpl(matchRepository);
+const matchController: MatchController = new MatchControllerImpl(matchService);
+const matchRouter: MatchRouter = new MatchRouter(matchController);
+matchRouter.setRouter();
+
+app.use(APIPrefix, matchRouter.getRouter());
 
 app.listen(PORT, (err: void | Error): void => {
     err ? console.log(err) : console.log(`Listening ${PORT} port`);
