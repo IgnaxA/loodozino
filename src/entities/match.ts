@@ -1,4 +1,5 @@
 import { Action } from "./action";
+import { setDefaultAutoSelectFamily } from "node:net";
 
 export class Match {
     private match_ident: String;
@@ -33,6 +34,7 @@ export class Match {
 
     public getMatchUserCount(): number {
         return this.user_count;
+
     }
 
     public getMatchUsers(): Array<String> {
