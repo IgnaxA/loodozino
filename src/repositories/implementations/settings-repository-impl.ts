@@ -16,7 +16,9 @@ export class SettingsRepositoryImpl implements SettingsRepository {
 
     public async getSettings(user_ident: String): Promise<ISettings> {
         const settings = await SettingsModel.findOne(user_ident);
+
         Assert.notNullOrUndefined(settings, "This settings do not exist");
+
         const settingsInterface: ISettings = new SettingsModel(settings);
         return settingsInterface;
     }
@@ -26,12 +28,16 @@ export class SettingsRepositoryImpl implements SettingsRepository {
         const update = { visible_history: editVisibleHistoryPayload.visible_history};
         const settings = await SettingsModel.findOneAndUpdate(filter, update, {new: true});
 
+        Assert.notNullOrUndefined(settings, "This settings do not exist");
+
         const settingsInterface: ISettings = new SettingsModel(settings);
         return settingsInterface;
     }
 
     public async removeSettings(user_ident: String): Promise<ISettings> {
         const settings = await SettingsModel.findOneAndDelete(user_ident);
+
+        Assert.notNullOrUndefined(settings, "This settings do not exist");
 
         const settingsInterface: ISettings = new SettingsModel(settings);
         return settingsInterface;

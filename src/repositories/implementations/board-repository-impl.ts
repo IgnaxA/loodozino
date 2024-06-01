@@ -16,7 +16,9 @@ export class BoardRepositoryImpl implements BoardRepository {
 
   public getBoard = async(board_ident: String) : Promise<IBoard> => {
     const board = await BoardModel.findOne(board_ident);
+
     Assert.notNullOrUndefined(board, "This board does not exist");
+
     const boardInterface: IBoard = new BoardModel(board);
     return boardInterface;
   }
@@ -26,12 +28,16 @@ export class BoardRepositoryImpl implements BoardRepository {
     const update = { board_name: board.board_name, created_at:board.created_at};
     const newBoard = await BoardModel.findOneAndUpdate(filter, update, {new: true});
 
+    Assert.notNullOrUndefined(newBoard, "This board does not exist");
+
     const boardInterface: IBoard = new BoardModel(newBoard);
     return boardInterface;
   }
 
   public removeBoard = async(board_ident: String): Promise<IBoard> => {
     const board = await BoardModel.findOneAndDelete(board_ident);
+
+    Assert.notNullOrUndefined(board, "This board does not exist");
 
     const boardInterface: IBoard = new BoardModel(board);
     return boardInterface;
