@@ -1,0 +1,21 @@
+version: '3.8'
+
+networks:
+  app-network:
+
+services:
+  mongodb:
+    image: couldl1e/mongodb:latest
+    container_name: mongodb
+    build:
+      context: ./database
+    environment:
+      - MONGO_INITDB_DATABASE=profile_db
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=mongo
+    networks:
+      app-network:
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./database/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
