@@ -1,7 +1,10 @@
-import { Schema } from "mongoose";
+import { model, Model, Schema } from "mongoose";
+import { IBoard } from "../contracts/board";
 
-export const MatchSchema = new Schema({
-    board_ident: {String, required: true},
-    created_at: {Date, required: true},
-    board_name: {String, required: true}
+const BoardSchema = new Schema<IBoard>({
+    board_ident: {type: String, required: true},
+    created_at: {type: Date, required: true},
+    board_name: {type: String, required: true},
 });
+
+export const BoardModel: Model<IBoard> = model<IBoard>('boards', BoardSchema);
