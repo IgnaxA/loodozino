@@ -2,6 +2,7 @@ import { SettingsModel } from '../../models/settings-model';
 import { SettingsRepository } from "../settings-repository";
 import { ISettings } from '../../contracts/settings';
 import { EditVisibleHistoryPayload } from '../../contracts/settings';
+import { Assert } from '../../utils/assert';
 
 
 export class SettingsRepositoryImpl implements SettingsRepository {
@@ -15,9 +16,9 @@ export class SettingsRepositoryImpl implements SettingsRepository {
 
     public async getSettingsByUserIdent(user_ident: String): Promise<ISettings> {
         const settings = await SettingsModel.findOne(user_ident);
-        
-        const settings_interface: ISettings = new SettingsModel(settings);
-        return settings_interface;
+        Assert.notNullOrUndefined(settings, "This settings do not exist");
+        const settingsInterface: ISettings = new SettingsModel(settings);
+        return settingsInterface;
     }
 
     public async editVisibleHistory(editVisibleHistoryPayload: EditVisibleHistoryPayload): Promise<ISettings> {
@@ -25,15 +26,14 @@ export class SettingsRepositoryImpl implements SettingsRepository {
         const update = { visible_history: editVisibleHistoryPayload.visible_history};
         const settings = await SettingsModel.findOneAndUpdate(filter, update, {new: true});
 
-        const settings_interface: ISettings = new SettingsModel(settings);
-        return settings_interface;
+        const settingsInterface: ISettings = new SettingsModel(settings);
+        return settingsInterface;
     }
 
     public async removeSettingsByUserIdent(user_ident: String): Promise<ISettings> {
-        const filter = { user_ident: user_ident};
-        const settings = await SettingsModel.findOneAndDelete(filter, {user_ident: user_ident});
+        const settings = await SettingsModel.findOneAndDelete(user_ident);
 
-        const settings_interface: ISettings = new SettingsModel(settings);
-        return settings_interface;
+        const settingsInterface: ISettings = new SettingsModel(settings);
+        return settingsInterface;
     }
 }
