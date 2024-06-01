@@ -14,11 +14,14 @@ export class StartUpParse {
         this.startUpConfig.PORT = ParseHelper.parseNumber(process.env.PORT);
 
         this.startUpConfig.PROD = ParseHelper.parseBoolean(process.env.PROD);
+
+        this.startUpConfig.MONGO_URL = ParseHelper.parseString(process.env.MONGO_URL);
     }
 }
 
 export interface StartUpConfig {
     PORT: number;
     PROD: boolean;
+    MONGO_URL: string;
 }
 

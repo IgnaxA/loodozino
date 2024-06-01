@@ -15,11 +15,11 @@ const APIPrefix: string = "/api";
 const app: Express = express();
 app.use(express.json());
 
-// const startUpConfig: StartUpConfig = StartUpParse.getStartUpConfig();
-const PORT: number = 8080;
-// const isProd: boolean = startUpConfig.PROD;
+const startUpConfig: StartUpConfig = StartUpParse.getStartUpConfig();
+const PORT: number = startUpConfig.PORT;
+const isProd: boolean = startUpConfig.PROD;
 
-mongoose.connect("mongodb+srv://kudlay2014:XGiDBy1xyWmieFxS@freemongodb.mawirhf.mongodb.net/?retryWrites=true&w=majority&appName=FreeMongoDB");
+mongoose.connect(startUpConfig.MONGO_URL);
 
 const settingsRepository: SettingsRepository = new SettingsRepositoryImpl();
 const settingsService: SettingsService = new SettingsServiceImpl(settingsRepository);
@@ -32,3 +32,4 @@ app.use(APIPrefix, settingsRouter.getRouter());
 app.listen(PORT, (err: void | Error): void => {
     err ? console.log(err) : console.log(`Listening ${PORT} port`);
 });
+
