@@ -1,9 +1,9 @@
 import { response } from "express";
 import { SettingsService } from "../../services/settings-service";
-// import { SettingsDTO } from "../dtos/settings-dto";
 import { SettingsController } from "../settings-controller";
 import { Request, Response } from "express-serve-static-core";
 import { EditVisibleHistoryPayload, ISettings } from "../../contracts/settings";
+import { ErrorHandler } from "../../utils/error-handler";
 
 export class SettingsControllerImpl implements SettingsController {
     private readonly settingsService: SettingsService;
@@ -12,48 +12,48 @@ export class SettingsControllerImpl implements SettingsController {
         this.settingsService = settingsService;
     };
     
-    public getSettingsByUserIdent = async(req: Request, res: Response) => {
+    public getSettingsByUserIdent = async(req: Request, res: Response) : Promise<void> => {
         try {
             const user_ident: string = req.body;
             const settings = await this.settingsService.getSettingsByUserIdent(user_ident);
             this.setAPIResponse(res, settings);
 
         } catch (err: any) {
-            res.status(500); // Error handler
+            ErrorHandler.setError(res, err);
         }
     }
 
-    public createSettings = async(req: Request, res: Response): Promise<void> => {
+    public createSettings = async(req: Request, res: Response) : Promise<void> => {
         try {
             const settings: ISettings = req.body;
             await this.settingsService.createSettings(settings);
             this.setAPIResponse(res, settings);
 
         } catch (err: any) {
-            res.status(500).json(err); // Error handler
+            ErrorHandler.setError(res, err);
         }
     }
 
 
-    public editVisibleHistory = async(req: Request, res: Response) => {
+    public editVisibleHistory = async(req: Request, res: Response) : Promise<void> => {
         try {
             const editHistoryPayload: EditVisibleHistoryPayload = req.body;
             const settings = await this.settingsService.editVisibleHistory(editHistoryPayload);
             this.setAPIResponse(res, settings);
 
         } catch (err: any) {
-            res.status(500); // Error handler
+            ErrorHandler.setError(res, err);
         }
     }
 
-    public removeSettingsByUserIdent = async(req: Request, res: Response) => {
+    public removeSettingsByUserIdent = async(req: Request, res: Response) : Promise<void> => {
         try {
             const user_ident: string = req.body;
             const settings = await this.settingsService.removeSettingsByUserIdent(user_ident);
             this.setAPIResponse(res, settings);
 
         } catch (err: any) {
-            res.status(500); // Error handler
+            ErrorHandler.setError(res, err);
         }
     }
 

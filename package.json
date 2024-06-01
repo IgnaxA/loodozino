@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc --project ./",
     "dev": "nodemon -r dotenv/config build/server.js",
-    "prod": "node ./build/server.jS",
+    "prod": "node --env-file=.env ./build/server.js",
+    "debug": "node --env-file=.env ./build/server.js",
     "lint": "eslint ./src/**",
     "lint:fix": "eslint ./src/** --fix",
     "prettier": "prettier ./src",
