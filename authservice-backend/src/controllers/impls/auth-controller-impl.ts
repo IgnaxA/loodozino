@@ -29,6 +29,7 @@ export class AuthControllerImpl implements AuthController {
     public signUp = async (req: Request, res: Response): Promise<void> => {
         try {
             const requestData: AuthControllerDTOInput = this.getInputDTO(req);
+            requestData.setAccessLevel(1);
 
             const responseData: AuthControllerDTOOutput = await this.authService
                 .createUser(requestData);
@@ -43,10 +44,11 @@ export class AuthControllerImpl implements AuthController {
         try {
             const requestBody: AuthApiInput = req.body;
             const requestData: AuthControllerDTOInput = new AuthControllerDTOInput()
-                .setInput(requestBody.userEmail,
-                          requestBody.userPassword,
-                          requestBody.userDevice,
-                          requestBody.userIp);
+                .setInput(requestBody.email,
+                          requestBody.password,
+                          requestBody.device,
+                          requestBody.ip,
+                          requestBody.authorizeDate);
 
             return requestData;
         } catch (err: any) {
@@ -75,8 +77,9 @@ export class AuthControllerImpl implements AuthController {
 }
 
 interface AuthApiInput {
-    userEmail: string;
-    userPassword: string;
-    userDevice: string;
-    userIp: string;
+    email: string;
+    password: string;
+    device: string;
+    ip: string;
+    authorizeDate: Date;
 }

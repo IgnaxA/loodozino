@@ -1,5 +1,5 @@
-import {QueryConstructor} from "../queries/query-constructor";
+import {QueryConstructor} from "../query-constructors/query-constructor";
 
-export interface TransactionRunner {
-    run(queries: Array<QueryConstructor>): void;
+export interface TransactionRunner<T extends QueryConstructor> {
+    run(queries: Array<T>): void;
 }

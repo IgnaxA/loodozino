@@ -3,9 +3,15 @@ export class AuthControllerDTOOutput {
     private refreshToken: string = "";
     private accessToken: string = "";
 
-    constructor(refreshToken: string, accessToken: string) {
+    constructor() {
+
+    }
+
+    public set(refreshToken: string, accessToken: string): AuthControllerDTOOutput {
         this.refreshToken = refreshToken;
         this.accessToken = accessToken;
+
+        return this;
     }
 
     public getRefreshToken(): string {

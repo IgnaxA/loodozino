@@ -11,13 +11,13 @@ export class ParseHelper {
 
         Assert.notNullOrUndefined(actVal, "Error occurred while parsing boolean");
 
-        return <boolean>actVal;
+        return Boolean(actVal);
     }
 
     public static parseString(val: any): string {
         Assert.notNullOrUndefined(val, this.notNullOrUndefinedMessage);
 
-        return <string>val;
+        return String(val);
     }
 
     public static parseNumber(val: any): number {

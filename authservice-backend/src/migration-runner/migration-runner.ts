@@ -2,14 +2,15 @@ import {TransactionRunner} from "../repository/transaction-runners/transaction-r
 import {resolve} from "path";
 import fs from "fs";
 import {ErrorHandler} from "../utils/error-handler";
-import {QueryConstructor} from "../repository/queries/query-constructor";
+import {SingleQueryConstructor} from "../repository/query-constructors/single-query-constructor";
+import {QueryConstructor} from "../repository/query-constructors/query-constructor";
 
 export class MigrationRunner {
-    private readonly transactionRunner: TransactionRunner;
+    private readonly transactionRunner: TransactionRunner<QueryConstructor>;
     private readonly relativeMigrationsPath: string = "resources/migrations";
     private readonly fileEncodingType: BufferEncoding = 'utf-8';
 
-    constructor(transactionRunner: TransactionRunner) {
+    constructor(transactionRunner: TransactionRunner<QueryConstructor>) {
         this.transactionRunner = transactionRunner;
     }
 
@@ -41,7 +42,7 @@ export class MigrationRunner {
     private prepareAndRun(filePath: string): void {
         try {
 
-            const queries: Array<QueryConstructor> = this.getQueries(filePath);
+            const queries: Array<SingleQueryConstructor> = this.getQueries(filePath);
 
             this.transactionRunner.run(queries);
 
@@ -50,31 +51,31 @@ export class MigrationRunner {
         }
     }
 
-    private getQueries(filePath: string): Array<QueryConstructor> {
+    private getQueries(filePath: string): Array<SingleQueryConstructor> {
         try {
             const fileBody: string = fs.readFileSync(filePath, {encoding: 'utf-8'});
 
-            const preparedQueries: Array<QueryConstructor> = this.prepareQueries(fileBody);
+            const preparedQueries: Array<SingleQueryConstructor> = this.prepareQueries(fileBody);
 
             return preparedQueries;
         } catch (err: any) {
             ErrorHandler.throwError(err, "Something went wrong while parsing migration file");
         }
-        return new Array<QueryConstructor>();
+        return new Array<SingleQueryConstructor>();
     }
 
-    private prepareQueries(fileBody: string): Array<QueryConstructor> {
-        const queries: Array<string> = fileBody.replace(/\n|\r/g, '')
+    private prepareQueries(fileBody: string): Array<SingleQueryConstructor> {
+        const queries: Array<string> = fileBody.replace(/\n|\r/g, ' ')
                                                .split(';');
 
-        const preparedQueries: Array<QueryConstructor> = new Array<QueryConstructor>();
+        const preparedQueries: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
         for (let i: number = 0; i < queries.length; ++i) {
             if (queries[i] == null || queries[i].length == 0) {
                 continue;
             }
 
-            const queryConstructor: QueryConstructor = new QueryConstructor();
+            const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
             queryConstructor.setQuery(queries[i] + ';')
 
             preparedQueries.push(queryConstructor);

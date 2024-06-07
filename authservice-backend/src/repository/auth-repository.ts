@@ -1,7 +1,7 @@
 import {UserDTO} from "../services/dtos/user-dto";
-import {QueryConstructor} from "./queries/query-constructor";
+import {SingleQueryConstructor} from "./query-constructors/single-query-constructor";
 
 export interface AuthRepository {
-    createUser(userDTO: UserDTO): QueryConstructor;
-    checkUser(userDto: UserDTO): QueryConstructor;
+    createUser(userDTO: UserDTO): void;
+    checkUser(userDto: UserDTO): void;
 }

@@ -12,7 +12,7 @@ export class AuthJWTImpl implements AuthJWT {
         this.tokenExpiryConfig = TokenExpiryParse.getTokensExpiryConfig();
     }
 
-    public createToken(userData: string[], tokenType: Token): string {
+    public createToken(tokenType: Token, ...userData: any[]): string {
         const tokenExpiry: number = tokenType === Token.Refresh
             ? this.tokenExpiryConfig.REFRESH_TOKEN_EXPIRY
             : this.tokenExpiryConfig.ACCESS_TOKEN_EXPIRY;

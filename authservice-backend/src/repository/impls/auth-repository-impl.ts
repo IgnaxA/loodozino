@@ -1,44 +1,36 @@
-import { UserDTO } from "../../services/dtos/user-dto";
 import {AuthRepository} from "../auth-repository";
-import {QueryConstructor} from "../queries/query-constructor";
-import {Assert} from "../../utils/assert";
+import {UserDTO} from "../../services/dtos/user-dto";
+import {UserQueries} from "../queries/user-queries";
+import {SingleQueryConstructor} from "../query-constructors/single-query-constructor";
+import {TransactionRunner} from "../transaction-runners/transaction-runner";
+import {QueryConstructor} from "../query-constructors/query-constructor";
 
 export class AuthRepositoryImpl implements AuthRepository {
-    public createUser(userDto: UserDTO): QueryConstructor {
-        this.validateDto(userDto);
+    private readonly transactionRunner: TransactionRunner<QueryConstructor>;
+    private readonly userQueries: UserQueries;
 
-        const queryConstructor: QueryConstructor = new QueryConstructor();
-        const email: string = userDto.getEmail();
-        const password: string = userDto.getPassword();
-        const accessLevel: number = userDto.getAccessLevel();
-
-        const query: string = "INSERT INTO users(user_email, user_password, user_access_level) VALUES($1, $2, $3);";
-        const parameters: Array<any> = new Array<any>(email, password, accessLevel);
-
-        queryConstructor.setQuery(query);
-        queryConstructor.setParameters(parameters);
-
-        return queryConstructor;
+    constructor(transactionRunner: TransactionRunner<QueryConstructor>, userQueries: UserQueries) {
+        this.transactionRunner = transactionRunner;
+        this.userQueries = userQueries;
     }
 
-    public checkUser(userDto: UserDTO): QueryConstructor {
-        Assert.notNull(userDto.getEmail(), "User email must not be null");
+    public createUser(userDTO: UserDTO): void {
+        const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
-        const queryConstructor: QueryConstructor = new QueryConstructor();
-        const email: string = userDto.getEmail();
+        queryConstructors.push(this.userQueries.createUser(
+            userDTO.getEmail(),
+            userDTO.getPassword(),
+            userDTO.getAccessLevel())
+        );
 
-        const query: string = "SELECT users.user_password FROM users WHERE users.user_email = $1;";
-        const parameters: Array<any> = new Array<any>(userDto.getEmail());
 
-        queryConstructor.setQuery(query);
-        queryConstructor.setParameters(parameters);
 
-        return queryConstructor;
+
+        this.transactionRunner.run(queryConstructors);
+
     }
 
-    private validateDto(userDto: UserDTO): void {
-        Assert.notNull(userDto.getEmail(), "User email must not be null");
-        Assert.notNull(userDto.getPassword(), "User password must not be null");
-        Assert.notNull(userDto.getAccessLevel(), "User access level must not be null");
+    public checkUser(userDTO: UserDTO): void {
+
     }
 }

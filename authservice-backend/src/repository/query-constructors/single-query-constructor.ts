@@ -1,9 +1,11 @@
+import {QueryConstructor} from "./query-constructor";
 
-export class QueryConstructor {
+export class SingleQueryConstructor extends QueryConstructor {
     private query: string;
     private parameters: Array<any>;
 
     constructor() {
+        super();
         this.query = "";
         this.parameters = new Array<any>();
     }

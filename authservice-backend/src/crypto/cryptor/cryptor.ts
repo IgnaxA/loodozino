@@ -1,5 +1,5 @@
 
 export interface Cryptor {
-    encryptPassword(password: string): Promise<string>;
-    comparePasswords(password: string, hashedPassword: string): Promise<boolean>;
+    encrypt(data: string): Promise<string>;
+    compare(data: string, hashedData: string): Promise<boolean>;
 }

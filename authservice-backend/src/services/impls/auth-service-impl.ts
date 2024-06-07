@@ -3,22 +3,67 @@ import {AuthControllerDTOInput} from "../../controllers/dtos/auth-controller-dto
 import {AuthControllerDTOOutput} from "../../controllers/dtos/auth-controller-dto-output";
 import {Cryptor} from "../../crypto/cryptor/cryptor";
 import {AuthJWT} from "../../crypto/json-web-token/auth-jwt";
+import {AuthRepository} from "../../repository/auth-repository";
+import {Token} from "../../crypto/json-web-token/impls/auth-jwt-impl";
+import {UserDTO} from "../dtos/user-dto";
 
 export class AuthServiceImpl implements AuthService {
     private readonly cryptor: Cryptor;
     private readonly authJWT: AuthJWT;
+    private readonly authRepository: AuthRepository;
 
-    constructor(cryptor: Cryptor, authJWT: AuthJWT) {
+    constructor(cryptor: Cryptor, authJWT: AuthJWT, authRepository: AuthRepository) {
         this.cryptor = cryptor;
         this.authJWT = authJWT;
+        this.authRepository = authRepository;
     }
 
     public async verifyUser(authControllerDTOInput: AuthControllerDTOInput): Promise<AuthControllerDTOOutput> {
-        return new AuthControllerDTOOutput("", "");
+        const userDto: UserDTO = new UserDTO();
+
+        const password: string = await this.cryptor.encrypt(authControllerDTOInput.getPassword());
+
+
+
+        return new AuthControllerDTOOutput();
     }
 
     public async createUser(authControllerDTOInput: AuthControllerDTOInput): Promise<AuthControllerDTOOutput> {
-        return new AuthControllerDTOOutput("", "");
+        const email: string = authControllerDTOInput.getEmail();
+        const accessLevel: number = authControllerDTOInput.getAccessLevel();
+
+        const password: string = await this.cryptor.encrypt(authControllerDTOInput.getPassword());
+
+        const refreshToken: string = this.authJWT.createToken(
+            Token.Refresh,
+            email,
+            accessLevel
+        );
+        const accessToken: string = this.authJWT.createToken(
+            Token.Access,
+            email,
+            accessLevel
+        );
+
+        const userDto: UserDTO = new UserDTO().set(
+            email,
+            password,
+            accessLevel,
+            authControllerDTOInput.getDevice(),
+            authControllerDTOInput.getIp(),
+            authControllerDTOInput.getAuthorizeDate(),
+            refreshToken,
+            accessToken
+        );
+
+        this.authRepository.createUser(userDto);
+
+        const authControllerDtoOutput: AuthControllerDTOOutput = new AuthControllerDTOOutput().set(
+          refreshToken,
+          accessToken
+        );
+
+        return authControllerDtoOutput;
     }
 
 }

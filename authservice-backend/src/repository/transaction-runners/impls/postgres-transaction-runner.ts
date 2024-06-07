@@ -3,18 +3,19 @@ import {PostgresDriver} from "../../../configs/db/impls/postgres-driver";
 import {TransactionRunner} from "../transaction-runner";
 import {Assert} from "../../../utils/assert";
 import {ErrorHandler} from "../../../utils/error-handler";
-import {QueryConstructor} from "../../queries/query-constructor";
+import {Driver} from "../../../configs/db/driver";
+import {QueryConstructor} from "../../query-constructors/query-constructor";
 
 
-export class PostgresTransactionRunner implements TransactionRunner {
+export class PostgresTransactionRunner<T extends QueryConstructor> implements TransactionRunner<T> {
     private readonly pool: Pool;
 
-    constructor() {
-        const postgresDriver: PostgresDriver = new PostgresDriver();
-        this.pool = postgresDriver.getDriver();
+    constructor(driver: Driver) {
+        this.pool = driver.getDriver();
     }
 
-    public run(queries: Array<QueryConstructor>): void {
+    public run(queries: Array<T>): void {
+
         this.pool.connect((err: Error | undefined, client: PoolClient | undefined): void => {
             if (err != undefined) {
                 throw err;
@@ -23,13 +24,17 @@ export class PostgresTransactionRunner implements TransactionRunner {
             Assert.notNullOrUndefined(client, "Cant get pg client");
 
             try {
-                queries.forEach(async (queryConstructor: QueryConstructor): Promise<void> => {
-                    await client?.query(queryConstructor.getQuery(), queryConstructor.getParameters());
+                client?.query("BEGIN;");
+
+                queries.forEach((queryConstructor: T): void => {
+                    client?.query(queryConstructor.getQuery(), queryConstructor.getParameters());
                 });
+
+                client?.query("COMMIT;");
+
             } catch (err: any) {
                 ErrorHandler.throwError(err, "Transaction failed");
             }
-
         });
     }
 }
