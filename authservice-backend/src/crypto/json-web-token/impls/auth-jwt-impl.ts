@@ -2,6 +2,7 @@ import {AuthJWT} from "../auth-jwt";
 import jwt from "jsonwebtoken";
 import {JWTConfig, JWTParse} from "../../../configs/utils/jwt-parse";
 import {TokenExpiryConfig, TokenExpiryParse} from "../../../configs/utils/token-expiry-parse";
+import {UserTokenDto} from "../../../services/dtos/user-token-dto";
 
 export class AuthJWTImpl implements AuthJWT {
     private readonly jwtConfig: JWTConfig;
@@ -12,12 +13,12 @@ export class AuthJWTImpl implements AuthJWT {
         this.tokenExpiryConfig = TokenExpiryParse.getTokensExpiryConfig();
     }
 
-    public createToken(tokenType: Token, ...userData: any[]): string {
+    public createToken(tokenType: Token, tokenDto: UserTokenDto): string {
         const tokenExpiry: number = tokenType === Token.Refresh
             ? this.tokenExpiryConfig.REFRESH_TOKEN_EXPIRY
             : this.tokenExpiryConfig.ACCESS_TOKEN_EXPIRY;
 
-        return jwt.sign(userData, this.jwtConfig.SECRET_WORD, {
+        return jwt.sign({...tokenDto}, this.jwtConfig.SECRET_WORD, {
             expiresIn: tokenExpiry
         });
     }

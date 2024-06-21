@@ -6,6 +6,7 @@ import {AuthJWT} from "../../crypto/json-web-token/auth-jwt";
 import {AuthRepository} from "../../repository/auth-repository";
 import {Token} from "../../crypto/json-web-token/impls/auth-jwt-impl";
 import {UserDTO} from "../dtos/user-dto";
+import {UserTokenDto} from "../dtos/user-token-dto";
 
 export class AuthServiceImpl implements AuthService {
     private readonly cryptor: Cryptor;
@@ -33,16 +34,17 @@ export class AuthServiceImpl implements AuthService {
         const accessLevel: number = authControllerDTOInput.getAccessLevel();
 
         const password: string = await this.cryptor.encrypt(authControllerDTOInput.getPassword());
+        const tokenDto: UserTokenDto = new UserTokenDto();
+        tokenDto.email = email;
+        tokenDto.accessLevel = accessLevel
 
         const refreshToken: string = this.authJWT.createToken(
             Token.Refresh,
-            email,
-            accessLevel
+            tokenDto
         );
         const accessToken: string = this.authJWT.createToken(
             Token.Access,
-            email,
-            accessLevel
+            tokenDto
         );
 
         const userDto: UserDTO = new UserDTO().set(

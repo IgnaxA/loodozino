@@ -13,7 +13,7 @@ import {PostgresTransactionRunner} from "./repository/transaction-runners/impls/
 import {TransactionRunner} from "./repository/transaction-runners/transaction-runner";
 import {MigrationRunner} from "./migration-runner/migration-runner";
 import {AuthRepository} from "./repository/auth-repository";
-import {AuthRepositoryImpl} from "./repository/impls/auth-repository-impl";
+import {AuthRepositoryPg} from "./repository/impls/auth-repository-pg";
 import {Driver} from "./configs/db/driver";
 import {PostgresDriver} from "./configs/db/impls/postgres-driver";
 import {QueryConstructor} from "./repository/query-constructors/query-constructor";
@@ -39,7 +39,7 @@ const authJWT: AuthJWT = new AuthJWTImpl();
 
 const userQueries: UserQueries = new UserQueriesPg();
 
-const authRepository: AuthRepository = new AuthRepositoryImpl(transactionRunner, userQueries);
+const authRepository: AuthRepository = new AuthRepositoryPg(transactionRunner, userQueries);
 
 const authService: AuthService = new AuthServiceImpl(cryptor, authJWT, authRepository);
 

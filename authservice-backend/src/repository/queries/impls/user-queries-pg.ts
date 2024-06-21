@@ -1,4 +1,4 @@
-import {SingleQueryConstructor} from "../../query-constructors/single-query-constructor";
+import {SingleQueryConstructor} from "../../query-constructors/extendors/single-query-constructor";
 import {Assert} from "../../../utils/assert";
 import {UserQueries} from "../user-queries";
 

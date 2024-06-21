@@ -2,7 +2,7 @@ import {TransactionRunner} from "../repository/transaction-runners/transaction-r
 import {resolve} from "path";
 import fs from "fs";
 import {ErrorHandler} from "../utils/error-handler";
-import {SingleQueryConstructor} from "../repository/query-constructors/single-query-constructor";
+import {SingleQueryConstructor} from "../repository/query-constructors/extendors/single-query-constructor";
 import {QueryConstructor} from "../repository/query-constructors/query-constructor";
 
 export class MigrationRunner {

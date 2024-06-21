@@ -9,6 +9,9 @@ import {QueryConstructor} from "../../query-constructors/query-constructor";
 
 export class PostgresTransactionRunner<T extends QueryConstructor> implements TransactionRunner<T> {
     private readonly pool: Pool;
+    private readonly start: string = "BEGIN;";
+    private readonly end: string = "COMMIT;";
+    private readonly rollback: string = "ROLLBACK;";
 
     constructor(driver: Driver) {
         this.pool = driver.getDriver();
@@ -24,15 +27,16 @@ export class PostgresTransactionRunner<T extends QueryConstructor> implements Tr
             Assert.notNullOrUndefined(client, "Cant get pg client");
 
             try {
-                client?.query("BEGIN;");
+                client?.query(this.start);
 
                 queries.forEach((queryConstructor: T): void => {
                     client?.query(queryConstructor.getQuery(), queryConstructor.getParameters());
                 });
 
-                client?.query("COMMIT;");
+                client?.query(this.end);
 
             } catch (err: any) {
+                client?.query(this.rollback);
                 ErrorHandler.throwError(err, "Transaction failed");
             }
         });
