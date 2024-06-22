@@ -8,7 +8,7 @@ export class UserQueriesPg implements UserQueries {
     private readonly withInsert: string =
         "INSERT INTO users(user_email, user_password, user_access_level) VALUES($1, $2, $3) RETURNING user_id;";
     private readonly selectByEmail: string =
-        "SELECT users.user_password FROM users WHERE users.user_email = $1;";
+        "SELECT users.user_password, users.user_access_level FROM users WHERE users.user_email = $1;";
 
     public createUser(email: string, password: string, accessLevel: number): SingleQueryConstructor {
         Assert.notNull(email, "User email must not be null");

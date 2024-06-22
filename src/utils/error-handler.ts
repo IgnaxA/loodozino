@@ -16,9 +16,11 @@ export class ErrorHandler {
     public static throwError(err: any, msg: string): void {
         Assert.isError(err);
         const error: Error = err as Error;
-        let builder: string =
-            msg
-            + "\n"
+        let builder: string = msg;
+
+        builder += err === null
+            ? ""
+            : "\n"
             + "Caused by:"
             + " "
             + error.message

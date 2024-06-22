@@ -41,8 +41,9 @@ export class UserDTO {
         return this;
     }
 
-    public setEmail(email: string): void {
+    public setEmail(email: string): UserDTO {
         this.email = email;
+        return this;
     }
 
     public setPassword(password: string): void {

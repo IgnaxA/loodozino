@@ -42,8 +42,8 @@ export class PostgresTransactionRunner<T extends QueryConstructor> implements Tr
         });
     }
 
-    public async runSingle<V>(query: string, parameters: Array<any>): Promise<V> {
-        const response: V = (await this.pool.query(query, parameters)).rows as V;
+    public async runSingle<V>(query: QueryConstructor): Promise<V> {
+        const response: V = (await this.pool.query(query.getQuery(), query.getParameters())).rows[0] as V;
 
         return response;
     }

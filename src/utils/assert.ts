@@ -30,6 +30,10 @@ export class Assert {
     }
 
     public static isError(obj: any): void {
+        if (obj === null) {
+            return;
+        }
+
         if (!(obj instanceof Error)) {
             throw new Error("Error occurred while parsing error");
         }

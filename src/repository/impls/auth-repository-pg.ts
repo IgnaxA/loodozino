@@ -23,9 +23,10 @@ export class AuthRepositoryPg implements AuthRepository {
         this.userQueries = userQueries;
     }
 
-    public checkUser(userDto: UserDTO): string {
-
-        return "";
+    public async checkUser(userDto: UserDTO): Promise<VerifyResponse> {
+        const query: QueryConstructor = this.userQueries.checkUser(userDto.getEmail());
+        const response: VerifyResponse = await this.transactionRunner.runSingle<VerifyResponse>(query);
+        return response;
     }
 
     public createUser(userDTO: UserDTO): void {
@@ -77,6 +78,7 @@ export class AuthRepositoryPg implements AuthRepository {
     }
 }
 
-export interface PasswordResponse {
-    password: string;
+export interface VerifyResponse {
+    user_password: string;
+    user_access_level: number;
 }
