@@ -52,11 +52,11 @@ import { StudyProgramQueriesPg } from "./src/repositories/queries/impls/study-pr
 import { StudyProgramRepositoryImpl } from "./src/repositories/impls/study-program-repository-impl";
 import { StudyProgramServiceImpl } from "./src/services/impls/study-program-service-impl";
 
-const StudentsAPIPrefix: string = "/profile/students";
-const TeachersAPIPrefix: string = "/profile/teachers";
-const DegreeLevelsAPIPrefix: string = "/profile/degree-levels";
-const MeetingPlacesAPIPrefix: string = "/profile/meeting-places";
-const StudyProgramsAPIPrefix: string = "/profile/study-programs";
+const StudentsAPIPrefix: string = "/api/profile/students";
+const TeachersAPIPrefix: string = "/api/profile/teachers";
+const DegreeLevelsAPIPrefix: string = "/api/profile/degree-levels";
+const MeetingPlacesAPIPrefix: string = "/api/profile/meeting-places";
+const StudyProgramsAPIPrefix: string = "/api/profile/study-programs";
 
 const app: Express = express();
 app.use(express.json());

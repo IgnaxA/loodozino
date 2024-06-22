@@ -1,0 +1,34 @@
+networks:
+  profileservice_app:
+    driver: bridge
+
+services:
+  profileservice_db:
+    image: postgres:latest
+    container_name: profileservice_db
+    env_file: /src/.env
+    environment:
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+      - POSTGRES_DB=${DB_NAME:-profileservice_db}
+    networks:
+      profileservice_app:
+
+  profileservice_back:
+    image: couldl1e/profileservice_back:latest
+    container_name: profileservice_back
+    build:
+      context: ./
+    networks:
+      profileservice_app:
+    depends_on:
+      - profileservice_db
+    ports:
+      - "8079:8079"
+
+    healthcheck:
+      test: curl --fail http://localhost:8079 || exit 1
+      interval: 5s
+      retries: 3
+      start_period: 10s
+      timeout: 10s

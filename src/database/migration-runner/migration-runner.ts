@@ -7,7 +7,7 @@ import {QueryConstructor} from "../query-constructors/query-constructor";
 
 export class MigrationRunner {
   private readonly transactionRunner: TransactionRunner<QueryConstructor>;
-  private readonly relativeMigrationsPath: string = "src/database/resources/migrations";
+  private readonly relativeMigrationsPath: string = "./src/database/resources/migrations";
   private readonly fileEncodingType: BufferEncoding = 'utf-8';
 
   constructor(transactionRunner: TransactionRunner<QueryConstructor>) {
@@ -33,7 +33,7 @@ export class MigrationRunner {
     const migrationPaths: Array<string> = fs.readdirSync(absoluteMigrationsPath, {encoding: this.fileEncodingType});
 
     for (let i: number = 0; i < migrationPaths.length; ++i) {
-      migrationPaths[i] = absoluteMigrationsPath + "\\" + migrationPaths[i];
+      migrationPaths[i] = absoluteMigrationsPath + "/" + migrationPaths[i];
     }
 
     return migrationPaths;
