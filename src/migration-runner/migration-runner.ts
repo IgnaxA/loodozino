@@ -7,7 +7,7 @@ import {QueryConstructor} from "../repository/query-constructors/query-construct
 
 export class MigrationRunner {
     private readonly transactionRunner: TransactionRunner<QueryConstructor>;
-    private readonly relativeMigrationsPath: string = "resources/migrations";
+    private readonly relativeMigrationsPath: string = "./resources/migrations";
     private readonly fileEncodingType: BufferEncoding = 'utf-8';
 
     constructor(transactionRunner: TransactionRunner<QueryConstructor>) {
@@ -33,7 +33,7 @@ export class MigrationRunner {
         const migrationPaths: Array<string> = fs.readdirSync(absoluteMigrationsPath, {encoding: this.fileEncodingType});
 
         for (let i: number = 0; i < migrationPaths.length; ++i) {
-            migrationPaths[i] = absoluteMigrationsPath + "\\" + migrationPaths[i];
+            migrationPaths[i] = absoluteMigrationsPath + "/" + migrationPaths[i];
         }
 
         return migrationPaths;
@@ -47,7 +47,7 @@ export class MigrationRunner {
             this.transactionRunner.run(queries);
 
         } catch (err: any) {
-            ErrorHandler.throwError(err, "Something went wrong while migrating");
+            throw new Error(err);
         }
     }
 
@@ -59,7 +59,7 @@ export class MigrationRunner {
 
             return preparedQueries;
         } catch (err: any) {
-            ErrorHandler.throwError(err, "Something went wrong while parsing migration file");
+            throw new Error(err);
         }
         return new Array<SingleQueryConstructor>();
     }

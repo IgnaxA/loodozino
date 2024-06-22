@@ -1,12 +1,13 @@
 
 networks:
   authservice_app:
+    driver: bridge
 
 services:
   authservice_db:
     image: postgres:latest
     container_name: authservice_db
-    env_file: authservice-backend/src/.env
+    env_file: /src/.env
     environment:
       - POSTGRES_USER=${DB_USER:-postgres}
       - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
@@ -20,7 +21,7 @@ services:
     image: ignaxa/authservice_back:latest
     container_name: authservice_back
     build:
-      context: ./authservice-backend
+      context: ./
     networks:
       authservice_app:
     depends_on:
