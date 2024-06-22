@@ -1,6 +1,6 @@
 export interface MeetingPlaceModel {
   id: string;
   description: string;
-  prior: boolean;
+  priority: boolean;
   teacher_id: string;
 }

@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS "teachers" (
   "socials" varchar(400)
 );
 
-CREATE TABLE IF NOT EXISTS "meeting_place" (
+CREATE TABLE IF NOT EXISTS "meeting_places" (
   "id" uuid PRIMARY KEY,
   "description" varchar(400),
   "priority" bool,
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS "degree_levels" (
   "name" varchar(100)
 );
 
-ALTER TABLE "meeting_place" ADD FOREIGN KEY ("teacher_id") REFERENCES "teachers" ("id");
+ALTER TABLE "meeting_places" ADD FOREIGN KEY ("teacher_id") REFERENCES "teachers" ("id");
 
 ALTER TABLE "students" ADD FOREIGN KEY ("study_program_id") REFERENCES "study_programs" ("id");
 
