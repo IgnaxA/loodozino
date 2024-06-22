@@ -19,10 +19,12 @@ import {PostgresDriver} from "./configs/db/impls/postgres-driver";
 import {QueryConstructor} from "./repository/query-constructors/query-constructor";
 import {UserQueries} from "./repository/queries/user-queries";
 import {UserQueriesPg} from "./repository/queries/impls/user-queries-pg";
+import cors from "cors";
 
 const APIPrefix: string = "/api/authservice";
 const app: Express = express();
 app.use(express.json());
+app.use(cors())
 
 const startUpConfig: StartUpConfig = StartUpParse.getStartUpConfig();
 const PORT: number = startUpConfig.PORT;
