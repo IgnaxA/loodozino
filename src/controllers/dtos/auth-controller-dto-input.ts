@@ -5,7 +5,7 @@ export class AuthControllerDTOInput {
     private accessLevel: number;
     private device: string;
     private ip: string;
-    private authorizeDate: Date;
+    private authorizeDate: string;
 
     constructor() {
         this.email = "";
@@ -13,10 +13,10 @@ export class AuthControllerDTOInput {
         this.accessLevel = -1;
         this.device = "";
         this.ip = "";
-        this.authorizeDate = new Date();
+        this.authorizeDate = "";
     }
 
-    public setInput(email: string, password: string, device: string, ip: string, authorizeDate: Date): AuthControllerDTOInput {
+    public setInput(email: string, password: string, device: string, ip: string, authorizeDate: string): AuthControllerDTOInput {
         this.email = email;
         this.password = password;
         this.device = device;
@@ -46,7 +46,7 @@ export class AuthControllerDTOInput {
         return this.ip;
     }
 
-    public getAuthorizeDate(): Date {
+    public getAuthorizeDate(): string {
         return this.authorizeDate;
     }
 

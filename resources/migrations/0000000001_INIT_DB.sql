@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS users(
 CREATE TABLE IF NOT EXISTS devices(
     device_id BIGSERIAL PRIMARY KEY,
     device_ip VARCHAR(20) NOT NULL,
-    device_name VARCHAR(60) NOT NULL,
-    device_last_authorized TIMESTAMP NOT NULL
+    device_name VARCHAR(400) NOT NULL,
+    device_last_authorized VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS tokens(

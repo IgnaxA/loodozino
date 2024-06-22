@@ -75,5 +75,5 @@ interface AuthApiInput {
     password: string;
     device: string;
     ip: string;
-    authorizeDate: Date;
+    authorizeDate: string;
 }

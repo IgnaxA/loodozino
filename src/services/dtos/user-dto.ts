@@ -5,7 +5,7 @@ export class UserDTO {
     private accessLevel: number;
     private device: string;
     private ip: string;
-    private authorizeDate: Date;
+    private authorizeDate: string;
     private refreshToken: string;
     private accessToken: string;
 
@@ -15,7 +15,7 @@ export class UserDTO {
         this.accessLevel = -1;
         this.device = "";
         this.ip = "";
-        this.authorizeDate = new Date();
+        this.authorizeDate = "";
         this.refreshToken = "";
         this.accessToken = "";
     }
@@ -25,7 +25,7 @@ export class UserDTO {
                accessLevel: number,
                device: string,
                ip: string,
-               authorizeDate: Date,
+               authorizeDate: string,
                refreshToken: string,
                accessToken: string): UserDTO {
 
@@ -62,7 +62,7 @@ export class UserDTO {
         this.ip = ip;
     }
 
-    public setAuthorizeDate(authorizeDate: Date): void {
+    public setAuthorizeDate(authorizeDate: string): void {
         this.authorizeDate = authorizeDate;
     }
 
@@ -94,7 +94,7 @@ export class UserDTO {
         return this.ip;
     }
 
-    public getAuthorizeDate(): Date {
+    public getAuthorizeDate(): string {
         return this.authorizeDate;
     }
 
