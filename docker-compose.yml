@@ -14,8 +14,6 @@ services:
       - POSTGRES_DB=${DB_NAME:-authservice_db}
     networks:
       authservice_app:
-    ports:
-      - "5432:5432"
 
   authservice_back:
     image: ignaxa/authservice_back:latest
@@ -30,8 +28,8 @@ services:
       - "8080:8080"
 
     healthcheck:
-      test: curl --fail http://localhost || exit 1
-      interval: 60s
+      test: curl --fail http://localhost:8080 || exit 1
+      interval: 5s
       retries: 5
-      start_period: 20s
+      start_period: 10s
       timeout: 10s
