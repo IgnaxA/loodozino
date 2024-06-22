@@ -1,5 +1,6 @@
 import {QueryConstructor} from "../query-constructors/query-constructor";
 
-export interface TransactionRunner<T extends QueryConstructor> {
-    run(queries: Array<T>): void;
+export interface TransactionRunner<Z extends QueryConstructor> {
+    run(queries: Array<Z>): void;
+    runSingle<V>(query: string, parameters: Array<any>): Promise<V>;
 }

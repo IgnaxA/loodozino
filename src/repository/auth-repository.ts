@@ -3,5 +3,5 @@ import {SingleQueryConstructor} from "./query-constructors/extendors/single-quer
 
 export interface AuthRepository {
     createUser(userDTO: UserDTO): void;
-    checkUser(userDto: UserDTO): void;
+    checkUser(userDto: UserDTO): string;
 }

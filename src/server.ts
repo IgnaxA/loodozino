@@ -20,7 +20,7 @@ import {QueryConstructor} from "./repository/query-constructors/query-constructo
 import {UserQueries} from "./repository/queries/user-queries";
 import {UserQueriesPg} from "./repository/queries/impls/user-queries-pg";
 
-const APIPrefix: string = "/api";
+const APIPrefix: string = "/api/authservice";
 const app: Express = express();
 app.use(express.json());
 

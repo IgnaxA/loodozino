@@ -41,7 +41,6 @@ export class MigrationRunner {
 
     private prepareAndRun(filePath: string): void {
         try {
-
             const queries: Array<SingleQueryConstructor> = this.getQueries(filePath);
 
             this.transactionRunner.run(queries);
@@ -59,7 +58,7 @@ export class MigrationRunner {
 
             return preparedQueries;
         } catch (err: any) {
-            throw new Error(err);
+            ErrorHandler.throwError(err, "Something went wrong while preparing migration query");
         }
         return new Array<SingleQueryConstructor>();
     }

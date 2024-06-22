@@ -23,6 +23,11 @@ export class AuthRepositoryPg implements AuthRepository {
         this.userQueries = userQueries;
     }
 
+    public checkUser(userDto: UserDTO): string {
+
+        return "";
+    }
+
     public createUser(userDTO: UserDTO): void {
         const transaction: WithQueryConstructor = new WithQueryConstructor();
 
@@ -70,9 +75,8 @@ export class AuthRepositoryPg implements AuthRepository {
 
         return query;
     }
+}
 
-
-    public checkUser(userDTO: UserDTO): void {
-
-    }
+export interface PasswordResponse {
+    password: string;
 }

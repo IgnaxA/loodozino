@@ -26,6 +26,7 @@ export class AuthServiceImpl implements AuthService {
 
 
 
+
         return new AuthControllerDTOOutput();
     }
 
@@ -61,8 +62,9 @@ export class AuthServiceImpl implements AuthService {
         this.authRepository.createUser(userDto);
 
         const authControllerDtoOutput: AuthControllerDTOOutput = new AuthControllerDTOOutput().set(
-          refreshToken,
-          accessToken
+            refreshToken,
+            accessToken,
+            accessLevel
         );
 
         return authControllerDtoOutput;

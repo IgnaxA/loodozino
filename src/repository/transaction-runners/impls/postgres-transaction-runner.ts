@@ -41,4 +41,10 @@ export class PostgresTransactionRunner<T extends QueryConstructor> implements Tr
             }
         });
     }
+
+    public async runSingle<V>(query: string, parameters: Array<any>): Promise<V> {
+        const response: V = (await this.pool.query(query, parameters)).rows as V;
+
+        return response;
+    }
 }

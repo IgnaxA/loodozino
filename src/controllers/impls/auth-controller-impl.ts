@@ -29,7 +29,7 @@ export class AuthControllerImpl implements AuthController {
     public signUp = async (req: Request, res: Response): Promise<void> => {
         try {
             const requestData: AuthControllerDTOInput = this.getInputDTO(req);
-            requestData.setAccessLevel(1);
+            requestData.setAccessLevel(2);
 
             const responseData: AuthControllerDTOOutput = await this.authService
                 .createUser(requestData);
@@ -62,17 +62,11 @@ export class AuthControllerImpl implements AuthController {
 
         res
             .status(200)
-            .cookie('refresh_token', responseData.getRefreshToken(), {
-                httpOnly: true,
-                secure: true,
-                maxAge: 1000 * tokenExpiryConfig.REFRESH_TOKEN_EXPIRY
-            })
-            .cookie('access_token', responseData.getAccessToken(), {
-                httpOnly: true,
-                secure: true,
-                maxAge: 1000 * tokenExpiryConfig.ACCESS_TOKEN_EXPIRY
-            })
-            .json();
+            .json({
+                'refresh_token': responseData.getRefreshToken(),
+                'access_token': responseData.getAccessToken(),
+                'access_level': responseData.getAccessLevel()
+            });
     }
 }
 
