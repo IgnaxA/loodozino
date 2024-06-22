@@ -2,7 +2,7 @@
 FROM node:21
 WORKDIR app
 
-COPY src ./
+COPY . .
 
 RUN npm i
 RUN npm run build
