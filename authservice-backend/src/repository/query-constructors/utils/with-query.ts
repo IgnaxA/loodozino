@@ -2,7 +2,7 @@
 
 export abstract class WithQuery {
 
-    private readonly table: Table;
+    protected readonly table: Table;
 
     protected constructor(table: Table) {
         this.table = table;

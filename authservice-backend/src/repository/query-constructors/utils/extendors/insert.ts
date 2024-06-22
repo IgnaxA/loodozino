@@ -15,7 +15,8 @@ export class Insert extends WithQuery {
 
     public interpret(): string {
         let builder: string =
-            WithQueryConstructor.POSTFIX
+            this.table
+            + WithQueryConstructor.POSTFIX
             + " AS ("
             + this.INSERT_INTO
             + " "

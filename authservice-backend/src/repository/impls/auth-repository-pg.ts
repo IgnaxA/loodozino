@@ -31,12 +31,14 @@ export class AuthRepositoryPg implements AuthRepository {
 
     }
 
-    private createUserWithQuery(...userAttrs: Array<any>): WithQuery {
+    private createUserWithQuery(...userAttrs: any): WithQuery {
         const predicate: InsertPredicate = new ValuesInsertPredicate(userAttrs);
         const query: Insert = new Insert(Table.User, predicate);
 
         return query;
     }
+
+    private createDeviceWithQuery(...deviceAttrs)
 
 
 

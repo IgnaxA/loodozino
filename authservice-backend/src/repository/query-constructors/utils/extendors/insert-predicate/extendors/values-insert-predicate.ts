@@ -3,9 +3,9 @@ import {InsertPredicate} from "../insert-predicate";
 export class ValuesInsertPredicate extends InsertPredicate {
     private readonly values: Array<any>;
 
-    constructor(...values: Array<any>) {
+    constructor(...values: any) {
         super();
-        this.values = values[0];
+        this.values = values;
     }
 
     public interpret(): string {
