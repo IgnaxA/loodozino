@@ -25,12 +25,25 @@ export class WithQueryConstructor extends QueryConstructor {
 
     public interpret(): void {
         let builder: string = "WITH ";
+        let counter: number = 1;
 
         this.withs.forEach(query => {
            builder += query.interpret();
+
+           if (counter != this.withs.length) {
+               builder += ", ";
+           }
+
+           counter += 1;
         });
 
-        builder += ";";
+        builder +=
+            " "
+            + "SELECT * FROM"
+            + " "
+            + this.withs[this.withs.length - 1].getTable()
+            + WithQueryConstructor.POSTFIX
+            + ";";
 
         this.query = builder;
     }

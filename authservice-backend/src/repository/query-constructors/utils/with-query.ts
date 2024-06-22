@@ -1,3 +1,4 @@
+import {Table} from "./table";
 
 
 export abstract class WithQuery {
@@ -13,12 +14,4 @@ export abstract class WithQuery {
     }
 
     public abstract interpret(): string;
-}
-
-export enum Table {
-    User='users',
-    Device='devices',
-    Token='tokens',
-    UserLinkDevice='user_link_devices',
-    DeviceLinkToken='device_link_tokens'
 }

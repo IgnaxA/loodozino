@@ -3,7 +3,7 @@ import {InsertPredicate} from "../insert-predicate";
 export class ValuesInsertPredicate extends InsertPredicate {
     private readonly values: Array<any>;
 
-    constructor(...values: any) {
+    constructor(values: Array<any>) {
         super();
         this.values = values;
     }
@@ -22,6 +22,7 @@ export class ValuesInsertPredicate extends InsertPredicate {
         });
 
         builder += ")";
+
         return builder;
     }
 
