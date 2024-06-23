@@ -16,7 +16,7 @@ export class AuthControllerDTOInput {
         this.authorizeDate = "";
     }
 
-    public setInput(email: string, password: string, device: string, ip: string, authorizeDate: string): AuthControllerDTOInput {
+    public set(email: string, password: string, device: string, ip: string, authorizeDate: string): AuthControllerDTOInput {
         this.email = email;
         this.password = password;
         this.device = device;

@@ -20,6 +20,14 @@ import {QueryConstructor} from "./repository/query-constructors/query-constructo
 import {UserQueries} from "./repository/queries/user-queries";
 import {UserQueriesPg} from "./repository/queries/impls/user-queries-pg";
 import cors from "cors";
+import {TokenRouter} from "./routes/token-router";
+import {TokenController} from "./controllers/token-controller";
+import {TokenControllerImpl} from "./controllers/impls/token-controller-impl";
+import {TokenService} from "./services/token-service";
+import {TokenServiceImpl} from "./services/impls/token-service-impl";
+import {TokenJWT} from "./crypto/json-web-token/token-jwt";
+import {TokenRepository} from "./repository/token-repository";
+import {TokenRepositoryPg} from "./repository/impls/token-repository-pg";
 
 const APIPrefix: string = "/api/authservice";
 const app: Express = express();
@@ -49,7 +57,15 @@ const authController: AuthController = new AuthControllerImpl(authService);
 const authRouter: AuthRouter = new AuthRouter(authController);
 authRouter.setRouter();
 
+const tokenRepository: TokenRepository = new TokenRepositoryPg();
+const tokenJWT: TokenJWT = new AuthJWTImpl();
+const tokenService: TokenService = new TokenServiceImpl(tokenJWT, tokenRepository);
+const tokenController: TokenController = new TokenControllerImpl(tokenService);
+const tokenRouter: TokenRouter = new TokenRouter(tokenController);
+tokenRouter.setRouter();
+
 app.use(APIPrefix, authRouter.getRouter());
+app.use(APIPrefix, tokenRouter.getRouter());
 
 app.listen(PORT, (err: void | Error): void => {
     err ? console.log(err) : console.log(`Listening ${PORT} port`);

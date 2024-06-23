@@ -44,7 +44,7 @@ export class AuthControllerImpl implements AuthController {
         try {
             const requestBody: AuthApiInput = req.body;
             const requestData: AuthControllerDTOInput = new AuthControllerDTOInput()
-                .setInput(requestBody.email,
+                .set(requestBody.email,
                           requestBody.password,
                           requestBody.device,
                           requestBody.ip,
