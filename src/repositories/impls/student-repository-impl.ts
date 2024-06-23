@@ -1,5 +1,5 @@
 import { StudentRepository } from "../student-repository";
-import { CreateStudentModel, EditStudentModel, StudentModel } from "../../models/student-models";
+import { InputStudentModel, StudentModel } from "../../models/student-models";
 import { TransactionRunner } from "../../database/transaction-runners/transaction-runner";
 import { QueryConstructor } from "../../database/query-constructors/query-constructor";
 import { StudentQueries } from "../queries/student-queries";
@@ -14,13 +14,12 @@ export class StudentRepositoryImpl implements StudentRepository {
     this.transactionRunner = transactionRunner;
     this.studentQueries = studentQueries;
   }
-  public async createStudent(createStudentModel: CreateStudentModel): Promise<StudentModel> {
+  public async createStudent(inputStudentModel: InputStudentModel, login: string): Promise<StudentModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
-    const studentModel: StudentModel = this.createModelWithId(createStudentModel);
+    const studentModel: StudentModel = this.createModelWithLogin(inputStudentModel, login);
 
     queryConstructors.push(this.studentQueries.createStudent(
-      studentModel.id,
       studentModel.login,
       studentModel.fullName,
       studentModel.phoneNumber,
@@ -38,32 +37,6 @@ export class StudentRepositoryImpl implements StudentRepository {
     const studentData = results[0][0];
 
     return {
-      id: studentData.id,
-      login: studentData.login,
-      fullName: studentData.fullName,
-      phoneNumber: studentData.phone_number,
-      studyProgramId: studentData.study_program_id,
-      degreeLevelId: studentData.degree_level_id,
-      course: studentData.course,
-      admissionYear: studentData.admission_year,
-      socials: studentData.socials
-    };
-  };
-
-  public async getStudentById(id: string): Promise<StudentModel> {
-    const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
-
-    queryConstructors.push(this.studentQueries.getStudentById(id)
-    );
-
-    const results = await this.transactionRunner.run(queryConstructors);
-
-    Assert.notNullOrUndefined(results, `Student with ID ${id} not found`);
-
-    const studentData = results[0][0];
-
-    return {
-      id: studentData.id,
       login: studentData.login,
       fullName: studentData.fullName,
       phoneNumber: studentData.phone_number,
@@ -87,7 +60,6 @@ export class StudentRepositoryImpl implements StudentRepository {
     const studentData = results[0];
 
     const studentModels = studentData.map((data: any) => ({
-      id: data.id,
       login: data.login,
       fullName: data.full_name,
       phoneNumber: data.phone_number,
@@ -101,29 +73,31 @@ export class StudentRepositoryImpl implements StudentRepository {
     return studentModels;
   };
 
-  public async editStudent(editStudentModel: EditStudentModel): Promise<EditStudentModel> {
+  public async editStudent(inputStudentModel: InputStudentModel, login: string): Promise<StudentModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
+    const studentModel: StudentModel = this.createModelWithLogin(inputStudentModel, login);
+
     queryConstructors.push(this.studentQueries.editStudent(
-      editStudentModel.id,
-      editStudentModel.fullName,
-      editStudentModel.phoneNumber,
-      editStudentModel.studyProgramId,
-      editStudentModel.degreeLevelId,
-      editStudentModel.course,
-      editStudentModel.admissionYear,
-      editStudentModel.socials
+      studentModel.login,
+      studentModel.fullName,
+      studentModel.phoneNumber,
+      studentModel.studyProgramId,
+      studentModel.degreeLevelId,
+      studentModel.course,
+      studentModel.admissionYear,
+      studentModel.socials
       )
     );
 
     const results = await this.transactionRunner.run(queryConstructors);
 
-    Assert.notNullOrUndefined(results, `Student with ID ${editStudentModel.id} not found`);
+    Assert.notNullOrUndefined(results, `Student with login ${login} not found`);
 
     const studentData = results[0][0];
 
     return {
-      id: studentData.id,
+      login: studentData.login,
       fullName: studentData.full_name,
       phoneNumber: studentData.phone_number,
       studyProgramId: studentData.study_program_id,
@@ -134,19 +108,18 @@ export class StudentRepositoryImpl implements StudentRepository {
     };
   };
 
-  public async deleteStudent(id: string): Promise<StudentModel> {
+  public async deleteStudent(login: string): Promise<StudentModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
-    queryConstructors.push(this.studentQueries.deleteStudent(id));
+    queryConstructors.push(this.studentQueries.deleteStudent(login));
 
     const results = await this.transactionRunner.run(queryConstructors);
 
-    Assert.notNullOrUndefined(results, `Student with ID ${id} not found`);
+    Assert.notNullOrUndefined(results, `Student with login ${login} not found`);
 
     const studentData = results[0][0];
 
     return {
-      id: studentData.id,
       login:studentData.login,
       fullName: studentData.full_name,
       phoneNumber: studentData.phone_number,
@@ -161,20 +134,19 @@ export class StudentRepositoryImpl implements StudentRepository {
   public async getStudentByLogin(login: string): Promise<StudentModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
     queryConstructors.push(this.studentQueries.getStudentByLogin(login));
-    const results = await this.transactionRunner.run(queryConstructors);
+    let results = await this.transactionRunner.run(queryConstructors);
 
-    if (!results) {
-      const guid: string = crypto.randomUUID();
-      queryConstructors.push(this.studentQueries.createStudentByLogin(guid, login));
+    if (!results[0].length) {
+      const queryConstructors2: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
+      queryConstructors2.push(this.studentQueries.createStudentByLogin(login));
 
-      const results = await this.transactionRunner.run(queryConstructors);
+      results = await this.transactionRunner.run(queryConstructors2);
       Assert.notNullOrUndefined(results, `Student with login ${login} could not been created`);
     }
 
     const studentData = results[0][0];
 
     return {
-      id: studentData.id,
       login:studentData.login,
       fullName: studentData.full_name,
       phoneNumber: studentData.phone_number,
@@ -186,11 +158,10 @@ export class StudentRepositoryImpl implements StudentRepository {
     }
   }
 
-  private createModelWithId (createStudentModel: CreateStudentModel): StudentModel {
-    const guid: string = crypto.randomUUID();
+  private createModelWithLogin (inputStudentModel: InputStudentModel, login: string): StudentModel {
     return {
-      ...createStudentModel,
-      id: guid,
+      ...inputStudentModel,
+      login: login,
     };
   };
 }

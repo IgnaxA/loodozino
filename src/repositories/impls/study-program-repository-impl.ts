@@ -5,7 +5,6 @@ import { StudyProgramQueries } from "../queries/study-program-queries";
 import { CreateStudyProgramModel, StudyProgramModel } from "../../models/study-program-models";
 import { SingleQueryConstructor } from "../../database/query-constructors/single-query-constructor";
 import { Assert } from "../../utils/assert";
-import { CreateStudentModel, StudentModel } from "../../models/student-models";
 
 export class StudyProgramRepositoryImpl implements StudyProgramRepository {
   private readonly transactionRunner: TransactionRunner<QueryConstructor>;

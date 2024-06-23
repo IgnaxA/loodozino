@@ -5,6 +5,7 @@ import { ErrorHandler } from "../../utils/error-handler";
 import { CreateMeetingPlaceModel, MeetingPlaceModel } from "../../models/meeting-place-models";
 import { verifyUser } from "../../middlewares/verify-user";
 import { CreateDegreeLevelModel, DegreeLevelModel } from "../../models/degree-level-models";
+import { AuthServiceResponse } from "../dtos/auth-service-response";
 
 export class MeetingPlaceControllerImpl implements MeetingPlaceController {
   private readonly meetingPlaceService: MeetingPlaceService;
@@ -15,12 +16,17 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public createMeetingPlace = async (req: Request, res: Response): Promise<void> => {
     try {
-      await verifyUser(req, res, () => {
-        if (res.locals.authStatus.isTokenExpired) {
-          this.setUnableToAccessAPIResponse(res);
-          return;
-        }
-      })
+      const authStatus: AuthServiceResponse = await verifyUser(req);
+
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 1) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
 
       const createMeetingPlaceModel: CreateMeetingPlaceModel = req.body;
       const meetingPlaceModel: MeetingPlaceModel = await this.meetingPlaceService.createMeetingPlace(createMeetingPlaceModel);
@@ -34,12 +40,17 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public getMeetingPlaceById = async (req: Request, res: Response): Promise<void> => {
     try {
-      await verifyUser(req, res, () => {
-        if (res.locals.authStatus.isTokenExpired) {
-          this.setUnableToAccessAPIResponse(res);
-          return;
-        }
-      })
+      const authStatus: AuthServiceResponse = await verifyUser(req);
+
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 1) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
 
       const id: string = req.body.id;
       const meetingPlaceModel :MeetingPlaceModel = await this.meetingPlaceService.getMeetingPlaceById(id);
@@ -53,12 +64,17 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public getAllMeetingPlaces = async (req: Request, res: Response): Promise<void> => {
     try {
-      await verifyUser(req, res, () => {
-        if (res.locals.authStatus.isTokenExpired) {
-          this.setUnableToAccessAPIResponse(res);
-          return;
-        }
-      })
+      const authStatus: AuthServiceResponse = await verifyUser(req);
+
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 1) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
 
       const meetingPlaces :Array<MeetingPlaceModel> = await this.meetingPlaceService.getAllMeetingPlaces();
       this.setManyAPIResponse(res, meetingPlaces);
@@ -70,16 +86,21 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public getPriorityMeetingPlaceForTeacher = async (req: Request, res: Response): Promise<void> => {
     try {
-      await verifyUser(req, res, () => {
-        if (res.locals.authStatus.isTokenExpired) {
-          this.setUnableToAccessAPIResponse(res);
-          return;
-        }
-      })
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      const teacherId: string = req.body.teacherId;
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 1) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      const teacherLogin: string = authStatus.login;
       const offline: boolean = req.body.offline;
-      const meetingPlace :MeetingPlaceModel = await this.meetingPlaceService.getPriorityMeetingPlaceForTeacher(teacherId, offline);
+      const meetingPlace :MeetingPlaceModel = await this.meetingPlaceService.getPriorityMeetingPlaceForTeacher(teacherLogin, offline);
       this.setFullAPIResponse(res, meetingPlace);
     }
     catch (err:any) {
@@ -89,16 +110,21 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public getAllMeetingPlacesByTeacher = async (req: Request, res: Response): Promise<void> => {
     try {
-      await verifyUser(req, res, () => {
-        if (res.locals.authStatus.isTokenExpired) {
-          this.setUnableToAccessAPIResponse(res);
-          return;
-        }
-      })
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      const teacherId: string = req.body.teacherId;
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 1) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      const teacherLogin: string = authStatus.login;
       const offline: boolean = req.body.offline;
-      const meetingPlace: Array<MeetingPlaceModel> = await this.meetingPlaceService.getAllMeetingPlacesByTeacher(teacherId, offline);
+      const meetingPlace: Array<MeetingPlaceModel> = await this.meetingPlaceService.getAllMeetingPlacesByTeacher(teacherLogin, offline);
       this.setManyAPIResponse(res, meetingPlace);
     }
     catch (err:any) {
@@ -108,12 +134,17 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public editMeetingPlace = async (req: Request, res: Response): Promise<void> => {
     try {
-      await verifyUser(req, res, () => {
-        if (res.locals.authStatus.isTokenExpired) {
-          this.setUnableToAccessAPIResponse(res);
-          return;
-        }
-      })
+      const authStatus: AuthServiceResponse = await verifyUser(req);
+
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 1) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
 
       const meetingPlace: MeetingPlaceModel = req.body;
       const updatedMeetingPlace: MeetingPlaceModel = await this.meetingPlaceService.editMeetingPlace(meetingPlace);
@@ -126,12 +157,17 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public deleteMeetingPlace = async (req: Request, res: Response): Promise<void> => {
     try {
-      await verifyUser(req, res, () => {
-        if (res.locals.authStatus.isTokenExpired) {
-          this.setUnableToAccessAPIResponse(res);
-          return;
-        }
-      })
+      const authStatus: AuthServiceResponse = await verifyUser(req);
+
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 1) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
 
       const id: string = req.body.id;
       const meetingPlace: MeetingPlaceModel = await this.meetingPlaceService.deleteMeetingPlace(id);
@@ -155,6 +191,7 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
   }
   private setUnableToAccessAPIResponse (res: Response): void {
     res
-      .status(403);
+      .status(403)
+      .json();
   }
 }

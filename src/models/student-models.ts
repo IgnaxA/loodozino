@@ -1,5 +1,4 @@
 export interface StudentModel {
-  id: string;
   login: string;
   fullName: string;
   phoneNumber: string;
@@ -10,19 +9,7 @@ export interface StudentModel {
   socials: string;
 }
 
-export interface EditStudentModel {
-  id: string;
-  fullName: string;
-  phoneNumber: string;
-  studyProgramId: string;
-  degreeLevelId: string;
-  course: number;
-  admissionYear: number;
-  socials: string;
-}
-
-export interface CreateStudentModel {
-  login: string;
+export interface InputStudentModel {
   fullName: string;
   phoneNumber: string;
   studyProgramId: string;

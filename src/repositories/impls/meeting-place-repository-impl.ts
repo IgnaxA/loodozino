@@ -24,7 +24,7 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       meetingPlaceModel.id,
       meetingPlaceModel.description,
       meetingPlaceModel.priority,
-      meetingPlaceModel.teacherId,
+      meetingPlaceModel.teacherLogin,
       meetingPlaceModel.offline)
     );
 
@@ -38,7 +38,7 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       id: meetingPlaceData.id,
       description: meetingPlaceData.description,
       priority: meetingPlaceData.priority,
-      teacherId: meetingPlaceData.teacher_id,
+      teacherLogin: meetingPlaceData.teacher_login,
       offline: meetingPlaceData.offline
     };
   };
@@ -58,7 +58,7 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       id: meetingPlaceData.id,
       description: meetingPlaceData.description,
       priority: meetingPlaceData.priority,
-      teacherId: meetingPlaceData.teacher_id,
+      teacherLogin: meetingPlaceData.teacher_login,
       offline: meetingPlaceData.offline
     };
   };
@@ -78,21 +78,21 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       id: data.id,
       description: data.description,
       priority: data.priority,
-      teacherId: data.teacher_id,
+      teacherLogin: data.teacher_login,
       offline: meetingPlaceData.offline
     }));
 
     return meetingPlaceModels;
   };
 
-  public async getPriorityMeetingPlaceForTeacher(teacherId: string, offline: boolean): Promise<MeetingPlaceModel> {
+  public async getPriorityMeetingPlaceForTeacher(teacherLogin: string, offline: boolean): Promise<MeetingPlaceModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
-    queryConstructors.push(this.meetingPlaceQueries.getPriorityMeetingPlace(teacherId, offline));
+    queryConstructors.push(this.meetingPlaceQueries.getPriorityMeetingPlace(teacherLogin, offline));
 
     const results = await this.transactionRunner.run(queryConstructors);
 
-    Assert.notNullOrUndefined(results, `Priority with 'offline:${offline}' meeting place with Teacher ID ${teacherId} not found`);
+    Assert.notNullOrUndefined(results, `Priority with 'offline:${offline}' meeting place with Teacher login ${teacherLogin} not found`);
 
     const meetingPlaceData = results[0][0];
 
@@ -100,19 +100,19 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       id: meetingPlaceData.id,
       description: meetingPlaceData.description,
       priority: meetingPlaceData.priority,
-      teacherId: meetingPlaceData.teacher_id,
+      teacherLogin: meetingPlaceData.teacher_login,
       offline: meetingPlaceData.offline
     };
   };
 
-  public async getAllMeetingPlacesByTeacher(teacherId: string, offline: boolean): Promise<Array<MeetingPlaceModel>> {
+  public async getAllMeetingPlacesByTeacher(teacherLogin: string, offline: boolean): Promise<Array<MeetingPlaceModel>> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
-    queryConstructors.push(this.meetingPlaceQueries.getAllMeetingPlacesByTeacher(teacherId, offline));
+    queryConstructors.push(this.meetingPlaceQueries.getAllMeetingPlacesByTeacher(teacherLogin, offline));
 
     const results = await this.transactionRunner.run(queryConstructors);
 
-    Assert.notNullOrUndefined(results, `Meeting place with 'offline:${offline}' and Teacher ID ${teacherId} not found`);
+    Assert.notNullOrUndefined(results, `Meeting place with 'offline:${offline}' and Teacher login ${teacherLogin} not found`);
 
     const meetingPlaceData = results[0];
 
@@ -120,7 +120,7 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       id: data.id,
       description: data.description,
       priority: data.priority,
-      teacherId: data.teacher_id,
+      teacherLogin: data.teacher_login,
       offline: meetingPlaceData.offline
     }));
 
@@ -134,7 +134,7 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       meetingPlaceModel.id,
       meetingPlaceModel.description,
       meetingPlaceModel.priority,
-      meetingPlaceModel.teacherId)
+      meetingPlaceModel.teacherLogin)
     );
 
     const results = await this.transactionRunner.run(queryConstructors);
@@ -147,7 +147,7 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       id: meetingPlaceData.id,
       description: meetingPlaceData.description,
       priority: meetingPlaceData.priority,
-      teacherId: meetingPlaceData.teacher_id,
+      teacherLogin: meetingPlaceData.teacher_login,
       offline: meetingPlaceData.offline
     };
   };
@@ -167,7 +167,7 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       id: meetingPlaceData.id,
       description: meetingPlaceData.description,
       priority: meetingPlaceData.priority,
-      teacherId: meetingPlaceData.teacher_id,
+      teacherLogin: meetingPlaceData.teacher_login,
       offline: meetingPlaceData.offline
     };
   };

@@ -1,9 +1,7 @@
 import { StudentService } from "../student-service";
 import { StudentRepository } from "../../repositories/student-repository";
-import { EditTeacherModel, TeacherModel } from "../../models/teacher-models";
 import { Assert } from "../../utils/assert";
-import { CreateStudentModel, EditStudentModel, StudentModel } from "../../models/student-models";
-import { ErrorHandler } from "../../utils/error-handler";
+import { InputStudentModel, StudentModel } from "../../models/student-models";
 
 export class StudentServiceImpl implements StudentService {
   private readonly studentRepository: StudentRepository;
@@ -12,15 +10,9 @@ export class StudentServiceImpl implements StudentService {
     this.studentRepository = studentRepository;
   }
 
-  public async createStudent(studentModel: CreateStudentModel): Promise<StudentModel> {
-      const createdStudentModel :StudentModel = await this.studentRepository.createStudent(studentModel);
+  public async createStudent(inputStudentModel: InputStudentModel, login: string): Promise<StudentModel> {
+      const createdStudentModel :StudentModel = await this.studentRepository.createStudent(inputStudentModel, login);
       return createdStudentModel;
-  };
-
-  public async getStudentById(id: string): Promise<StudentModel> {
-      const student: StudentModel = await this.studentRepository.getStudentById(id);
-      Assert.notNullOrUndefined(student, `Student with ID ${id} not found`);
-      return student;
   };
 
   public async getAllStudents(): Promise<Array<StudentModel>> {
@@ -29,15 +21,15 @@ export class StudentServiceImpl implements StudentService {
       return students;
   };
 
-  public async editStudent(editStudentModel:EditStudentModel): Promise<EditStudentModel> {
-      const updatedStudent: EditStudentModel = await this.studentRepository.editStudent(editStudentModel);
-      Assert.notNullOrUndefined(updatedStudent, `Student with ID ${editStudentModel.id} not found`);
+  public async editStudent(inputStudentModel: InputStudentModel, login: string): Promise<StudentModel> {
+      const updatedStudent: StudentModel = await this.studentRepository.editStudent(inputStudentModel, login);
+      Assert.notNullOrUndefined(updatedStudent, `Student with login ${login} not found`);
       return updatedStudent;
   };
 
-  public async deleteStudent(id: string): Promise<StudentModel> {
-      const student: StudentModel = await this.studentRepository.deleteStudent(id);
-      Assert.notNullOrUndefined(student,`Student with ID ${id} not found`);
+  public async deleteStudent(login: string): Promise<StudentModel> {
+      const student: StudentModel = await this.studentRepository.deleteStudent(login);
+      Assert.notNullOrUndefined(student,`Student with login ${login} not found`);
       return student;
   };
 

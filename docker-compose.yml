@@ -22,17 +22,17 @@ services:
       timeout: 5s
       retries: 10
 
-  profileservice_back:
-    image: couldl1e/profileservice_back:latest
-    container_name: profileservice_back
-    build:
-      context: ./
-    networks:
-      profileservice_app:
-    depends_on:
-      profileservice_db:
-        condition: service_healthy
-    ports:
-      - "8079:8079"
+#  profileservice_back:
+#    image: couldl1e/profileservice_back:latest
+#    container_name: profileservice_back
+#    build:
+#      context: ./
+#    networks:
+#      profileservice_app:
+#    depends_on:
+#      profileservice_db:
+#        condition: service_healthy
+#    ports:
+#      - "8079:8079"
 
 

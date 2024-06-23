@@ -1,6 +1,6 @@
 import { TeacherService } from "../teacher-service";
 import { TeacherRepository } from "../../repositories/teacher-repository";
-import { CreateTeacherModel, EditTeacherModel, TeacherModel } from "../../models/teacher-models";
+import { InputTeacherModel, TeacherModel } from "../../models/teacher-models";
 import { Assert } from "../../utils/assert";
 import { ErrorHandler } from "../../utils/error-handler";
 
@@ -11,16 +11,10 @@ export class TeacherServiceImpl implements TeacherService {
     this.teacherRepository = teacherRepository;
   }
 
-  public async createTeacher(createTeacherModel:CreateTeacherModel): Promise<TeacherModel> {
-      const teacherModel: TeacherModel = await this.teacherRepository.createTeacher(createTeacherModel);
+  public async createTeacher(inputTeacherModel: InputTeacherModel, login: string): Promise<TeacherModel> {
+      const teacherModel: TeacherModel = await this.teacherRepository.createTeacher(inputTeacherModel, login);
       Assert.notNullOrUndefined(teacherModel, `Teacher could not be created`);
       return teacherModel;
-  };
-
-  public async getTeacherById(id: string): Promise<TeacherModel> {
-      const teacher: TeacherModel = await this.teacherRepository.getTeacherById(id);
-      Assert.notNullOrUndefined(teacher, `Teacher with ID ${id} not found`);
-      return teacher;
   };
 
   public async getAllTeachers(): Promise<Array<TeacherModel>> {
@@ -29,15 +23,15 @@ export class TeacherServiceImpl implements TeacherService {
       return teachers;
   };
 
-  public async editTeacher(editTeacherModel: EditTeacherModel): Promise<EditTeacherModel> {
-      const updatedTeacher: EditTeacherModel = await this.teacherRepository.editTeacher(editTeacherModel);
-      Assert.notNullOrUndefined(updatedTeacher, `Teacher with ID ${editTeacherModel.id} not found`);
+  public async editTeacher(inputTeacherModel: InputTeacherModel, login: string): Promise<TeacherModel> {
+      const updatedTeacher: TeacherModel = await this.teacherRepository.editTeacher(inputTeacherModel, login);
+      Assert.notNullOrUndefined(updatedTeacher, `Teacher with login ${login} not found`);
       return updatedTeacher;
   };
 
-  public async deleteTeacher(id: string): Promise<TeacherModel> {
-      const teacher = await this.teacherRepository.deleteTeacher(id);
-      Assert.notNullOrUndefined(teacher,`Teacher with ID ${id} not found`);
+  public async deleteTeacher(login: string): Promise<TeacherModel> {
+      const teacher: TeacherModel = await this.teacherRepository.deleteTeacher(login);
+      Assert.notNullOrUndefined(teacher,`Teacher with login ${login} not found`);
       return teacher;
   };
 
@@ -45,5 +39,5 @@ export class TeacherServiceImpl implements TeacherService {
       const teacher: TeacherModel = await this.teacherRepository.getTeacherByLogin(login);
       Assert.notNullOrUndefined(teacher, `Teacher with login ${login} not found`);
       return teacher;
-  }
+  };
 }

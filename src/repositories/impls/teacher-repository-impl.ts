@@ -1,11 +1,10 @@
 import { TeacherRepository } from "../teacher-repository";
-import { CreateTeacherModel, EditTeacherModel, TeacherModel } from "../../models/teacher-models";
+import { InputTeacherModel, TeacherModel } from "../../models/teacher-models";
 import { TransactionRunner } from "../../database/transaction-runners/transaction-runner";
 import { QueryConstructor } from "../../database/query-constructors/query-constructor";
 import { TeacherQueries } from "../queries/teacher-queries";
 import { SingleQueryConstructor } from "../../database/query-constructors/single-query-constructor";
 import { Assert } from "../../utils/assert";
-import { CreateStudentModel, StudentModel } from "../../models/student-models";
 
 export class TeacherRepositoryImpl implements TeacherRepository {
   private readonly transactionRunner: TransactionRunner<QueryConstructor>;
@@ -15,13 +14,12 @@ export class TeacherRepositoryImpl implements TeacherRepository {
     this.transactionRunner = transactionRunner;
     this.teacherQueries = teacherQueries;
   }
-  public async createTeacher(createTeacherModel:CreateTeacherModel): Promise<TeacherModel> {
+  public async createTeacher(inputTeacherModel: InputTeacherModel, login: string): Promise<TeacherModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
-    const teacherModel: TeacherModel = this.createModelWithId(createTeacherModel);
+    const teacherModel: TeacherModel = this.createModelWithLogin(inputTeacherModel, login);
 
     queryConstructors.push(this.teacherQueries.createTeacher(
-      teacherModel.id,
       teacherModel.login,
       teacherModel.fullName,
       teacherModel.phoneNumber,
@@ -36,28 +34,6 @@ export class TeacherRepositoryImpl implements TeacherRepository {
     const teacherData = results[0][0];
 
     return {
-      id: teacherData.id,
-      login: teacherData.login,
-      fullName: teacherData.full_name,
-      phoneNumber: teacherData.phone_number,
-      position: teacherData.position,
-      socials: teacherData.socials
-    };
-  };
-
-  public async getTeacherById(id: string): Promise<TeacherModel> {
-    const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
-
-    queryConstructors.push(this.teacherQueries.getTeacherById(id));
-
-    const results = await this.transactionRunner.run(queryConstructors);
-
-    Assert.notNullOrUndefined(results, `Teacher with ID ${id} not found`);
-
-    const teacherData = results[0][0];
-
-    return {
-      id: teacherData.id,
       login: teacherData.login,
       fullName: teacherData.full_name,
       phoneNumber: teacherData.phone_number,
@@ -89,25 +65,27 @@ export class TeacherRepositoryImpl implements TeacherRepository {
     return teacherModels;
   };
 
-  public async editTeacher(editTeacherModel: EditTeacherModel): Promise<EditTeacherModel> {
+  public async editTeacher(inputTeacherModel: InputTeacherModel, login: string): Promise<TeacherModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
+    const teacherModel: TeacherModel = this.createModelWithLogin(inputTeacherModel, login);
+
     queryConstructors.push(this.teacherQueries.editTeacher(
-      editTeacherModel.id,
-      editTeacherModel.fullName,
-      editTeacherModel.phoneNumber,
-      editTeacherModel.position,
-      editTeacherModel.socials
+      teacherModel.login,
+      teacherModel.fullName,
+      teacherModel.phoneNumber,
+      teacherModel.position,
+      teacherModel.socials
     ));
 
     const results = await this.transactionRunner.run(queryConstructors);
 
-    Assert.notNullOrUndefined(results, `Teacher with ID ${editTeacherModel.id} not found`);
+    Assert.notNullOrUndefined(results, `Teacher with login ${login} not found`);
 
     const teacherData = results[0][0];
 
     return {
-      id: teacherData.id,
+      login: teacherData.login,
       fullName: teacherData.full_name,
       phoneNumber: teacherData.phone_number,
       position: teacherData.position,
@@ -115,19 +93,18 @@ export class TeacherRepositoryImpl implements TeacherRepository {
     };
   };
 
-  public async deleteTeacher(id: string): Promise<TeacherModel> {
+  public async deleteTeacher(login: string): Promise<TeacherModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
-    queryConstructors.push(this.teacherQueries.deleteTeacher(id));
+    queryConstructors.push(this.teacherQueries.deleteTeacher(login));
 
     const results = await this.transactionRunner.run(queryConstructors);
 
-    Assert.notNullOrUndefined(results, `Teacher with ID ${id} not found`);
+    Assert.notNullOrUndefined(results, `Teacher with login ${login} not found`);
 
     const teacherData = results[0][0];
 
     return {
-      id: teacherData.id,
       login:teacherData.login,
       fullName: teacherData.full_name,
       phoneNumber: teacherData.phone_number,
@@ -139,19 +116,18 @@ export class TeacherRepositoryImpl implements TeacherRepository {
   public async getTeacherByLogin(login: string): Promise<TeacherModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
     queryConstructors.push(this.teacherQueries.getTeacherByLogin(login));
-    const results = await this.transactionRunner.run(queryConstructors);
+    let results = await this.transactionRunner.run(queryConstructors);
 
-    if (!results) {
-      const guid: string = crypto.randomUUID();
-      queryConstructors.push(this.teacherQueries.createTeacherByLogin(guid, login));
+    if (!results[0].length) {
+      const queryConstructors2: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
+      queryConstructors2.push(this.teacherQueries.createTeacherByLogin(login));
 
-      const results = await this.transactionRunner.run(queryConstructors);
+      results = await this.transactionRunner.run(queryConstructors2);
     }
 
     const teacherData = results[0][0];
 
     return {
-      id: teacherData.id,
       login:teacherData.login,
       fullName: teacherData.full_name,
       phoneNumber: teacherData.phone_number,
@@ -160,11 +136,10 @@ export class TeacherRepositoryImpl implements TeacherRepository {
     };
   };
 
-  private createModelWithId (createTeacherModel: CreateTeacherModel): TeacherModel {
-    const guid: string = crypto.randomUUID();
+  private createModelWithLogin (inputTeacherModel: InputTeacherModel, login: string): TeacherModel {
     return {
-      ...createTeacherModel,
-      id: guid,
+      ...inputTeacherModel,
+      login: login,
     };
   };
 }

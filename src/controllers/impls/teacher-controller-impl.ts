@@ -1,9 +1,10 @@
 import { TeacherController } from "../teacher-controller";
 import { TeacherService } from "../../services/teacher-service";
 import { Request, Response } from "express";
-import { CreateTeacherModel, EditTeacherModel, TeacherModel } from "../../models/teacher-models";
+import { InputTeacherModel, TeacherModel } from "../../models/teacher-models";
 import { ErrorHandler } from "../../utils/error-handler";
-import { ParseHelper } from "../../utils/parse-helper";
+import { verifyUser } from "../../middlewares/verify-user";
+import { AuthServiceResponse } from "../dtos/auth-service-response";
 
 export class TeacherControllerImpl implements TeacherController {
   private readonly teacherService: TeacherService;
@@ -14,47 +15,39 @@ export class TeacherControllerImpl implements TeacherController {
 
   public createTeacher = async (req: Request, res: Response): Promise<void> => {
     try {
-      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      if (isTokenExpired) {
+      if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
 
-      const createTeacherModel: CreateTeacherModel = req.body;
-      const teacherModel:TeacherModel = await this.teacherService.createTeacher(createTeacherModel);
+      if (authStatus.accessLevel !== 0) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
 
-      this.setFullAPIResponse(res, teacherModel);
+      const login: string = authStatus.login;
+      const inputTeacherModel: InputTeacherModel = req.body;
+      const teacherModel:TeacherModel = await this.teacherService.createTeacher(inputTeacherModel, login);
+
+      this.setAPIResponse(res, teacherModel);
 
     } catch (err: any) {
       ErrorHandler.setError(res, err);
     }
   };
 
-  public getTeacherById = async (req: Request, res: Response): Promise<void> => {
+  public getAllTeachers = async (req: Request, res: Response): Promise<void> => {
     try {
-      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      if (isTokenExpired) {
+      if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
 
-      const id: string = req.body.id;
-      const teacher :TeacherModel = await this.teacherService.getTeacherById(id);
-
-      this.setFullAPIResponse(res, teacher);
-    }
-    catch (err:any) {
-      ErrorHandler.setError(res, err);
-    }
-  };
-
-  public getAllTeachers = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
-
-      if (isTokenExpired) {
+      if (authStatus.accessLevel !== 0) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
@@ -70,17 +63,23 @@ export class TeacherControllerImpl implements TeacherController {
 
   public editTeacher = async (req: Request, res: Response): Promise<void> => {
     try {
-      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      if (isTokenExpired) {
+      if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
 
-      const teacher: EditTeacherModel = req.body;
-      const updatedTeacher :EditTeacherModel = await this.teacherService.editTeacher(teacher);
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 1) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
 
-      this.setEditAPIResponse(res, updatedTeacher);
+      const login: string = authStatus.login;
+      const inputTeacherModel: InputTeacherModel = req.body;
+      const updatedTeacher: TeacherModel = await this.teacherService.editTeacher(inputTeacherModel, login);
+
+      this.setAPIResponse(res, updatedTeacher);
     }
     catch (err:any) {
       ErrorHandler.setError(res, err);
@@ -89,17 +88,22 @@ export class TeacherControllerImpl implements TeacherController {
 
   public deleteTeacher = async (req: Request, res: Response): Promise<void> => {
     try {
-      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      if (isTokenExpired) {
+      if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
 
-      const id: string = req.body.id;
-      const teacher :TeacherModel = await this.teacherService.deleteTeacher(id);
+      if (authStatus.accessLevel !== 0) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
 
-      this.setFullAPIResponse(res, teacher);
+      const login: string = authStatus.login;
+      const teacher :TeacherModel = await this.teacherService.deleteTeacher(login);
+
+      this.setAPIResponse(res, teacher);
     }
     catch (err:any) {
       ErrorHandler.setError(res, err);
@@ -108,42 +112,34 @@ export class TeacherControllerImpl implements TeacherController {
 
   public getTeacherByLogin = async (req: Request, res: Response): Promise<void> => {
     try {
-      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      if (isTokenExpired) {
+      if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
 
-      const login: string = req.body.id;
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 1) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      const login: string = authStatus.login;
       const teacher :TeacherModel = await this.teacherService.getTeacherByLogin(login);
 
-      this.setFullAPIResponse(res, teacher);
+      this.setAPIResponse(res, teacher);
     }
     catch (err:any) {
       ErrorHandler.setError(res, err);
     }
   };
 
-  private createModelWithId (createTeacherModel: CreateTeacherModel): TeacherModel {
-    const guid: string = crypto.randomUUID();
-    return {
-      ...createTeacherModel,
-      id: guid,
-    };
-  };
-
-  private setFullAPIResponse (res: Response, responseData: TeacherModel): void {
+  private setAPIResponse (res: Response, responseData: TeacherModel): void {
     res
       .status(200)
       .json(responseData);
   }
 
-  private setEditAPIResponse (res: Response, responseData: EditTeacherModel): void {
-    res
-      .status(200)
-      .json(responseData);
-  }
 
   private setManyAPIResponse (res: Response, responseData: Array<TeacherModel>): void {
     res
@@ -152,6 +148,7 @@ export class TeacherControllerImpl implements TeacherController {
   }
   private setUnableToAccessAPIResponse (res: Response): void {
     res
-      .status(403);
+      .status(403)
+      .json();
   }
 }

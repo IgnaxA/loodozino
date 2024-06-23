@@ -1,20 +1,11 @@
-export interface TeacherModel {
-  id: string;
-  login: string;
-  fullName: string;
-  phoneNumber: string;
-  position: string;
-  socials: string;
-}
 
-export interface EditTeacherModel {
-  id: string;
+export interface InputTeacherModel {
   fullName: string;
   phoneNumber: string;
   position: string;
   socials: string;
 }
-export interface CreateTeacherModel {
+export interface TeacherModel {
   login: string;
   fullName: string;
   phoneNumber: string;

@@ -4,7 +4,7 @@ import { Assert } from "../../../utils/assert";
 
 export class StudyProgramQueriesPg implements StudyProgramQueries {
   private readonly create: string =
-    `INSERT INTO "study_programs" (id, name) VALUES ($1, $2);`;
+    `INSERT INTO "study_programs" (id, name) VALUES ($1, $2) RETURNING *;`;
   private readonly edit: string =
     `UPDATE "study_programs" SET name=$2 WHERE id=$1 RETURNING *;`;
   private readonly delete: string =

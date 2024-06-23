@@ -11,7 +11,7 @@ export class TeacherRouter {
   }
 
   public setRouter(): void {
-    this.teacherRouter.get("/get", this.teacherController.getTeacherById);
+    this.teacherRouter.get("/get", this.teacherController.getTeacherByLogin);
     this.teacherRouter.get("/get-all", this.teacherController.getAllTeachers);
     this.teacherRouter.post("/edit", this.teacherController.editTeacher);
     this.teacherRouter.delete("/delete", this.teacherController.deleteTeacher);

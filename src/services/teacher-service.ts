@@ -1,10 +1,9 @@
-import { CreateTeacherModel, EditTeacherModel, TeacherModel } from "../models/teacher-models";
+import { InputTeacherModel, TeacherModel } from "../models/teacher-models";
 
 export interface TeacherService {
-  createTeacher(createTeacherModel: CreateTeacherModel): Promise<TeacherModel>;
-  getTeacherById(id: string): Promise<TeacherModel>;
+  createTeacher(inputTeacherModel: InputTeacherModel, login: string): Promise<TeacherModel>;
   getAllTeachers(): Promise<Array<TeacherModel>>;
-  editTeacher(editTeacherModel: EditTeacherModel): Promise<EditTeacherModel>;
-  deleteTeacher(id: string): Promise<TeacherModel>;
+  editTeacher(inputTeacherModel: InputTeacherModel, login: string): Promise<TeacherModel>;
+  deleteTeacher(login: string): Promise<TeacherModel>;
   getTeacherByLogin(login: string): Promise<TeacherModel>;
 }

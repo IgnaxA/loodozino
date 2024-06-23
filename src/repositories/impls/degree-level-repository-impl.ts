@@ -5,7 +5,6 @@ import { SingleQueryConstructor } from "../../database/query-constructors/single
 import { Assert } from "../../utils/assert";
 import { DegreeLevelQueries } from "../queries/degree-level-queries";
 import { CreateDegreeLevelModel, DegreeLevelModel } from "../../models/degree-level-models";
-import { CreateStudentModel, StudentModel } from "../../models/student-models";
 
 export class DegreeLevelRepositoryImpl implements DegreeLevelRepository {
   private readonly transactionRunner: TransactionRunner<QueryConstructor>;

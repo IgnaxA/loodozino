@@ -6,6 +6,8 @@ import { CreateDegreeLevelModel, DegreeLevelModel } from "../../models/degree-le
 import { ErrorHandler } from "../../utils/error-handler";
 import { CreateStudyProgramModel, StudyProgramModel } from "../../models/study-program-models";
 import { ParseHelper } from "../../utils/parse-helper";
+import { verifyUser } from "../../middlewares/verify-user";
+import { AuthServiceResponse } from "../dtos/auth-service-response";
 
 export class StudyProgramControllerImpl implements StudyProgramController {
   private readonly studyProgramService: StudyProgramService;
@@ -16,9 +18,14 @@ export class StudyProgramControllerImpl implements StudyProgramController {
 
   public createStudyProgram = async (req: Request, res: Response): Promise<void> => {
     try {
-      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      if (isTokenExpired) {
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
@@ -35,9 +42,14 @@ export class StudyProgramControllerImpl implements StudyProgramController {
 
   public getStudyProgramById = async (req: Request, res: Response): Promise<void> => {
     try {
-      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      if (isTokenExpired) {
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
@@ -54,9 +66,14 @@ export class StudyProgramControllerImpl implements StudyProgramController {
 
   public getAllStudyPrograms = async (req: Request, res: Response): Promise<void> => {
     try {
-      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      if (isTokenExpired) {
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 2) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
@@ -71,9 +88,14 @@ export class StudyProgramControllerImpl implements StudyProgramController {
 
   public editStudyProgram = async (req: Request, res: Response): Promise<void> => {
     try {
-      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      if (isTokenExpired) {
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
@@ -89,9 +111,14 @@ export class StudyProgramControllerImpl implements StudyProgramController {
 
   public deleteStudyProgram = async (req: Request, res: Response): Promise<void> => {
     try {
-      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      if (isTokenExpired) {
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
@@ -104,14 +131,6 @@ export class StudyProgramControllerImpl implements StudyProgramController {
     catch (err:any) {
       ErrorHandler.setError(res, err);
     }
-  };
-
-  private createModelWithId (createDegreeLevelModel: CreateDegreeLevelModel): DegreeLevelModel {
-    const guid: string = crypto.randomUUID();
-    return {
-      ...createDegreeLevelModel,
-      id: guid,
-    };
   };
 
   private setFullAPIResponse (res: Response, responseData: DegreeLevelModel): void {
@@ -127,6 +146,7 @@ export class StudyProgramControllerImpl implements StudyProgramController {
   }
   private setUnableToAccessAPIResponse (res: Response): void {
     res
-      .status(403);
+      .status(403)
+      .json();
   }
 }

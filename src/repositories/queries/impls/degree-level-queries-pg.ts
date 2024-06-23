@@ -4,7 +4,7 @@ import { DegreeLevelQueries } from "../degree-level-queries";
 
 export class DegreeLevelQueriesPg implements DegreeLevelQueries {
   private readonly create: string =
-    `INSERT INTO "degree_levels" (id, name) VALUES ($1, $2);`;
+    `INSERT INTO "degree_levels" (id, name) VALUES ($1, $2) RETURNING *;`;
   private readonly edit: string =
     `UPDATE "degree_levels" SET name=$2 WHERE id=$1 RETURNING *;`;
   private readonly delete: string =

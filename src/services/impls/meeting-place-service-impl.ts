@@ -31,15 +31,15 @@ export class MeetingPlaceServiceImpl implements MeetingPlaceService {
       return meetingPlaces;
   };
 
-  public async getPriorityMeetingPlaceForTeacher(teacherId: string, offline: boolean): Promise<MeetingPlaceModel> {
-      const meetingPlace: MeetingPlaceModel = await this.meetingPlaceRepository.getPriorityMeetingPlaceForTeacher(teacherId, offline);
-      Assert.notNullOrUndefined(meetingPlace, `There are no priority meeting place for teacher with ID ${teacherId}`);
+  public async getPriorityMeetingPlaceForTeacher(teacherLogin: string, offline: boolean): Promise<MeetingPlaceModel> {
+      const meetingPlace: MeetingPlaceModel = await this.meetingPlaceRepository.getPriorityMeetingPlaceForTeacher(teacherLogin, offline);
+      Assert.notNullOrUndefined(meetingPlace, `There are no priority meeting place for teacher with login ${teacherLogin}`);
       return meetingPlace;
   };
 
-  public async getAllMeetingPlacesByTeacher(teacherId: string, offline: boolean): Promise<Array<MeetingPlaceModel>> {
-      const meetingPlaces: Array<MeetingPlaceModel> = await this.meetingPlaceRepository.getAllMeetingPlacesByTeacher(teacherId, offline);
-      Assert.notNullOrUndefined(meetingPlaces, `There are no meeting places for teacher with ID ${teacherId}`);
+  public async getAllMeetingPlacesByTeacher(teacherLogin: string, offline: boolean): Promise<Array<MeetingPlaceModel>> {
+      const meetingPlaces: Array<MeetingPlaceModel> = await this.meetingPlaceRepository.getAllMeetingPlacesByTeacher(teacherLogin, offline);
+      Assert.notNullOrUndefined(meetingPlaces, `There are no meeting places for teacher with login ${teacherLogin}`);
       return meetingPlaces;
   };
 

@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { ParseHelper } from "../utils/parse-helper";
 import axios, { AxiosResponse } from "axios";
+import { AuthServiceResponse } from "../controllers/dtos/auth-service-response";
 
-export async function verifyUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function verifyUser(req: Request): Promise<AuthServiceResponse> {
   try {
     const protocol: string = ParseHelper.parseString(process.env.AUTH_API_PROTOCOL);
     const authPort: string = ParseHelper.parseString(process.env.AUTH_API_PORT);
@@ -21,14 +22,14 @@ export async function verifyUser(req: Request, res: Response, next: NextFunction
     );
 
     if (response.status === 200) {
-      res.locals.authStatus = response.data;
-      next();
-    } else {
-      res.locals.authStatus = {isTokenExpired: true, message: 'Authentication error'};
+      return response.data;
     }
+    else {
+      throw new Error('Authentication error');
+    }
+
   } catch (error) {
     console.error('Error checking auth status:', error);
-    res.locals.authStatus = {isTokenExpired: true, message: 'Error checking auth status'};
-    next();
+    throw new Error('Error checking auth status');
   }
 }

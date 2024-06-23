@@ -1,9 +1,13 @@
 import { StudentController } from "../student-controller";
 import { StudentService } from "../../services/student-service";
 import { Request, Response } from "express";
-import { CreateStudentModel, EditStudentModel, StudentModel } from "../../models/student-models";
+import {
+  InputStudentModel,
+  StudentModel,
+} from "../../models/student-models";
 import { ErrorHandler } from "../../utils/error-handler";
 import { verifyUser } from "../../middlewares/verify-user";
+import { AuthServiceResponse } from "../dtos/auth-service-response";
 
 export class StudentControllerImpl implements StudentController {
   private readonly studentService: StudentService;
@@ -14,53 +18,42 @@ export class StudentControllerImpl implements StudentController {
 
   public createStudent = async(req: Request, res: Response): Promise<void> => {
     try {
-      await verifyUser(req, res, () => {
-        if (res.locals.authStatus.isTokenExpired) {
-          this.setUnableToAccessAPIResponse(res);
-          return;
-        }
-      })
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      const studentInput: CreateStudentModel = req.body;
-      const createdStudent: StudentModel = await this.studentService.createStudent(studentInput);
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
 
-      this.setFullAPIResponse(res, createdStudent);
+      if (authStatus.accessLevel !== 0) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      const login: string = authStatus.login;
+      const studentBody: InputStudentModel = req.body;
+      const createdStudent: StudentModel = await this.studentService.createStudent(studentBody, login);
+
+      this.setAPIResponse(res, createdStudent);
 
     } catch (err: any) {
       ErrorHandler.setError(res, err);
     }
   };
 
-  public getStudentById = async(req: Request, res: Response): Promise<void> => {
-    try {
-      await verifyUser(req, res, () => {
-        if (res.locals.authStatus.isTokenExpired) {
-          this.setUnableToAccessAPIResponse(res);
-          console.log('verify token expired');
-          return;
-        }
-        console.log('verify token NOT expired');
-        console.log('${res.locals.authStatus}');
-      });
-
-      const id: string = req.body.id;
-      const student :StudentModel = await this.studentService.getStudentById(id);
-
-      this.setFullAPIResponse(res, student);
-    }
-    catch (err:any) {
-      ErrorHandler.setError(res, err);
-    }
-  };
-
   public getAllStudents = async(req: Request, res: Response): Promise<void> => {
     try {
-      await verifyUser(req, res, () => {
-        if (res.locals.authStatus.isTokenExpired) {
-          this.setUnableToAccessAPIResponse(res);
-          return;
-        }
-      })
+      const authStatus: AuthServiceResponse = await verifyUser(req);
+
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 2) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
 
       const students :Array<StudentModel> = await this.studentService.getAllStudents();
       this.setManyAPIResponse(res, students);
@@ -72,16 +65,22 @@ export class StudentControllerImpl implements StudentController {
 
   public editStudent = async(req: Request, res: Response): Promise<void> => {
     try {
-      await verifyUser(req, res, () => {
-        if (res.locals.authStatus.isTokenExpired) {
-          this.setUnableToAccessAPIResponse(res);
-          return;
-        }
-      })
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      const student: EditStudentModel = req.body;
-      const updatedStudent :EditStudentModel = await this.studentService.editStudent(student);
-      this.setEditAPIResponse(res, updatedStudent);
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 1) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      const login: string = authStatus.login;
+      const inputStudentModel: InputStudentModel = req.body;
+      const updatedStudent: StudentModel = await this.studentService.editStudent(inputStudentModel, login);
+      this.setAPIResponse(res, updatedStudent);
     }
     catch (err:any) {
       ErrorHandler.setError(res, err);
@@ -90,17 +89,22 @@ export class StudentControllerImpl implements StudentController {
 
   public deleteStudent = async(req: Request, res: Response): Promise<void> => {
     try {
-      await verifyUser(req, res, () => {
-        if (res.locals.authStatus.isTokenExpired) {
-          this.setUnableToAccessAPIResponse(res);
-          return;
-        }
-      })
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      const id: string = req.body.id;
-      const student :StudentModel = await this.studentService.deleteStudent(id);
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
 
-      this.setFullAPIResponse(res, student);
+      if (authStatus.accessLevel !== 0) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      const login: string = authStatus.login;
+      const student :StudentModel = await this.studentService.deleteStudent(login);
+
+      this.setAPIResponse(res, student);
     }
     catch (err:any) {
       ErrorHandler.setError(res, err);
@@ -109,30 +113,29 @@ export class StudentControllerImpl implements StudentController {
 
   public getStudentByLogin = async(req: Request, res: Response): Promise<void> => {
     try {
-      await verifyUser(req, res, () => {
-        if (res.locals.authStatus.isTokenExpired) {
-          this.setUnableToAccessAPIResponse(res);
-          return;
-        }
-      })
+      const authStatus: AuthServiceResponse = await verifyUser(req);
 
-      const id: string = req.body.id;
-      const student :StudentModel = await this.studentService.getStudentByLogin(id);
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
 
-      this.setFullAPIResponse(res, student);
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 1) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      const login: string = authStatus.login;
+      const student :StudentModel = await this.studentService.getStudentByLogin(login);
+
+      this.setAPIResponse(res, student);
     }
     catch (err:any) {
       ErrorHandler.setError(res, err);
     }
   }
 
-  private setFullAPIResponse (res: Response, responseData: StudentModel): void {
-    res
-      .status(200)
-      .json(responseData);
-  }
-
-  private setEditAPIResponse (res: Response, responseData: EditStudentModel): void {
+  private setAPIResponse (res: Response, responseData: StudentModel): void {
     res
       .status(200)
       .json(responseData);
@@ -146,7 +149,8 @@ export class StudentControllerImpl implements StudentController {
 
   private setUnableToAccessAPIResponse (res: Response): void {
     res
-      .status(403);
+      .status(403)
+      .json();
   }
 }
 
