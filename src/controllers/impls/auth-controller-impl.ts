@@ -46,9 +46,9 @@ export class AuthControllerImpl implements AuthController {
             const requestData: AuthControllerDTOInput = new AuthControllerDTOInput()
                 .set(requestBody.email,
                           requestBody.password,
-                          requestBody.device,
-                          requestBody.ip,
-                          requestBody.authorizeDate);
+                          requestBody.device ?? "",
+                          requestBody.ip ?? "",
+                          requestBody.authorizeDate ?? "");
 
             return requestData;
         } catch (err: any) {
