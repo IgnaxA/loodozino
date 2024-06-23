@@ -1,6 +1,7 @@
 networks:
-  profileservice_app:
+  app:
     driver: bridge
+    external: true
 
 services:
   profileservice_db:
@@ -13,7 +14,7 @@ services:
       - POSTGRES_DB=${DB_NAME:-profileservice_db}
       - PGPORT=5434
     networks:
-      profileservice_app:
+      app:
     ports:
       - "5434:5434"
     healthcheck:
@@ -22,17 +23,17 @@ services:
       timeout: 5s
       retries: 10
 
-#  profileservice_back:
-#    image: couldl1e/profileservice_back:latest
-#    container_name: profileservice_back
-#    build:
-#      context: ./
-#    networks:
-#      profileservice_app:
-#    depends_on:
-#      profileservice_db:
-#        condition: service_healthy
-#    ports:
-#      - "8079:8079"
+  profileservice_back:
+    image: couldl1e/profileservice_back:latest
+    container_name: profileservice_back
+    build:
+      context: ./
+    networks:
+      app:
+    depends_on:
+      profileservice_db:
+        condition: service_healthy
+    ports:
+      - "8079:8079"
 
 
