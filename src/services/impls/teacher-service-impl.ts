@@ -2,7 +2,7 @@ import { TeacherService } from "../teacher-service";
 import { TeacherRepository } from "../../repositories/teacher-repository";
 import { InputTeacherModel, TeacherModel } from "../../models/teacher-models";
 import { Assert } from "../../utils/assert";
-import { ErrorHandler } from "../../utils/error-handler";
+import { StudentModel } from "../../models/student-models";
 
 export class TeacherServiceImpl implements TeacherService {
   private readonly teacherRepository: TeacherRepository;
@@ -22,6 +22,13 @@ export class TeacherServiceImpl implements TeacherService {
       Assert.notNullOrUndefined(teachers, `There are no teachers yet`);
       return teachers;
   };
+
+  public async getAllStudentsByTeacher(teacherLogin: string):Promise<Array<StudentModel>> {
+    const students: Array<StudentModel> = await this.teacherRepository.getAllStudentsByTeacher(teacherLogin);
+    Assert.notNullOrUndefined(students, `There are no students for the teacher ${teacherLogin} yet`);
+    return students;
+  };
+
 
   public async editTeacher(inputTeacherModel: InputTeacherModel, login: string): Promise<TeacherModel> {
       const updatedTeacher: TeacherModel = await this.teacherRepository.editTeacher(inputTeacherModel, login);

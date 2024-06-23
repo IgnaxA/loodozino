@@ -4,26 +4,24 @@ import { Assert } from "../../../utils/assert";
 
 export class StudentQueriesPg implements StudentQueries {
   private readonly create: string =
-    `INSERT INTO "students" (login, full_name, phone_number, study_program_id, degree_level_id, course, admission_year, socials) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;`;
+    `INSERT INTO "students" (login, full_name, phone_number, study_program_id, degree_level_id, course, admission_year, socials, teacher_login) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *;`;
   private readonly createByLogin: string =
     `INSERT INTO "students" (login) VALUES ($1) RETURNING *;`;
   private readonly edit: string =
-    `UPDATE "students" SET full_name=$2, phone_number=$3, study_program_id=$4, degree_level_id=$5, course=$6, admission_year=$7, socials=$8 WHERE login=$1 RETURNING *;`;
+    `UPDATE "students" SET full_name=$2, phone_number=$3, study_program_id=$4, degree_level_id=$5, course=$6, admission_year=$7, socials=$8, teacher_login=$9 WHERE login=$1 RETURNING *;`;
   private readonly delete: string =
     `DELETE FROM "students" WHERE login=$1 RETURNING *;`;
   private readonly getByLogin: string =
     'SELECT * FROM "students" WHERE login=$1 LIMIT 1;';
   private readonly getAll: string =
     'SELECT * FROM "students";';
-  private readonly getAllByTeacher: string =
-    'SELECT * FROM "students" WHERE teacher_login=$1;';
 
-  public createStudent(login: string, fullName: string, phoneNumber: string, studyProgramId: string, degreeLevelId: string, course: number, admissionYear: number, socials: string): SingleQueryConstructor {
+  public createStudent(login: string, fullName: string, phoneNumber: string, studyProgramId: string, degreeLevelId: string, course: number, admissionYear: number, socials: string, teacherLogin: string): SingleQueryConstructor {
     Assert.notNullOrUndefined(login, "Student login must not be null");
 
     const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
 
-    const parameters: Array<any> = new Array<any>(login, fullName, phoneNumber, studyProgramId, degreeLevelId, course, admissionYear, socials);
+    const parameters: Array<any> = new Array<any>(login, fullName, phoneNumber, studyProgramId, degreeLevelId, course, admissionYear, socials, teacherLogin);
 
     queryConstructor.setQuery(this.create);
     queryConstructor.setParameters(parameters);
@@ -42,23 +40,12 @@ export class StudentQueriesPg implements StudentQueries {
     return queryConstructor;
   };
 
-  public getAllStudentsByTeacher(teacherLogin: string): SingleQueryConstructor {
-    const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
-
-    const parameters: Array<any> = new Array<any>();
-
-    queryConstructor.setQuery(this.getAllByTeacher);
-    queryConstructor.setParameters(parameters);
-
-    return queryConstructor;
-  };
-
-  public editStudent(login: string, fullName: string, phoneNumber: string, studyProgramId: string, degreeLevelId: string, course: number, admissionYear: number, socials: string): SingleQueryConstructor {
+  public editStudent(login: string, fullName: string, phoneNumber: string, studyProgramId: string, degreeLevelId: string, course: number, admissionYear: number, socials: string, teacherLogin: string): SingleQueryConstructor {
     Assert.notNullOrUndefined(login, "Student login must not be null");
 
     const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
 
-    const parameters: Array<any> = new Array<any>(login, fullName, phoneNumber, studyProgramId, degreeLevelId, course, admissionYear, socials);
+    const parameters: Array<any> = new Array<any>(login, fullName, phoneNumber, studyProgramId, degreeLevelId, course, admissionYear, socials, teacherLogin);
 
     queryConstructor.setQuery(this.edit);
     queryConstructor.setParameters(parameters);

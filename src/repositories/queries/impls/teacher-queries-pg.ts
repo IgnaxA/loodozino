@@ -15,6 +15,8 @@ export class TeacherQueriesPg implements TeacherQueries {
     'SELECT * FROM "teachers";';
   private readonly getByLogin: string =
     'SELECT * FROM "teachers" WHERE login=$1;';
+  private readonly getAllByTeacher: string =
+    'SELECT * FROM "students" WHERE teacher_login=$1;';
   public createTeacher(login: string, fullName: string, phoneNumber: string, position: string, socials: string): SingleQueryConstructor {
     Assert.notNullOrUndefined(login, "Teacher login must not be null");
 
@@ -34,6 +36,18 @@ export class TeacherQueriesPg implements TeacherQueries {
     const parameters: Array<any> = new Array<any>();
 
     queryConstructor.setQuery(this.getAll);
+    queryConstructor.setParameters(parameters);
+
+    return queryConstructor;
+  };
+
+  public getAllStudentsByTeacher(teacherLogin: string): SingleQueryConstructor {
+    Assert.notNullOrUndefined(teacherLogin, "Teacher login must not be null");
+    const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
+
+    const parameters: Array<any> = new Array<any>(teacherLogin);
+
+    queryConstructor.setQuery(this.getAllByTeacher);
     queryConstructor.setParameters(parameters);
 
     return queryConstructor;

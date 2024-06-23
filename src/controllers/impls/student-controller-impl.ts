@@ -62,29 +62,6 @@ export class StudentControllerImpl implements StudentController {
     }
   };
 
-  public getAllStudentsByTeacher = async(req: Request, res: Response): Promise<void> => {
-    try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
-
-      if (authStatus.isTokenExpired) {
-        this.setUnableToAccessAPIResponse(res);
-        return;
-      }
-
-      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 2) {
-        this.setUnableToAccessAPIResponse(res);
-        return;
-      }
-
-      const teacherLogin: string = req.body.teacherLogin;
-      const students :Array<StudentModel> = await this.studentService.getAllStudentsByTeacher(teacherLogin);
-      this.setManyAPIResponse(res, students);
-    }
-    catch (err:any) {
-      ErrorHandler.setError(res, err);
-    }
-  };
-
   public editStudent = async(req: Request, res: Response): Promise<void> => {
     try {
       const authStatus: AuthServiceResponse = await verifyUser(req);

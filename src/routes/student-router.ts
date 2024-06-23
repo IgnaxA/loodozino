@@ -13,7 +13,6 @@ export class StudentRouter {
   public setRouter(): void {
     this.studentRouter.get("/get", this.studentController.getStudentByLogin);
     this.studentRouter.get("/get-all", this.studentController.getAllStudents);
-    this.studentRouter.get("get-all-by-teacher", this.studentController.getAllStudentsByTeacher);
     this.studentRouter.post("/edit", this.studentController.editStudent);
     this.studentRouter.delete("/delete", this.studentController.deleteStudent);
     this.studentRouter.post("/create", this.studentController.createStudent);

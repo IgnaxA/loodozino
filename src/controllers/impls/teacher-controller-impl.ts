@@ -5,6 +5,7 @@ import { InputTeacherModel, TeacherModel } from "../../models/teacher-models";
 import { ErrorHandler } from "../../utils/error-handler";
 import { verifyUser } from "../../middlewares/verify-user";
 import { AuthServiceResponse } from "../dtos/auth-service-response";
+import { StudentModel } from "../../models/student-models";
 
 export class TeacherControllerImpl implements TeacherController {
   private readonly teacherService: TeacherService;
@@ -53,7 +54,30 @@ export class TeacherControllerImpl implements TeacherController {
 
       const teachers :Array<TeacherModel> = await this.teacherService.getAllTeachers();
 
-      this.setManyAPIResponse(res, teachers);
+      this.setManyTeachersApiResponse(res, teachers);
+    }
+    catch (err:any) {
+      ErrorHandler.setError(res, err);
+    }
+  };
+
+  public getAllStudentsByTeacher = async(req: Request, res: Response): Promise<void> => {
+    try {
+      const authStatus: AuthServiceResponse = await verifyUser(req);
+
+      if (authStatus.isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 2) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      const teacherLogin: string = authStatus.login;
+      const students :Array<StudentModel> = await this.teacherService.getAllStudentsByTeacher(teacherLogin);
+      this.setManyStudentsAPIResponse(res, students);
     }
     catch (err:any) {
       ErrorHandler.setError(res, err);
@@ -140,7 +164,12 @@ export class TeacherControllerImpl implements TeacherController {
   }
 
 
-  private setManyAPIResponse (res: Response, responseData: Array<TeacherModel>): void {
+  private setManyTeachersApiResponse (res: Response, responseData: Array<TeacherModel>): void {
+    res
+      .status(200)
+      .json(responseData);
+  }
+  private setManyStudentsAPIResponse (res: Response, responseData: Array<StudentModel>): void {
     res
       .status(200)
       .json(responseData);

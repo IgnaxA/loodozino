@@ -5,6 +5,7 @@ import { QueryConstructor } from "../../database/query-constructors/query-constr
 import { TeacherQueries } from "../queries/teacher-queries";
 import { SingleQueryConstructor } from "../../database/query-constructors/single-query-constructor";
 import { Assert } from "../../utils/assert";
+import { StudentModel } from "../../models/student-models";
 
 export class TeacherRepositoryImpl implements TeacherRepository {
   private readonly transactionRunner: TransactionRunner<QueryConstructor>;
@@ -62,6 +63,32 @@ export class TeacherRepositoryImpl implements TeacherRepository {
     }));
 
     return teacherModels;
+  };
+
+  public async getAllStudentsByTeacher(teacherLogin: string): Promise<Array<StudentModel>> {
+    const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
+
+    queryConstructors.push(this.teacherQueries.getAllStudentsByTeacher(teacherLogin));
+
+    const results = await this.transactionRunner.run(queryConstructors);
+
+    Assert.notNullOrUndefined(results, `There are no students for the teacher ${teacherLogin} in the database`);
+
+    const studentData = results[0];
+
+    const studentModels = studentData.map((data: any) => ({
+      login: data.login,
+      fullName: data.full_name,
+      phoneNumber: data.phone_number,
+      studyProgramId: data.study_program_id,
+      degreeLevelId: data.degree_level_id,
+      course: data.course,
+      admission_year: data.admission_year,
+      socials: data.socials,
+      teacherLogin: data.teacher_login
+    }));
+
+    return studentModels;
   };
 
   public async editTeacher(inputTeacherModel: InputTeacherModel, login: string): Promise<TeacherModel> {
