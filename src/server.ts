@@ -28,6 +28,12 @@ import {TokenServiceImpl} from "./services/impls/token-service-impl";
 import {TokenJWT} from "./crypto/json-web-token/token-jwt";
 import {TokenRepository} from "./repository/token-repository";
 import {TokenRepositoryPg} from "./repository/impls/token-repository-pg";
+import {TokenQueries} from "./repository/queries/token-queries";
+import {TokenQueriesPg} from "./repository/queries/impls/token-queries-pg";
+import {DeviceQueries} from "./repository/queries/device-queries";
+import {DeviceQueriesPg} from "./repository/queries/impls/device-queries-pg";
+import {DeviceRepository} from "./repository/device-repository";
+import {DeviceRepositoryPg} from "./repository/impls/device-repository-pg";
 
 const APIPrefix: string = "/api/authservice";
 const app: Express = express();
@@ -57,9 +63,12 @@ const authController: AuthController = new AuthControllerImpl(authService);
 const authRouter: AuthRouter = new AuthRouter(authController);
 authRouter.setRouter();
 
-const tokenRepository: TokenRepository = new TokenRepositoryPg();
+const tokenQueries: TokenQueries = new TokenQueriesPg();
+const deviceQueries: DeviceQueries = new DeviceQueriesPg();
+const tokenRepository: TokenRepository = new TokenRepositoryPg(transactionRunner, tokenQueries);
+const deviceRepository: DeviceRepository = new DeviceRepositoryPg(transactionRunner, deviceQueries);
 const tokenJWT: TokenJWT = new AuthJWTImpl();
-const tokenService: TokenService = new TokenServiceImpl(tokenJWT, tokenRepository);
+const tokenService: TokenService = new TokenServiceImpl(tokenJWT, tokenRepository, deviceRepository);
 const tokenController: TokenController = new TokenControllerImpl(tokenService);
 const tokenRouter: TokenRouter = new TokenRouter(tokenController);
 tokenRouter.setRouter();

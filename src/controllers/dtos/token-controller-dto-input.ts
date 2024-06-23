@@ -27,4 +27,12 @@ export class TokenControllerDtoInput {
     public getToken(): string {
         return this.token;
     }
+
+    public getDevice(): string {
+        return this.device;
+    }
+
+    public getIp(): string {
+        return this.ip;
+    }
 }

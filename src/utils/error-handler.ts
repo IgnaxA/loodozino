@@ -3,11 +3,11 @@ import {Assert} from "./assert";
 
 export class ErrorHandler {
 
-    public static setError(res: Response, error: any): void {
+    public static setError(res: Response, error: any, code: number): void {
         Assert.isError(error);
 
         res
-            .status(500)
+            .status(code)
             .json({
                 "message": error.message
             });

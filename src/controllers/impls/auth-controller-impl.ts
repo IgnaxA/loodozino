@@ -22,7 +22,7 @@ export class AuthControllerImpl implements AuthController {
 
             this.setAPIResponse(res, responseData);
         } catch (err: any) {
-            ErrorHandler.setError(res, err);
+            ErrorHandler.setError(res, err, 500);
         }
     }
 
@@ -36,7 +36,7 @@ export class AuthControllerImpl implements AuthController {
 
             this.setAPIResponse(res, responseData);
         } catch (err: any) {
-            ErrorHandler.setError(res, err);
+            ErrorHandler.setError(res, err, 500);
         }
     }
 

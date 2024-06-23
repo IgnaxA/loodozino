@@ -1,4 +1,6 @@
+import {QueryConstructor} from "../query-constructors/query-constructor";
 
 export interface DeviceQueries {
-    addDevice(): void;
+    checkDevice(name: string, ip: string): QueryConstructor;
+    checkDeviceLinkToken(deviceId: number, tokenId: number): QueryConstructor
 }

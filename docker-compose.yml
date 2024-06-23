@@ -25,15 +25,15 @@ services:
       retries: 10
 
 
-  authservice_back:
-    image: ignaxa/authservice_back:latest
-    container_name: authservice_back
-    build:
-      context: ./
-    networks:
-      app:
-    depends_on:
-      authservice_db:
-        condition: service_healthy
-    ports:
-      - "8081:8081"
+#  authservice_back:
+#    image: ignaxa/authservice_back:latest
+#    container_name: authservice_back
+#    build:
+#      context: ./
+#    networks:
+#      app:
+#    depends_on:
+#      authservice_db:
+#        condition: service_healthy
+#    ports:
+#      - "8081:8081"

@@ -28,11 +28,11 @@ export class TokenControllerImpl implements TokenController {
                 });
 
         } catch (err: any) {
-            ErrorHandler.setError(res, err);
+            ErrorHandler.setError(res, err, 403);
         }
     }
 
-    public async getAccessToken(req: Request, res: Response): Promise<void> {
+    public getAccessToken = async(req: Request, res: Response): Promise<void> => {
         try {
             const tokenDtoInput: TokenControllerDtoInput = this.getInputDTO(req);
 
@@ -44,16 +44,17 @@ export class TokenControllerImpl implements TokenController {
                     "token": tokenDtoOutput.getToken()
                 });
         } catch (err: any) {
-            ErrorHandler.setError(res, err);
+            ErrorHandler.setError(res, err, 403);
         }
     }
 
     private getInputDTO(req: Request): TokenControllerDtoInput {
         try {
             const requestBody: TokenApiInput = req.body;
+            const token: string = req.get("token") as string;
             const requestData: TokenControllerDtoInput = new TokenControllerDtoInput()
                 .set(
-                    requestBody.token,
+                    token,
                     requestBody.device ?? "",
                     requestBody.ip ?? ""
                 );
@@ -68,7 +69,6 @@ export class TokenControllerImpl implements TokenController {
 }
 
 interface TokenApiInput {
-    token: string;
     device: string | undefined;
     ip: string | undefined;
 }
