@@ -47,7 +47,7 @@ export class TeacherControllerImpl implements TeacherController {
         return;
       }
 
-      if (authStatus.accessLevel !== 0) {
+      if (authStatus.accessLevel !== 0 || authStatus.accessLevel !== 2) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
