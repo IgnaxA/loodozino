@@ -51,15 +51,17 @@ import { StudyProgramControllerImpl } from "./src/controllers/impls/study-progra
 import { StudyProgramQueriesPg } from "./src/repositories/queries/impls/study-program-queries-pg";
 import { StudyProgramRepositoryImpl } from "./src/repositories/impls/study-program-repository-impl";
 import { StudyProgramServiceImpl } from "./src/services/impls/study-program-service-impl";
+import cors from "cors";
 
-const StudentsAPIPrefix: string = "/api/profile/students";
-const TeachersAPIPrefix: string = "/api/profile/teachers";
-const DegreeLevelsAPIPrefix: string = "/api/profile/degree-levels";
-const MeetingPlacesAPIPrefix: string = "/api/profile/meeting-places";
-const StudyProgramsAPIPrefix: string = "/api/profile/study-programs";
+const StudentsAPIPrefix: string = "/api/profileservice/students";
+const TeachersAPIPrefix: string = "/api/profileservice/teachers";
+const DegreeLevelsAPIPrefix: string = "/api/profileservice/degree-levels";
+const MeetingPlacesAPIPrefix: string = "/api/profileservice/meeting-places";
+const StudyProgramsAPIPrefix: string = "/api/profileservice/study-programs";
 
 const app: Express = express();
 app.use(express.json());
+app.use(cors());
 
 const startUpConfig: StartUpConfig = StartUpParse.getStartUpConfig();
 const PORT: number = startUpConfig.PORT;

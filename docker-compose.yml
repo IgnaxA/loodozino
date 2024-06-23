@@ -11,8 +11,16 @@ services:
       - POSTGRES_USER=${DB_USER:-postgres}
       - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
       - POSTGRES_DB=${DB_NAME:-profileservice_db}
+      - PGPORT=5434
     networks:
       profileservice_app:
+    ports:
+      - "5434:5434"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "--quiet" ]
+      interval: 1s
+      timeout: 5s
+      retries: 10
 
   profileservice_back:
     image: couldl1e/profileservice_back:latest
@@ -22,13 +30,9 @@ services:
     networks:
       profileservice_app:
     depends_on:
-      - profileservice_db
+      profileservice_db:
+        condition: service_healthy
     ports:
       - "8079:8079"
 
-    healthcheck:
-      test: curl --fail http://localhost:8079 || exit 1
-      interval: 5s
-      retries: 3
-      start_period: 10s
-      timeout: 10s
+
