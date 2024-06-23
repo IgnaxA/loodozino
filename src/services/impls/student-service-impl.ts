@@ -10,8 +10,8 @@ export class StudentServiceImpl implements StudentService {
     this.studentRepository = studentRepository;
   }
 
-  public async createStudent(inputStudentModel: InputStudentModel, login: string): Promise<StudentModel> {
-      const createdStudentModel :StudentModel = await this.studentRepository.createStudent(inputStudentModel, login);
+  public async createStudent(studentBody: StudentModel): Promise<StudentModel> {
+      const createdStudentModel :StudentModel = await this.studentRepository.createStudent(studentBody);
       return createdStudentModel;
   };
 

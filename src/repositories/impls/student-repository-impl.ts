@@ -14,25 +14,23 @@ export class StudentRepositoryImpl implements StudentRepository {
     this.transactionRunner = transactionRunner;
     this.studentQueries = studentQueries;
   }
-  public async createStudent(inputStudentModel: InputStudentModel, login: string): Promise<StudentModel> {
+  public async createStudent(studentBody: StudentModel): Promise<StudentModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
-    const studentModel: StudentModel = this.createModelWithLogin(inputStudentModel, login);
-
     queryConstructors.push(this.studentQueries.createStudent(
-      studentModel.login,
-      studentModel.fullName,
-      studentModel.phoneNumber,
-      studentModel.studyProgramId,
-      studentModel.degreeLevelId,
-      studentModel.course,
-      studentModel.admissionYear,
-      studentModel.socials)
+      studentBody.login,
+      studentBody.fullName,
+      studentBody.phoneNumber,
+      studentBody.studyProgramId,
+      studentBody.degreeLevelId,
+      studentBody.course,
+      studentBody.admissionYear,
+      studentBody.socials)
     );
 
     const results = await this.transactionRunner.run(queryConstructors);
 
-    Assert.notNullOrUndefined(results, `Student with login ${studentModel.login} have not been created`);
+    Assert.notNullOrUndefined(results, `Student with login ${studentBody.login} have not been created`);
 
     const studentData = results[0][0];
 

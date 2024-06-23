@@ -11,8 +11,8 @@ export class TeacherServiceImpl implements TeacherService {
     this.teacherRepository = teacherRepository;
   }
 
-  public async createTeacher(inputTeacherModel: InputTeacherModel, login: string): Promise<TeacherModel> {
-      const teacherModel: TeacherModel = await this.teacherRepository.createTeacher(inputTeacherModel, login);
+  public async createTeacher(teacherBody: TeacherModel): Promise<TeacherModel> {
+      const teacherModel: TeacherModel = await this.teacherRepository.createTeacher(teacherBody);
       Assert.notNullOrUndefined(teacherModel, `Teacher could not be created`);
       return teacherModel;
   };

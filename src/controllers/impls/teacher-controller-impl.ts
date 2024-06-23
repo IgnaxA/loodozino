@@ -27,9 +27,8 @@ export class TeacherControllerImpl implements TeacherController {
         return;
       }
 
-      const login: string = authStatus.login;
-      const inputTeacherModel: InputTeacherModel = req.body;
-      const teacherModel:TeacherModel = await this.teacherService.createTeacher(inputTeacherModel, login);
+      const teacherBody: TeacherModel = req.body;
+      const teacherModel:TeacherModel = await this.teacherService.createTeacher(teacherBody);
 
       this.setAPIResponse(res, teacherModel);
 
@@ -100,7 +99,7 @@ export class TeacherControllerImpl implements TeacherController {
         return;
       }
 
-      const login: string = authStatus.login;
+      const login: string = req.body.login;
       const teacher :TeacherModel = await this.teacherService.deleteTeacher(login);
 
       this.setAPIResponse(res, teacher);

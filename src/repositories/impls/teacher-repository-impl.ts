@@ -14,17 +14,16 @@ export class TeacherRepositoryImpl implements TeacherRepository {
     this.transactionRunner = transactionRunner;
     this.teacherQueries = teacherQueries;
   }
-  public async createTeacher(inputTeacherModel: InputTeacherModel, login: string): Promise<TeacherModel> {
+  public async createTeacher(teacherBody:TeacherModel): Promise<TeacherModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
-    const teacherModel: TeacherModel = this.createModelWithLogin(inputTeacherModel, login);
 
     queryConstructors.push(this.teacherQueries.createTeacher(
-      teacherModel.login,
-      teacherModel.fullName,
-      teacherModel.phoneNumber,
-      teacherModel.position,
-      teacherModel.socials)
+      teacherBody.login,
+      teacherBody.fullName,
+      teacherBody.phoneNumber,
+      teacherBody.position,
+      teacherBody.socials)
     );
 
     const results = await this.transactionRunner.run(queryConstructors);

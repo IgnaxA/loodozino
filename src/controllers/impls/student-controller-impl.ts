@@ -30,9 +30,8 @@ export class StudentControllerImpl implements StudentController {
         return;
       }
 
-      const login: string = authStatus.login;
-      const studentBody: InputStudentModel = req.body;
-      const createdStudent: StudentModel = await this.studentService.createStudent(studentBody, login);
+      const studentBody: StudentModel = req.body;
+      const createdStudent: StudentModel = await this.studentService.createStudent(studentBody);
 
       this.setAPIResponse(res, createdStudent);
 
@@ -101,7 +100,7 @@ export class StudentControllerImpl implements StudentController {
         return;
       }
 
-      const login: string = authStatus.login;
+      const login: string = req.body.login;
       const student :StudentModel = await this.studentService.deleteStudent(login);
 
       this.setAPIResponse(res, student);
