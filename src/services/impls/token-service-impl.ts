@@ -51,6 +51,7 @@ export class TokenServiceImpl implements TokenService {
 
             const decoded: AccessTokenDecoded | null = this.tokenJWT.verifyToken<AccessTokenDecoded>(token);
 
+            Assert.notNull(decoded, "Cannot decode token");
 
             const deviceCheckResponse: DeviceCheckResponse = await this.deviceRepository.checkDevice(
                 tokenControllerDtoInput.getDevice(),
