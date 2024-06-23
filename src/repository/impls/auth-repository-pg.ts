@@ -13,6 +13,7 @@ import {
 } from "../query-constructors/utils/extendors/insert-predicate/extendors/linked-insert-predicate";
 import {WithQuery} from "../query-constructors/utils/with-query";
 import {Table} from "../query-constructors/utils/table";
+import {ErrorHandler} from "../../utils/error-handler";
 
 export class AuthRepositoryPg implements AuthRepository {
     private readonly transactionRunner: TransactionRunner<QueryConstructor>;
@@ -24,22 +25,34 @@ export class AuthRepositoryPg implements AuthRepository {
     }
 
     public async checkUser(userDto: UserDTO): Promise<VerifyResponse> {
-        const query: QueryConstructor = this.userQueries.checkUser(userDto.getEmail());
-        const response: VerifyResponse = await this.transactionRunner.runSingle<VerifyResponse>(query);
-        return response;
+        try {
+            const query: QueryConstructor = this.userQueries.checkUser(userDto.getEmail());
+            const response: VerifyResponse = await this.transactionRunner.runSingle<VerifyResponse>(query);
+
+            return response;
+        } catch (err: any) {
+            ErrorHandler.throwError(err, "Something went wrong while checking user");
+        }
+        const mock: VerifyResponse = {} as VerifyResponse;
+
+        return mock;
     }
 
     public createUser(userDTO: UserDTO): void {
-        const transaction: WithQueryConstructor = new WithQueryConstructor();
+        try {
+            const transaction: WithQueryConstructor = new WithQueryConstructor();
 
-        transaction.addWith(this.createUserWithQuery(userDTO.getEmail(), userDTO.getPassword(), userDTO.getAccessLevel()));
-        transaction.addWith(this.createDeviceWithQuery(userDTO.getIp(), userDTO.getDevice(), userDTO.getAuthorizeDate()));
-        transaction.addWith(this.createTokenWithQuery(userDTO.getRefreshToken(), 1));
-        transaction.addWith(this.createUserLinkDevice());
-        transaction.addWith(this.createDeviceLinkToken());
+            transaction.addWith(this.createUserWithQuery(userDTO.getEmail(), userDTO.getPassword(), userDTO.getAccessLevel()));
+            transaction.addWith(this.createDeviceWithQuery(userDTO.getIp(), userDTO.getDevice(), userDTO.getAuthorizeDate()));
+            transaction.addWith(this.createTokenWithQuery(userDTO.getRefreshToken(), 1));
+            transaction.addWith(this.createUserLinkDevice());
+            transaction.addWith(this.createDeviceLinkToken());
 
-        transaction.interpret();
-        this.transactionRunner.run(new Array<QueryConstructor>(transaction));
+            transaction.interpret();
+            this.transactionRunner.run(new Array<QueryConstructor>(transaction));
+        } catch (err: any) {
+            ErrorHandler.throwError(err, "Something went wrong while adding user into db");
+        }
     }
 
     private createUserWithQuery(...userAttrs: Array<any>): WithQuery {

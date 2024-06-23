@@ -23,79 +23,91 @@ export class AuthServiceImpl implements AuthService {
     }
 
     public async verifyUser(authControllerDTOInput: AuthControllerDTOInput): Promise<AuthControllerDTOOutput> {
-        const userDto: UserDTO = new UserDTO()
-            .setEmail(authControllerDTOInput.getEmail());
+        try {
+            const userDto: UserDTO = new UserDTO()
+                .setEmail(authControllerDTOInput.getEmail());
 
-        const response: VerifyResponse = await this.authRepository.checkUser(userDto);
+            const response: VerifyResponse = await this.authRepository.checkUser(userDto);
 
-        Assert.notNullOrUndefined(response, "User with that email does not exists")
+            Assert.notNullOrUndefined(response, "User with that email does not exists")
 
-        const result: boolean = await this.cryptor.compare(authControllerDTOInput.getPassword(), response.user_password);
+            const result: boolean = await this.cryptor.compare(authControllerDTOInput.getPassword(), response.user_password);
 
-        if (!result) {
-            ErrorHandler.throwError(null, "User with that password does not exists or passwords mismatch");
+            if (!result) {
+                ErrorHandler.throwError(null, "User with that password does not exists or passwords mismatch");
+            }
+
+            const tokenDto: UserTokenDto = new UserTokenDto();
+            tokenDto.email = authControllerDTOInput.getEmail();
+            tokenDto.accessLevel = response.user_access_level;
+
+            const refreshToken: string = this.authJWT.createToken(
+                Token.Refresh,
+                tokenDto
+            );
+            const accessToken: string = this.authJWT.createToken(
+                Token.Access,
+                tokenDto
+            );
+
+            const authControllerDtoOutput: AuthControllerDTOOutput = new AuthControllerDTOOutput().set(
+                refreshToken,
+                accessToken,
+                response.user_access_level
+            );
+
+            return authControllerDtoOutput;
+        } catch (err: any) {
+            ErrorHandler.throwError(err, "Something went wrong while verifying user");
         }
 
-        const tokenDto: UserTokenDto = new UserTokenDto();
-        tokenDto.email = authControllerDTOInput.getEmail();
-        tokenDto.accessLevel = response.user_access_level;
-
-        const refreshToken: string = this.authJWT.createToken(
-            Token.Refresh,
-            tokenDto
-        );
-        const accessToken: string = this.authJWT.createToken(
-            Token.Access,
-            tokenDto
-        );
-
-        const authControllerDtoOutput: AuthControllerDTOOutput = new AuthControllerDTOOutput().set(
-            refreshToken,
-            accessToken,
-            response.user_access_level
-        );
-
-        return authControllerDtoOutput;
+        return new AuthControllerDTOOutput();
     }
 
     public async createUser(authControllerDTOInput: AuthControllerDTOInput): Promise<AuthControllerDTOOutput> {
-        const email: string = authControllerDTOInput.getEmail();
-        const accessLevel: number = authControllerDTOInput.getAccessLevel();
+        try {
+            const email: string = authControllerDTOInput.getEmail();
+            const accessLevel: number = authControllerDTOInput.getAccessLevel();
 
-        const password: string = await this.cryptor.encrypt(authControllerDTOInput.getPassword());
-        const tokenDto: UserTokenDto = new UserTokenDto();
-        tokenDto.email = email;
-        tokenDto.accessLevel = accessLevel
+            const password: string = await this.cryptor.encrypt(authControllerDTOInput.getPassword());
+            const tokenDto: UserTokenDto = new UserTokenDto();
+            tokenDto.email = email;
+            tokenDto.accessLevel = accessLevel
 
-        const refreshToken: string = this.authJWT.createToken(
-            Token.Refresh,
-            tokenDto
-        );
-        const accessToken: string = this.authJWT.createToken(
-            Token.Access,
-            tokenDto
-        );
+            const refreshToken: string = this.authJWT.createToken(
+                Token.Refresh,
+                tokenDto
+            );
+            const accessToken: string = this.authJWT.createToken(
+                Token.Access,
+                tokenDto
+            );
 
-        const userDto: UserDTO = new UserDTO().set(
-            email,
-            password,
-            accessLevel,
-            authControllerDTOInput.getDevice(),
-            authControllerDTOInput.getIp(),
-            authControllerDTOInput.getAuthorizeDate(),
-            refreshToken,
-            accessToken
-        );
+            const userDto: UserDTO = new UserDTO().set(
+                email,
+                password,
+                accessLevel,
+                authControllerDTOInput.getDevice(),
+                authControllerDTOInput.getIp(),
+                authControllerDTOInput.getAuthorizeDate(),
+                refreshToken,
+                accessToken
+            );
 
-        this.authRepository.createUser(userDto);
+            this.authRepository.createUser(userDto);
 
-        const authControllerDtoOutput: AuthControllerDTOOutput = new AuthControllerDTOOutput().set(
-            refreshToken,
-            accessToken,
-            accessLevel
-        );
+            const authControllerDtoOutput: AuthControllerDTOOutput = new AuthControllerDTOOutput().set(
+                refreshToken,
+                accessToken,
+                accessLevel
+            );
 
-        return authControllerDtoOutput;
+            return authControllerDtoOutput;
+        } catch (err: any) {
+            ErrorHandler.throwError(err, "Something went wrong while adding user");
+        }
+
+        return new AuthControllerDTOOutput();
     }
 
 }

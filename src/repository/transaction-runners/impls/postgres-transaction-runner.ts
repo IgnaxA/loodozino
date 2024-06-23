@@ -12,13 +12,14 @@ export class PostgresTransactionRunner<T extends QueryConstructor> implements Tr
     private readonly start: string = "BEGIN;";
     private readonly end: string = "COMMIT;";
     private readonly rollback: string = "ROLLBACK;";
+    private callbackError: Error | null = null;
 
     constructor(driver: Driver) {
         this.pool = driver.getDriver();
     }
 
     public run(queries: Array<T>): void {
-
+        this.callbackError = null;
         this.pool.connect((err: Error | undefined, client: PoolClient | undefined): void => {
             if (err != undefined) {
                 throw err;
@@ -26,25 +27,34 @@ export class PostgresTransactionRunner<T extends QueryConstructor> implements Tr
 
             Assert.notNullOrUndefined(client, "Cant get pg client");
 
-            try {
-                client?.query(this.start);
+            client?.query(this.start);
 
-                queries.forEach((queryConstructor: T): void => {
-                    client?.query(queryConstructor.getQuery(), queryConstructor.getParameters());
+            queries.forEach((queryConstructor: T): void => {
+                client?.query(queryConstructor.getQuery(), queryConstructor.getParameters())
+                    .catch((err: any): void => {
+                        client?.query(this.rollback);
+                        this.callbackError = new Error("Migration failed");
                 });
+            });
 
-                client?.query(this.end);
+            client?.query(this.end);
 
-            } catch (err: any) {
-                client?.query(this.rollback);
-                ErrorHandler.throwError(err, "Transaction failed");
-            }
         });
+
+        if (this.callbackError !== null) {
+            throw this.callbackError;
+        }
+
     }
 
     public async runSingle<V>(query: QueryConstructor): Promise<V> {
-        const response: V = (await this.pool.query(query.getQuery(), query.getParameters())).rows[0] as V;
+        try {
+            const response: V = (await this.pool.query(query.getQuery(), query.getParameters())).rows[0] as V;
 
-        return response;
+            return response;
+        } catch (err: any) {
+            ErrorHandler.throwError(err, "Something went wrong while query execution");
+        }
+        return {} as V;
     }
 }
