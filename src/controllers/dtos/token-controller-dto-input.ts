@@ -18,8 +18,10 @@ export class TokenControllerDtoInput {
         return this;
     }
 
-    public setToken(token: string): void {
+    public setToken(token: string): TokenControllerDtoInput {
         this.token = token;
+
+        return this;
     }
 
     public getToken(): string {
