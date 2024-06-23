@@ -1,6 +1,6 @@
 export interface TimetableModel {
   id: string;
-  datetime: Date;
+  meetingDate: Date;
   place: string;
   additionalInfo: string;
   teacherLogin: string;
@@ -8,7 +8,7 @@ export interface TimetableModel {
 }
 
 export interface InputTimetableModel {
-  datetime: Date;
+  meetingDate: Date;
   place: string;
   additionalInfo: string;
   teacherLogin: string;

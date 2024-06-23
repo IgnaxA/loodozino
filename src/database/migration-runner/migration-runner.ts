@@ -69,7 +69,6 @@ export class MigrationRunner {
       .split(';');
 
     const preparedQueries: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
-    const preparedQueries: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
     for (let i: number = 0; i < queries.length; ++i) {
       if (queries[i] == null || queries[i].length == 0) {
