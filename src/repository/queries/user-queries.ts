@@ -1,7 +1,6 @@
-import {UserDTO} from "../../services/dtos/user-dto";
-import {SingleQueryConstructor} from "../query-constructors/extendors/single-query-constructor";
+import {QueryConstructor} from "../query-constructors/query-constructor";
 
 export interface UserQueries {
-    createUser(email: string, password: string, accessLevel: number): SingleQueryConstructor;
-    checkUser(email: string): SingleQueryConstructor;
+    createUser(email: string, password: string, accessLevel: number): QueryConstructor;
+    checkUser(email: string): QueryConstructor;
 }

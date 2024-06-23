@@ -32,6 +32,8 @@ export class TokenServiceImpl implements TokenService {
     public async getAccessToken(tokenControllerDtoInput: TokenControllerDtoInput): Promise<TokenControllerDtoOutput> {
         const token: string = tokenControllerDtoInput.getToken();
 
+
+
         return new TokenControllerDtoOutput();
     }
 }

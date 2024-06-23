@@ -35,10 +35,10 @@ export class TokenControllerImpl implements TokenController {
         try {
             const tokenDtoInput: TokenControllerDtoInput = this.getInputDTO(req);
 
-            const tokenDtoOutput: TokenControllerDtoOutput = await this.tokenService.verifyAndGet(tokenDtoInput);
+            const tokenDtoOutput: TokenControllerDtoOutput = await this.tokenService.getAccessToken(tokenDtoInput);
 
             res
-                .status(500)
+                .status(200)
                 .json({
                     "token": tokenDtoOutput.getToken()
                 });
@@ -51,7 +51,11 @@ export class TokenControllerImpl implements TokenController {
         try {
             const requestBody: TokenApiInput = req.body;
             const requestData: TokenControllerDtoInput = new TokenControllerDtoInput()
-                .set(requestBody.token);
+                .set(
+                    requestBody.token,
+                    requestBody.device ?? "",
+                    requestBody.ip ?? ""
+                );
 
             return requestData;
         } catch (err: any) {
@@ -64,4 +68,6 @@ export class TokenControllerImpl implements TokenController {
 
 interface TokenApiInput {
     token: string;
+    device: string | undefined;
+    ip: string | undefined;
 }
