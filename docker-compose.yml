@@ -1,7 +1,8 @@
 
 networks:
-  authservice_app:
+  app:
     driver: bridge
+    external: true
 
 services:
   authservice_db:
@@ -14,7 +15,7 @@ services:
       - POSTGRES_DB=${DB_NAME:-authservice_db}
       - PGPORT=5433
     networks:
-      authservice_app:
+      app:
     ports:
       - "5433:5433"
     healthcheck:
@@ -30,7 +31,7 @@ services:
     build:
       context: ./
     networks:
-      authservice_app:
+      app:
     depends_on:
       authservice_db:
         condition: service_healthy
