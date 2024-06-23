@@ -23,11 +23,10 @@ export class StudyProgramControllerImpl implements StudyProgramController {
         return;
       }
 
-      const studyProgramInput: CreateStudyProgramModel = req.body;
-      const studyProgramInputWithGuid: StudyProgramModel = this.createModelWithId(studyProgramInput);
-      await this.studyProgramService.createStudyProgram(studyProgramInputWithGuid);
+      const createStudyProgramModel: CreateStudyProgramModel = req.body;
+      const studyProgramModel: StudyProgramModel = await this.studyProgramService.createStudyProgram(createStudyProgramModel);
 
-      this.setFullAPIResponse(res, studyProgramInputWithGuid);
+      this.setFullAPIResponse(res, studyProgramModel);
 
     } catch (err: any) {
       ErrorHandler.setError(res, err);

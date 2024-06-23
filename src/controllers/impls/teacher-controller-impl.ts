@@ -21,11 +21,10 @@ export class TeacherControllerImpl implements TeacherController {
         return;
       }
 
-      const teacherInput: CreateTeacherModel = req.body;
-      const teacherInputWithGuid:TeacherModel = this.createModelWithId(teacherInput);
-      await this.teacherService.createTeacher(teacherInputWithGuid);
+      const createTeacherModel: CreateTeacherModel = req.body;
+      const teacherModel:TeacherModel = await this.teacherService.createTeacher(createTeacherModel);
 
-      this.setFullAPIResponse(res, teacherInputWithGuid);
+      this.setFullAPIResponse(res, teacherModel);
 
     } catch (err: any) {
       ErrorHandler.setError(res, err);

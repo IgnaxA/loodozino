@@ -1,10 +1,11 @@
 import { TeacherRepository } from "../teacher-repository";
-import { EditTeacherModel, TeacherModel } from "../../models/teacher-models";
+import { CreateTeacherModel, EditTeacherModel, TeacherModel } from "../../models/teacher-models";
 import { TransactionRunner } from "../../database/transaction-runners/transaction-runner";
 import { QueryConstructor } from "../../database/query-constructors/query-constructor";
 import { TeacherQueries } from "../queries/teacher-queries";
 import { SingleQueryConstructor } from "../../database/query-constructors/single-query-constructor";
 import { Assert } from "../../utils/assert";
+import { CreateStudentModel, StudentModel } from "../../models/student-models";
 
 export class TeacherRepositoryImpl implements TeacherRepository {
   private readonly transactionRunner: TransactionRunner<QueryConstructor>;
@@ -14,8 +15,10 @@ export class TeacherRepositoryImpl implements TeacherRepository {
     this.transactionRunner = transactionRunner;
     this.teacherQueries = teacherQueries;
   }
-  public async createTeacher(teacherModel: TeacherModel): Promise<void> {
+  public async createTeacher(createTeacherModel:CreateTeacherModel): Promise<TeacherModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
+
+    const teacherModel: TeacherModel = this.createModelWithId(createTeacherModel);
 
     queryConstructors.push(this.teacherQueries.createTeacher(
       teacherModel.id,
@@ -26,7 +29,20 @@ export class TeacherRepositoryImpl implements TeacherRepository {
       teacherModel.socials)
     );
 
-    await this.transactionRunner.run(queryConstructors);
+    const results = await this.transactionRunner.run(queryConstructors);
+
+    Assert.notNullOrUndefined(results, `Teacher could not be created`);
+
+    const teacherData = results[0][0];
+
+    return {
+      id: teacherData.id,
+      login: teacherData.login,
+      fullName: teacherData.full_name,
+      phoneNumber: teacherData.phone_number,
+      position: teacherData.position,
+      socials: teacherData.socials
+    };
   };
 
   public async getTeacherById(id: string): Promise<TeacherModel> {
@@ -141,6 +157,14 @@ export class TeacherRepositoryImpl implements TeacherRepository {
       phoneNumber: teacherData.phone_number,
       position: teacherData.position,
       socials: teacherData.socials
+    };
+  };
+
+  private createModelWithId (createTeacherModel: CreateTeacherModel): TeacherModel {
+    const guid: string = crypto.randomUUID();
+    return {
+      ...createTeacherModel,
+      id: guid,
     };
   };
 }

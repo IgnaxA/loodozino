@@ -1,7 +1,7 @@
-import { EditTeacherModel, TeacherModel } from "../models/teacher-models";
+import { CreateTeacherModel, EditTeacherModel, TeacherModel } from "../models/teacher-models";
 
 export interface TeacherRepository {
-  createTeacher(teacherModel: TeacherModel): Promise<void>;
+  createTeacher(createTeacherModel: CreateTeacherModel): Promise<TeacherModel>;
   getTeacherById(id: string): Promise<TeacherModel>;
   getAllTeachers(): Promise<Array<TeacherModel>>;
   editTeacher(editTeacherModel: EditTeacherModel): Promise<EditTeacherModel>;
