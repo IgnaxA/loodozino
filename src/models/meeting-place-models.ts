@@ -3,10 +3,12 @@ export interface MeetingPlaceModel {
   description: string;
   priority: boolean;
   teacherId: string;
+  offline: boolean;
 }
 
 export interface CreateMeetingPlaceModel {
   description: string;
   priority: boolean;
   teacherId: string;
+  offline: boolean;
 }

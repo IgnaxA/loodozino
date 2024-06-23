@@ -4,7 +4,8 @@ import { QueryConstructor } from "../../database/query-constructors/query-constr
 import { SingleQueryConstructor } from "../../database/query-constructors/single-query-constructor";
 import { Assert } from "../../utils/assert";
 import { DegreeLevelQueries } from "../queries/degree-level-queries";
-import { DegreeLevelModel } from "../../models/degree-level-models";
+import { CreateDegreeLevelModel, DegreeLevelModel } from "../../models/degree-level-models";
+import { CreateStudentModel, StudentModel } from "../../models/student-models";
 
 export class DegreeLevelRepositoryImpl implements DegreeLevelRepository {
   private readonly transactionRunner: TransactionRunner<QueryConstructor>;
@@ -14,15 +15,26 @@ export class DegreeLevelRepositoryImpl implements DegreeLevelRepository {
     this.transactionRunner = transactionRunner;
     this.degreeLevelQueries = degreeLevelQueries;
   }
-  public async createDegreeLevel(degreeLevelModel: DegreeLevelModel): Promise<void> {
+  public async createDegreeLevel(createDegreeLevelModel:CreateDegreeLevelModel): Promise<DegreeLevelModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
+
+    const degreeLevelModel: DegreeLevelModel = this.createModelWithId(createDegreeLevelModel);
 
     queryConstructors.push(this.degreeLevelQueries.createDegreeLevel(
       degreeLevelModel.id,
       degreeLevelModel.name)
     );
 
-    await this.transactionRunner.run(queryConstructors);
+    const results = await this.transactionRunner.run(queryConstructors);
+
+    Assert.notNullOrUndefined(results, `Degree level could not be created`);
+
+    const degreeLevelData = results[0][0];
+
+    return {
+      id: degreeLevelData.id,
+      name: degreeLevelData.name
+    };
   };
 
   public async getDegreeLevelById(id: string): Promise<DegreeLevelModel> {
@@ -95,6 +107,14 @@ export class DegreeLevelRepositoryImpl implements DegreeLevelRepository {
     return {
       id: degreeLevelData.id,
       name:degreeLevelData.name
+    };
+  };
+
+  private createModelWithId (createDegreeLevelModel: CreateDegreeLevelModel): DegreeLevelModel {
+    const guid: string = crypto.randomUUID();
+    return {
+      ...createDegreeLevelModel,
+      id: guid,
     };
   };
 }

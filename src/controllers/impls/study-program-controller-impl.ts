@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import { CreateDegreeLevelModel, DegreeLevelModel } from "../../models/degree-level-models";
 import { ErrorHandler } from "../../utils/error-handler";
 import { CreateStudyProgramModel, StudyProgramModel } from "../../models/study-program-models";
+import { ParseHelper } from "../../utils/parse-helper";
 
 export class StudyProgramControllerImpl implements StudyProgramController {
   private readonly studyProgramService: StudyProgramService;
@@ -15,6 +16,13 @@ export class StudyProgramControllerImpl implements StudyProgramController {
 
   public createStudyProgram = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const studyProgramInput: CreateStudyProgramModel = req.body;
       const studyProgramInputWithGuid: StudyProgramModel = this.createModelWithId(studyProgramInput);
       await this.studyProgramService.createStudyProgram(studyProgramInputWithGuid);
@@ -28,6 +36,13 @@ export class StudyProgramControllerImpl implements StudyProgramController {
 
   public getStudyProgramById = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const id: string = req.body.id;
       const studyProgramModel :StudyProgramModel = await this.studyProgramService.getStudyProgramById(id);
 
@@ -40,6 +55,13 @@ export class StudyProgramControllerImpl implements StudyProgramController {
 
   public getAllStudyPrograms = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const studyPrograms :Array<StudyProgramModel> = await this.studyProgramService.getAllStudyPrograms();
       this.setManyAPIResponse(res, studyPrograms);
     }
@@ -50,6 +72,13 @@ export class StudyProgramControllerImpl implements StudyProgramController {
 
   public editStudyProgram = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const studyProgram: StudyProgramModel = req.body;
       const updatedStudyProgram :StudyProgramModel = await this.studyProgramService.editStudyProgram(studyProgram);
       this.setFullAPIResponse(res, updatedStudyProgram);
@@ -61,6 +90,13 @@ export class StudyProgramControllerImpl implements StudyProgramController {
 
   public deleteStudyProgram = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const id: string = req.body.id;
       const studyProgram :StudyProgramModel = await this.studyProgramService.deleteStudyProgram(id);
 
@@ -89,5 +125,9 @@ export class StudyProgramControllerImpl implements StudyProgramController {
     res
       .status(200)
       .json(responseData);
+  }
+  private setUnableToAccessAPIResponse (res: Response): void {
+    res
+      .status(403);
   }
 }

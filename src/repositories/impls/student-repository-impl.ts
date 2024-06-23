@@ -1,5 +1,5 @@
 import { StudentRepository } from "../student-repository";
-import { EditStudentModel, StudentModel } from "../../models/student-models";
+import { CreateStudentModel, EditStudentModel, StudentModel } from "../../models/student-models";
 import { TransactionRunner } from "../../database/transaction-runners/transaction-runner";
 import { QueryConstructor } from "../../database/query-constructors/query-constructor";
 import { StudentQueries } from "../queries/student-queries";
@@ -14,8 +14,10 @@ export class StudentRepositoryImpl implements StudentRepository {
     this.transactionRunner = transactionRunner;
     this.studentQueries = studentQueries;
   }
-  public async createStudent(studentModel: StudentModel): Promise<void> {
+  public async createStudent(createStudentModel: CreateStudentModel): Promise<StudentModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
+
+    const studentModel: StudentModel = this.createModelWithId(createStudentModel);
 
     queryConstructors.push(this.studentQueries.createStudent(
       studentModel.id,
@@ -29,7 +31,23 @@ export class StudentRepositoryImpl implements StudentRepository {
       studentModel.socials)
     );
 
-    await this.transactionRunner.run(queryConstructors);
+    const results = await this.transactionRunner.run(queryConstructors);
+
+    Assert.notNullOrUndefined(results, `Student with login ${studentModel.login} have not been created`);
+
+    const studentData = results[0][0];
+
+    return {
+      id: studentData.id,
+      login: studentData.login,
+      fullName: studentData.fullName,
+      phoneNumber: studentData.phone_number,
+      studyProgramId: studentData.study_program_id,
+      degreeLevelId: studentData.degree_level_id,
+      course: studentData.course,
+      admissionYear: studentData.admission_year,
+      socials: studentData.socials
+    };
   };
 
   public async getStudentById(id: string): Promise<StudentModel> {
@@ -137,6 +155,42 @@ export class StudentRepositoryImpl implements StudentRepository {
       course: studentData.course,
       admissionYear: studentData.admission_year,
       socials: studentData.socials
+    };
+  };
+
+  public async getStudentByLogin(login: string): Promise<StudentModel> {
+    const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
+    queryConstructors.push(this.studentQueries.getStudentByLogin(login));
+    const results = await this.transactionRunner.run(queryConstructors);
+
+    if (!results) {
+      const guid: string = crypto.randomUUID();
+      queryConstructors.push(this.studentQueries.createStudentByLogin(guid, login));
+
+      const results = await this.transactionRunner.run(queryConstructors);
+      Assert.notNullOrUndefined(results, `Student with login ${login} could not been created`);
+    }
+
+    const studentData = results[0][0];
+
+    return {
+      id: studentData.id,
+      login:studentData.login,
+      fullName: studentData.full_name,
+      phoneNumber: studentData.phone_number,
+      studyProgramId: studentData.study_program_id,
+      degreeLevelId: studentData.degree_level_id,
+      course: studentData.course,
+      admissionYear: studentData.admission_year,
+      socials: studentData.socials
+    }
+  }
+
+  private createModelWithId (createStudentModel: CreateStudentModel): StudentModel {
+    const guid: string = crypto.randomUUID();
+    return {
+      ...createStudentModel,
+      id: guid,
     };
   };
 }

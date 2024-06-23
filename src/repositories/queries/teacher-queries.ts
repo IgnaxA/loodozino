@@ -6,4 +6,6 @@ export interface TeacherQueries {
   getAllTeachers(): SingleQueryConstructor;
   editTeacher(id: string, fullName: string, phoneNumber: string, position: string, socials: string): SingleQueryConstructor;
   deleteTeacher(id: string): SingleQueryConstructor;
+  getTeacherByLogin(login: string): SingleQueryConstructor;
+  createTeacherByLogin(id: string, login: string): SingleQueryConstructor;
 }

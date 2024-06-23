@@ -4,7 +4,7 @@ import { Assert } from "../../../utils/assert";
 
 export class MeetingPlaceQueriesPg implements MeetingPlaceQueries {
   private readonly create: string =
-    `INSERT INTO "meeting_places" (id, description, priority, teacher_id) VALUES ($1, $2, $3, $4);`;
+    `INSERT INTO "meeting_places" (id, description, priority, teacher_id, offline) VALUES ($1, $2, $3, $4, $5);`;
   private readonly edit: string =
     `UPDATE "meeting_places" SET description=$2, priority=$3, teacher_id=$4 WHERE id=$1 RETURNING *;`;
   private readonly delete: string =
@@ -14,9 +14,9 @@ export class MeetingPlaceQueriesPg implements MeetingPlaceQueries {
   private readonly getAll: string =
     'SELECT * FROM "meeting_places";';
   private readonly getAllByTeacher: string =
-    'SELECT * FROM "meeting_places" WHERE teacher_id=$1;';
+    'SELECT * FROM "meeting_places" WHERE teacher_id=$1 AND offline=$2;';
   private readonly getPriorityByTeacher: string =
-    'SELECT * FROM "meeting_places" WHERE priority=true AND teacher_id=$1;';
+    'SELECT * FROM "meeting_places" WHERE priority=true AND offline=$2 AND teacher_id=$1;';
   public createMeetingPlace(id: string, description: string, priority: boolean, teacherId: string): SingleQueryConstructor {
     Assert.notNullOrUndefined(id,"Meeting place id must not be null");
     Assert.notNullOrUndefined(description,"Meeting place description must not be null");
@@ -56,12 +56,12 @@ export class MeetingPlaceQueriesPg implements MeetingPlaceQueries {
     return queryConstructor;
   };
 
-  public getPriorityMeetingPlaceForTeacher(teacherId: string): SingleQueryConstructor {
+  public getPriorityMeetingPlace(teacherId: string, offline: boolean): SingleQueryConstructor {
     Assert.notNullOrUndefined(teacherId,"Meeting place teacherId must not be null");
 
     const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
 
-    const parameters: Array<any> = new Array<any>(teacherId);
+    const parameters: Array<any> = new Array<any>(teacherId, offline);
 
     queryConstructor.setQuery(this.getPriorityByTeacher);
     queryConstructor.setParameters(parameters);
@@ -69,12 +69,12 @@ export class MeetingPlaceQueriesPg implements MeetingPlaceQueries {
     return queryConstructor;
   };
 
-  public getAllMeetingPlacesByTeacher(teacherId: string): SingleQueryConstructor {
+  public getAllMeetingPlacesByTeacher(teacherId: string, offline: boolean): SingleQueryConstructor {
     Assert.notNullOrUndefined(teacherId,"Meeting place teacherId must not be null");
 
     const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
 
-    const parameters: Array<any> = new Array<any>(teacherId);
+    const parameters: Array<any> = new Array<any>(teacherId, offline);
 
     queryConstructor.setQuery(this.getAllByTeacher);
     queryConstructor.setParameters(parameters);

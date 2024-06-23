@@ -3,6 +3,8 @@ import { StudentService } from "../../services/student-service";
 import { Request, Response } from "express";
 import { CreateStudentModel, EditStudentModel, StudentModel } from "../../models/student-models";
 import { ErrorHandler } from "../../utils/error-handler";
+import { RequestHeaderDto } from "../dtos/request-header-dto";
+import { ParseHelper } from "../../utils/parse-helper";
 
 export class StudentControllerImpl implements StudentController {
   private readonly studentService: StudentService;
@@ -13,11 +15,17 @@ export class StudentControllerImpl implements StudentController {
 
   public createStudent = async(req: Request, res: Response): Promise<void> => {
     try {
-      const studentInput: CreateStudentModel = req.body;
-      const studentInputWithGuid:StudentModel = this.createModelWithId(studentInput);
-      await this.studentService.createStudent(studentInputWithGuid);
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
 
-      this.setFullAPIResponse(res, studentInputWithGuid);
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      const studentInput: CreateStudentModel = req.body;
+      const createdStudent: StudentModel = await this.studentService.createStudent(studentInput);
+
+      this.setFullAPIResponse(res, createdStudent);
 
     } catch (err: any) {
       ErrorHandler.setError(res, err);
@@ -26,6 +34,13 @@ export class StudentControllerImpl implements StudentController {
 
   public getStudentById = async(req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const id: string = req.body.id;
       const student :StudentModel = await this.studentService.getStudentById(id);
 
@@ -38,6 +53,13 @@ export class StudentControllerImpl implements StudentController {
 
   public getAllStudents = async(req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const students :Array<StudentModel> = await this.studentService.getAllStudents();
       this.setManyAPIResponse(res, students);
     }
@@ -48,6 +70,13 @@ export class StudentControllerImpl implements StudentController {
 
   public editStudent = async(req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const student: EditStudentModel = req.body;
       const updatedStudent :EditStudentModel = await this.studentService.editStudent(student);
       this.setEditAPIResponse(res, updatedStudent);
@@ -59,6 +88,13 @@ export class StudentControllerImpl implements StudentController {
 
   public deleteStudent = async(req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const id: string = req.body.id;
       const student :StudentModel = await this.studentService.deleteStudent(id);
 
@@ -69,13 +105,24 @@ export class StudentControllerImpl implements StudentController {
     }
   };
 
-  private createModelWithId (createStudentModel: CreateStudentModel): StudentModel {
-    const guid: string = crypto.randomUUID();
-    return {
-      ...createStudentModel,
-      id: guid,
-    };
-  };
+  public getStudentByLogin = async(req: Request, res: Response): Promise<void> => {
+    try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      const id: string = req.body.id;
+      const student :StudentModel = await this.studentService.getStudentByLogin(id);
+
+      this.setFullAPIResponse(res, student);
+    }
+    catch (err:any) {
+      ErrorHandler.setError(res, err);
+    }
+  }
 
   private setFullAPIResponse (res: Response, responseData: StudentModel): void {
     res
@@ -93,6 +140,11 @@ export class StudentControllerImpl implements StudentController {
     res
       .status(200)
       .json(responseData);
+  }
+
+  private setUnableToAccessAPIResponse (res: Response): void {
+    res
+      .status(403);
   }
 }
 

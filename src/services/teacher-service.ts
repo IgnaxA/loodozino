@@ -6,4 +6,5 @@ export interface TeacherService {
   getAllTeachers(): Promise<Array<TeacherModel>>;
   editTeacher(editTeacherModel: EditTeacherModel): Promise<EditTeacherModel>;
   deleteTeacher(id: string): Promise<TeacherModel>;
+  getTeacherByLogin(login: string): Promise<TeacherModel>;
 }

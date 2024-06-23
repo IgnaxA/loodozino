@@ -14,6 +14,20 @@ export class ErrorHandler {
 
   public static throwError(err: any, msg: string): void {
     Assert.isError(err);
-    throw new Error(msg);
+    const error: Error = err as Error;
+    let builder: string = msg;
+
+    builder += err === null
+      ? ""
+      : "\n"
+      + "Caused by:"
+      + " "
+      + error.message
+      + "\n"
+      + "With stacktrace:"
+      + " "
+      + error.stack;
+
+    throw new Error(builder);
   }
 }

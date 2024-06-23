@@ -11,18 +11,14 @@ export class StudentQueriesPg implements StudentQueries {
     `DELETE FROM "students" WHERE id=$1 RETURNING *;`;
   private readonly getById: string =
     'SELECT * FROM "students" WHERE id=$1 LIMIT 1;';
+  private readonly getByLogin: string =
+    'SELECT * FROM "students" WHERE login=$1 LIMIT 1;';
   private readonly getAll: string =
     'SELECT * FROM "students";';
 
   public createStudent(id: string, login: string, fullName: string, phoneNumber: string, studyProgramId: string, degreeLevelId: string, course: number, admissionYear: number, socials: string): SingleQueryConstructor {
     Assert.notNullOrUndefined(id, "Student id must not be null");
     Assert.notNullOrUndefined(login, "Student login must not be null");
-    Assert.notNullOrUndefined(fullName, "Student fullName must not be null");
-    Assert.notNullOrUndefined(phoneNumber, "Student phoneNumber must not be null");
-    Assert.notNullOrUndefined(studyProgramId, "Student studyProgramId must not be null");
-    Assert.notNullOrUndefined(degreeLevelId, "Student degreeLevelId must not be null");
-    Assert.notNullOrUndefined(socials, "Student socials must not be null");
-
 
     const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
 
@@ -60,12 +56,6 @@ export class StudentQueriesPg implements StudentQueries {
 
   public editStudent(id: string, fullName: string, phoneNumber: string, studyProgramId: string, degreeLevelId: string, course: number, admissionYear: number, socials: string): SingleQueryConstructor {
     Assert.notNullOrUndefined(id, "Student id must not be null");
-    Assert.notNullOrUndefined(fullName, "Student fullName must not be null");
-    Assert.notNullOrUndefined(phoneNumber, "Student phoneNumber must not be null");
-    Assert.notNullOrUndefined(studyProgramId, "Student studyProgramId must not be null");
-    Assert.notNullOrUndefined(degreeLevelId, "Student degreeLevelId must not be null");
-    Assert.notNullOrUndefined(socials, "Student socials must not be null");
-
 
     const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
 
@@ -88,4 +78,28 @@ export class StudentQueriesPg implements StudentQueries {
 
     return queryConstructor;
   };
+
+  public getStudentByLogin(login: string): SingleQueryConstructor {
+    Assert.notNullOrUndefined(login, "Student login must not be null or undefined");
+    const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
+
+    const parameters: Array<any> = new Array<any>(login);
+
+    queryConstructor.setQuery(this.getByLogin);
+    queryConstructor.setParameters(parameters);
+
+    return queryConstructor;
+  };
+
+  public createStudentByLogin(id: string, login: string): SingleQueryConstructor {
+    Assert.notNullOrUndefined(login, "Student login must not be null or undefined");
+    const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
+
+    const parameters: Array<any> = new Array<any>(id, login);
+
+    queryConstructor.setQuery(this.create);
+    queryConstructor.setParameters(parameters);
+
+    return queryConstructor;
+  }
 }

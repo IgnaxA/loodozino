@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { CreateDegreeLevelModel, DegreeLevelModel } from "../../models/degree-level-models";
 import { ErrorHandler } from "../../utils/error-handler";
 import { CreateMeetingPlaceModel, MeetingPlaceModel } from "../../models/meeting-place-models";
+import { ParseHelper } from "../../utils/parse-helper";
 
 export class MeetingPlaceControllerImpl implements MeetingPlaceController {
   private readonly meetingPlaceService: MeetingPlaceService;
@@ -14,6 +15,13 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public createMeetingPlace = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const meetingPlaceInput: CreateMeetingPlaceModel = req.body;
       const meetingPlaceInputWithGuid: MeetingPlaceModel = this.createModelWithId(meetingPlaceInput);
       await this.meetingPlaceService.createMeetingPlace(meetingPlaceInputWithGuid);
@@ -27,6 +35,13 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public getMeetingPlaceById = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const id: string = req.body.id;
       const meetingPlaceModel :MeetingPlaceModel = await this.meetingPlaceService.getMeetingPlaceById(id);
 
@@ -39,6 +54,13 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public getAllMeetingPlaces = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const meetingPlaces :Array<MeetingPlaceModel> = await this.meetingPlaceService.getAllMeetingPlaces();
       this.setManyAPIResponse(res, meetingPlaces);
     }
@@ -49,6 +71,13 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public getPriorityMeetingPlaceForTeacher = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const teacherId: string = req.body.teacherId;
       const meetingPlace :MeetingPlaceModel = await this.meetingPlaceService.getPriorityMeetingPlaceForTeacher(teacherId);
       this.setFullAPIResponse(res, meetingPlace);
@@ -60,6 +89,13 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public getAllMeetingPlacesByTeacher = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const teacherId: string = req.body.teacherId;
       const meetingPlace: Array<MeetingPlaceModel> = await this.meetingPlaceService.getAllMeetingPlacesByTeacher(teacherId);
       this.setManyAPIResponse(res, meetingPlace);
@@ -71,6 +107,13 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public editMeetingPlace = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const meetingPlace: MeetingPlaceModel = req.body;
       const updatedMeetingPlace: MeetingPlaceModel = await this.meetingPlaceService.editMeetingPlace(meetingPlace);
       this.setFullAPIResponse(res, updatedMeetingPlace);
@@ -82,6 +125,13 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
 
   public deleteMeetingPlace = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const id: string = req.body.id;
       const meetingPlace: MeetingPlaceModel = await this.meetingPlaceService.deleteMeetingPlace(id);
       this.setFullAPIResponse(res, meetingPlace);
@@ -89,14 +139,6 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
     catch (err:any) {
       ErrorHandler.setError(res, err);
     }
-  };
-
-  private createModelWithId (createMeetingPlaceModel: CreateMeetingPlaceModel): MeetingPlaceModel {
-    const guid: string = crypto.randomUUID();
-    return {
-      ...createMeetingPlaceModel,
-      id: guid,
-    };
   };
 
   private setFullAPIResponse (res: Response, responseData: MeetingPlaceModel): void {
@@ -109,5 +151,9 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
     res
       .status(200)
       .json(responseData);
+  }
+  private setUnableToAccessAPIResponse (res: Response): void {
+    res
+      .status(403);
   }
 }

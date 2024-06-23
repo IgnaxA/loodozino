@@ -1,7 +1,7 @@
-import { MeetingPlaceModel } from "../models/meeting-place-models";
+import { CreateMeetingPlaceModel, MeetingPlaceModel } from "../models/meeting-place-models";
 
 export interface MeetingPlaceService {
-  createMeetingPlace(meetingPlaceModel: MeetingPlaceModel): Promise<MeetingPlaceModel>;
+  createMeetingPlace(createMeetingPlaceModel: CreateMeetingPlaceModel): Promise<MeetingPlaceModel>;
   getMeetingPlaceById(id: string): Promise<MeetingPlaceModel>;
   getAllMeetingPlaces(): Promise<Array<MeetingPlaceModel>>;
   getPriorityMeetingPlaceForTeacher(teacherId: string): Promise<MeetingPlaceModel>;

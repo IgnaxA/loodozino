@@ -1,5 +1,5 @@
 import { MeetingPlaceRepository } from "../meeting-place-repository";
-import { MeetingPlaceModel } from "../../models/meeting-place-models";
+import { CreateMeetingPlaceModel, MeetingPlaceModel } from "../../models/meeting-place-models";
 import { TransactionRunner } from "../../database/transaction-runners/transaction-runner";
 import { QueryConstructor } from "../../database/query-constructors/query-constructor";
 import { DegreeLevelQueries } from "../queries/degree-level-queries";
@@ -15,17 +15,32 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
     this.transactionRunner = transactionRunner;
     this.meetingPlaceQueries = meetingPlaceQueries;
   }
-  public async createMeetingPlace(meetingPlaceModel: MeetingPlaceModel): Promise<void> {
+  public async createMeetingPlace(createMeetingPlaceModel: CreateMeetingPlaceModel): Promise<MeetingPlaceModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
+
+    const meetingPlaceModel: MeetingPlaceModel = this.createModelWithId(createMeetingPlaceModel);
 
     queryConstructors.push(this.meetingPlaceQueries.createMeetingPlace(
       meetingPlaceModel.id,
       meetingPlaceModel.description,
       meetingPlaceModel.priority,
-      meetingPlaceModel.teacherId)
+      meetingPlaceModel.teacherId,
+      meetingPlaceModel.offline)
     );
 
-    await this.transactionRunner.run(queryConstructors);
+    const results = await this.transactionRunner.run(queryConstructors);
+
+    Assert.notNullOrUndefined(results, `Meeting place could not be created`);
+
+    const meetingPlaceData = results[0][0];
+
+    return {
+      id: meetingPlaceData.id,
+      description: meetingPlaceData.description,
+      priority: meetingPlaceData.priority,
+      teacherId: meetingPlaceData.teacher_id,
+      offline: meetingPlaceData.offline
+    };
   };
 
   public async getMeetingPlaceById(id: string): Promise<MeetingPlaceModel> {
@@ -43,7 +58,8 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       id: meetingPlaceData.id,
       description: meetingPlaceData.description,
       priority: meetingPlaceData.priority,
-      teacherId: meetingPlaceData.teacher_id
+      teacherId: meetingPlaceData.teacher_id,
+      offline: meetingPlaceData.offline
     };
   };
 
@@ -62,20 +78,21 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       id: data.id,
       description: data.description,
       priority: data.priority,
-      teacherId: data.teacher_id
+      teacherId: data.teacher_id,
+      offline: meetingPlaceData.offline
     }));
 
     return meetingPlaceModels;
   };
 
-  public async getPriorityMeetingPlaceForTeacher(teacherId: string): Promise<MeetingPlaceModel> {
+  public async getPriorityMeetingPlaceForTeacher(teacherId: string, offline: boolean): Promise<MeetingPlaceModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
-    queryConstructors.push(this.meetingPlaceQueries.getPriorityMeetingPlaceForTeacher(teacherId));
+    queryConstructors.push(this.meetingPlaceQueries.getPriorityMeetingPlace(teacherId, offline));
 
     const results = await this.transactionRunner.run(queryConstructors);
 
-    Assert.notNullOrUndefined(results, `Meeting place with Teacher ID ${teacherId} not found`);
+    Assert.notNullOrUndefined(results, `Priority with 'offline:${offline}' meeting place with Teacher ID ${teacherId} not found`);
 
     const meetingPlaceData = results[0][0];
 
@@ -83,18 +100,19 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       id: meetingPlaceData.id,
       description: meetingPlaceData.description,
       priority: meetingPlaceData.priority,
-      teacherId: meetingPlaceData.teacher_id
+      teacherId: meetingPlaceData.teacher_id,
+      offline: meetingPlaceData.offline
     };
   };
 
-  public async getAllMeetingPlacesByTeacher(teacherId: string): Promise<Array<MeetingPlaceModel>> {
+  public async getAllMeetingPlacesByTeacher(teacherId: string, offline: boolean): Promise<Array<MeetingPlaceModel>> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
-    queryConstructors.push(this.meetingPlaceQueries.getAllMeetingPlacesByTeacher(teacherId));
+    queryConstructors.push(this.meetingPlaceQueries.getAllMeetingPlacesByTeacher(teacherId, offline));
 
     const results = await this.transactionRunner.run(queryConstructors);
 
-    Assert.notNullOrUndefined(results, `Meeting place with Teacher ID ${teacherId} not found`);
+    Assert.notNullOrUndefined(results, `Meeting place with 'offline:${offline}' and Teacher ID ${teacherId} not found`);
 
     const meetingPlaceData = results[0];
 
@@ -102,7 +120,8 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       id: data.id,
       description: data.description,
       priority: data.priority,
-      teacherId: data.teacher_id
+      teacherId: data.teacher_id,
+      offline: meetingPlaceData.offline
     }));
 
     return meetingPlaceModels;
@@ -128,7 +147,8 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       id: meetingPlaceData.id,
       description: meetingPlaceData.description,
       priority: meetingPlaceData.priority,
-      teacherId: meetingPlaceData.teacher_id
+      teacherId: meetingPlaceData.teacher_id,
+      offline: meetingPlaceData.offline
     };
   };
 
@@ -147,7 +167,16 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       id: meetingPlaceData.id,
       description: meetingPlaceData.description,
       priority: meetingPlaceData.priority,
-      teacherId: meetingPlaceData.teacher_id
+      teacherId: meetingPlaceData.teacher_id,
+      offline: meetingPlaceData.offline
+    };
+  };
+
+  private createModelWithId (createMeetingPlaceModel: CreateMeetingPlaceModel): MeetingPlaceModel {
+    const guid: string = crypto.randomUUID();
+    return {
+      ...createMeetingPlaceModel,
+      id: guid,
     };
   };
 }

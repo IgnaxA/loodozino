@@ -2,9 +2,10 @@ import { StudyProgramRepository } from "../study-program-repository";
 import { TransactionRunner } from "../../database/transaction-runners/transaction-runner";
 import { QueryConstructor } from "../../database/query-constructors/query-constructor";
 import { StudyProgramQueries } from "../queries/study-program-queries";
-import { StudyProgramModel } from "../../models/study-program-models";
+import { CreateStudyProgramModel, StudyProgramModel } from "../../models/study-program-models";
 import { SingleQueryConstructor } from "../../database/query-constructors/single-query-constructor";
 import { Assert } from "../../utils/assert";
+import { CreateStudentModel, StudentModel } from "../../models/student-models";
 
 export class StudyProgramRepositoryImpl implements StudyProgramRepository {
   private readonly transactionRunner: TransactionRunner<QueryConstructor>;
@@ -15,15 +16,26 @@ export class StudyProgramRepositoryImpl implements StudyProgramRepository {
     this.studyProgramQueries = studyProgramQueries;
   }
 
-  public async createStudyProgram(studyProgramModel: StudyProgramModel): Promise<void> {
+  public async createStudyProgram(createStudyProgramModel:CreateStudyProgramModel): Promise<StudyProgramModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
+
+    const studyProgramModel: StudyProgramModel = this.createModelWithId(createStudyProgramModel);
 
     queryConstructors.push(this.studyProgramQueries.createStudyProgram(
       studyProgramModel.id,
       studyProgramModel.name)
     );
 
-    await this.transactionRunner.run(queryConstructors);
+    const results = await this.transactionRunner.run(queryConstructors);
+
+    Assert.notNullOrUndefined(results, `Study program could not be created`);
+
+    const studyProgramData = results[0][0];
+
+    return {
+      id: studyProgramData.id,
+      name: studyProgramData.name
+    };
   };
 
   public async getStudyProgramById(id: string): Promise<StudyProgramModel> {
@@ -96,6 +108,14 @@ export class StudyProgramRepositoryImpl implements StudyProgramRepository {
     return {
       id: studyProgramData.id,
       name: studyProgramData.name
+    };
+  };
+
+  private createModelWithId (createStudyProgramModel: CreateStudyProgramModel): StudyProgramModel {
+    const guid: string = crypto.randomUUID();
+    return {
+      ...createStudyProgramModel,
+      id: guid,
     };
   };
 }

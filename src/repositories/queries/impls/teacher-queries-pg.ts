@@ -13,13 +13,11 @@ export class TeacherQueriesPg implements TeacherQueries {
     'SELECT * FROM "teachers" WHERE id=$1 LIMIT 1;';
   private readonly getAll: string =
     'SELECT * FROM "teachers";';
+  private readonly getByLogin: string =
+    'SELECT * FROM "teachers" WHERE id=$1;';
   public createTeacher(id: string, login: string, fullName: string, phoneNumber: string, position: string, socials: string): SingleQueryConstructor {
     Assert.notNullOrUndefined(id, "Teacher id must not be null");
     Assert.notNullOrUndefined(login, "Teacher login must not be null");
-    Assert.notNullOrUndefined(fullName, "Teacher fullName must not be null");
-    Assert.notNullOrUndefined(phoneNumber, "Teacher phoneNumber must not be null");
-    Assert.notNullOrUndefined(position, "Teacher position must not be null");
-    Assert.notNullOrUndefined(socials, "Teacher socials must not be null");
 
     const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
 
@@ -57,10 +55,6 @@ export class TeacherQueriesPg implements TeacherQueries {
 
   public editTeacher(id: string, fullName: string, phoneNumber: string, position: string, socials: string): SingleQueryConstructor {
     Assert.notNullOrUndefined(id, "Teacher id must not be null");
-    Assert.notNullOrUndefined(fullName, "Teacher fullName must not be null");
-    Assert.notNullOrUndefined(phoneNumber, "Teacher phoneNumber must not be null");
-    Assert.notNullOrUndefined(position, "Teacher position must not be null");
-    Assert.notNullOrUndefined(socials, "Teacher socials must not be null");
 
     const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
 
@@ -80,6 +74,33 @@ export class TeacherQueriesPg implements TeacherQueries {
     const parameters: Array<any> = new Array<any>(id);
 
     queryConstructor.setQuery(this.delete);
+    queryConstructor.setParameters(parameters);
+
+    return queryConstructor;
+  };
+
+  public getTeacherByLogin(login: string): SingleQueryConstructor {
+    Assert.notNullOrUndefined(login, "Teacher login must not be null or undefined");
+
+    const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
+
+    const parameters: Array<any> = new Array<any>(login);
+
+    queryConstructor.setQuery(this.getByLogin);
+    queryConstructor.setParameters(parameters);
+
+    return queryConstructor;
+  };
+
+  public createTeacherByLogin(id: string, login: string): SingleQueryConstructor {
+    Assert.notNullOrUndefined(login, "Teacher login must not be null or undefined");
+    Assert.notNullOrUndefined(id, "Teacher id must not be null or undefined");
+
+    const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
+
+    const parameters: Array<any> = new Array<any>(id, login);
+
+    queryConstructor.setQuery(this.create);
     queryConstructor.setParameters(parameters);
 
     return queryConstructor;

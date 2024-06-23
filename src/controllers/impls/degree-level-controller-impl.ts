@@ -3,6 +3,7 @@ import { ErrorHandler } from "../../utils/error-handler";
 import { CreateDegreeLevelModel, DegreeLevelModel } from "../../models/degree-level-models";
 import { Request, Response } from "express";
 import { DegreeLevelService } from "../../services/degree-level-service";
+import { ParseHelper } from "../../utils/parse-helper";
 
 export class DegreeLevelControllerImpl implements DegreeLevelController {
   private readonly degreeLevelService: DegreeLevelService;
@@ -12,6 +13,13 @@ export class DegreeLevelControllerImpl implements DegreeLevelController {
   }
   public createDegreeLevel = async(req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const degreeLevelInput: CreateDegreeLevelModel = req.body;
       const degreeLevelInputWithGuid: DegreeLevelModel = this.createModelWithId(degreeLevelInput);
       await this.degreeLevelService.createDegreeLevel(degreeLevelInputWithGuid);
@@ -25,6 +33,13 @@ export class DegreeLevelControllerImpl implements DegreeLevelController {
 
   public getDegreeLevelById = async(req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const id: string = req.body.id;
       const degreeLevelModel :DegreeLevelModel = await this.degreeLevelService.getDegreeLevelById(id);
 
@@ -37,6 +52,13 @@ export class DegreeLevelControllerImpl implements DegreeLevelController {
 
   public getAllDegreeLevels = async(req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const degreeLevels :Array<DegreeLevelModel> = await this.degreeLevelService.getAllDegreeLevels();
       this.setManyAPIResponse(res, degreeLevels);
     }
@@ -47,6 +69,13 @@ export class DegreeLevelControllerImpl implements DegreeLevelController {
 
   public editDegreeLevel = async(req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const degreeLevel: DegreeLevelModel = req.body;
       const updatedDegreeLevel :DegreeLevelModel = await this.degreeLevelService.editDegreeLevel(degreeLevel);
       this.setFullAPIResponse(res, updatedDegreeLevel);
@@ -58,8 +87,15 @@ export class DegreeLevelControllerImpl implements DegreeLevelController {
 
   public deleteDegreeLevel = async(req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const id: string = req.body.id;
-      const degreeLevel :DegreeLevelModel = await this.degreeLevelService.deleteDegreeLevel(id);
+      const degreeLevel: DegreeLevelModel = await this.degreeLevelService.deleteDegreeLevel(id);
 
       this.setFullAPIResponse(res, degreeLevel);
     }
@@ -86,5 +122,9 @@ export class DegreeLevelControllerImpl implements DegreeLevelController {
     res
       .status(200)
       .json(responseData);
+  }
+  private setUnableToAccessAPIResponse (res: Response): void {
+    res
+      .status(403);
   }
 }

@@ -119,4 +119,28 @@ export class TeacherRepositoryImpl implements TeacherRepository {
       socials: teacherData.socials
     };
   };
+
+  public async getTeacherByLogin(login: string): Promise<TeacherModel> {
+    const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
+    queryConstructors.push(this.teacherQueries.getTeacherByLogin(login));
+    const results = await this.transactionRunner.run(queryConstructors);
+
+    if (!results) {
+      const guid: string = crypto.randomUUID();
+      queryConstructors.push(this.teacherQueries.createTeacherByLogin(guid, login));
+
+      const results = await this.transactionRunner.run(queryConstructors);
+    }
+
+    const teacherData = results[0][0];
+
+    return {
+      id: teacherData.id,
+      login:teacherData.login,
+      fullName: teacherData.full_name,
+      phoneNumber: teacherData.phone_number,
+      position: teacherData.position,
+      socials: teacherData.socials
+    };
+  };
 }

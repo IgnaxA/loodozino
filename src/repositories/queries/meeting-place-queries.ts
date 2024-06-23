@@ -1,11 +1,11 @@
 import { SingleQueryConstructor } from "../../database/query-constructors/single-query-constructor";
 
 export interface MeetingPlaceQueries {
-  createMeetingPlace(id: string, description: string, priority: boolean, teacherId: string): SingleQueryConstructor;
+  createMeetingPlace(id: string, description: string, priority: boolean, teacherId: string, offline: boolean): SingleQueryConstructor;
   getMeetingPlaceById(id: string): SingleQueryConstructor;
   getAllMeetingPlaces(): SingleQueryConstructor;
-  getPriorityMeetingPlaceForTeacher(teacherId: string): SingleQueryConstructor;
-  getAllMeetingPlacesByTeacher(teacherId: string): SingleQueryConstructor;
+  getPriorityMeetingPlace(teacherId: string, offline: boolean): SingleQueryConstructor;
+  getAllMeetingPlacesByTeacher(teacherId: string, offline: boolean)
   editMeetingPlace(id: string, description: string, priority: boolean, teacherId: string): SingleQueryConstructor;
   deleteMeetingPlace(id: string): SingleQueryConstructor;
 }

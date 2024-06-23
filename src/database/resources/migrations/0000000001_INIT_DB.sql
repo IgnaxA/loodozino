@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS "meeting_places" (
   "id" uuid PRIMARY KEY,
   "description" varchar(400),
   "priority" bool,
-  "teacher_id" uuid
+  "teacher_id" uuid,
+  "offline" bool
 );
 
 CREATE TABLE IF NOT EXISTS "study_programs" (
@@ -36,8 +37,8 @@ CREATE TABLE IF NOT EXISTS "degree_levels" (
   "name" varchar(100)
 );
 
-ALTER TABLE "meeting_places" ADD FOREIGN KEY ("teacher_id") REFERENCES "teachers" ("id");
+ALTER TABLE "meeting_places" ADD FOREIGN KEY ("teacher_id") REFERENCES "teachers" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE "students" ADD FOREIGN KEY ("study_program_id") REFERENCES "study_programs" ("id");
+ALTER TABLE "students" ADD FOREIGN KEY ("study_program_id") REFERENCES "study_programs" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE "students" ADD FOREIGN KEY ("degree_level_id") REFERENCES "degree_levels" ("id");
+ALTER TABLE "students" ADD FOREIGN KEY ("degree_level_id") REFERENCES "degree_levels" ("id") ON UPDATE CASCADE ON DELETE CASCADE;

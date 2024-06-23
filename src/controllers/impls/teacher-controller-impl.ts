@@ -3,6 +3,7 @@ import { TeacherService } from "../../services/teacher-service";
 import { Request, Response } from "express";
 import { CreateTeacherModel, EditTeacherModel, TeacherModel } from "../../models/teacher-models";
 import { ErrorHandler } from "../../utils/error-handler";
+import { ParseHelper } from "../../utils/parse-helper";
 
 export class TeacherControllerImpl implements TeacherController {
   private readonly teacherService: TeacherService;
@@ -13,6 +14,13 @@ export class TeacherControllerImpl implements TeacherController {
 
   public createTeacher = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const teacherInput: CreateTeacherModel = req.body;
       const teacherInputWithGuid:TeacherModel = this.createModelWithId(teacherInput);
       await this.teacherService.createTeacher(teacherInputWithGuid);
@@ -26,6 +34,13 @@ export class TeacherControllerImpl implements TeacherController {
 
   public getTeacherById = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const id: string = req.body.id;
       const teacher :TeacherModel = await this.teacherService.getTeacherById(id);
 
@@ -38,6 +53,13 @@ export class TeacherControllerImpl implements TeacherController {
 
   public getAllTeachers = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const teachers :Array<TeacherModel> = await this.teacherService.getAllTeachers();
 
       this.setManyAPIResponse(res, teachers);
@@ -49,6 +71,13 @@ export class TeacherControllerImpl implements TeacherController {
 
   public editTeacher = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const teacher: EditTeacherModel = req.body;
       const updatedTeacher :EditTeacherModel = await this.teacherService.editTeacher(teacher);
 
@@ -61,8 +90,34 @@ export class TeacherControllerImpl implements TeacherController {
 
   public deleteTeacher = async (req: Request, res: Response): Promise<void> => {
     try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
       const id: string = req.body.id;
       const teacher :TeacherModel = await this.teacherService.deleteTeacher(id);
+
+      this.setFullAPIResponse(res, teacher);
+    }
+    catch (err:any) {
+      ErrorHandler.setError(res, err);
+    }
+  };
+
+  public getTeacherByLogin = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const isTokenExpired:boolean = ParseHelper.parseBoolean(req.get("isTokenExpired"));
+
+      if (isTokenExpired) {
+        this.setUnableToAccessAPIResponse(res);
+        return;
+      }
+
+      const login: string = req.body.id;
+      const teacher :TeacherModel = await this.teacherService.getTeacherByLogin(login);
 
       this.setFullAPIResponse(res, teacher);
     }
@@ -95,5 +150,9 @@ export class TeacherControllerImpl implements TeacherController {
     res
       .status(200)
       .json(responseData);
+  }
+  private setUnableToAccessAPIResponse (res: Response): void {
+    res
+      .status(403);
   }
 }
