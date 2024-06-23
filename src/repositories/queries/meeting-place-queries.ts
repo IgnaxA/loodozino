@@ -6,6 +6,6 @@ export interface MeetingPlaceQueries {
   getAllMeetingPlaces(): SingleQueryConstructor;
   getPriorityMeetingPlace(teacherLogin: string, offline: boolean): SingleQueryConstructor;
   getAllMeetingPlacesByTeacher(teacherLogin: string, offline: boolean): SingleQueryConstructor;
-  editMeetingPlace(id: string, description: string, priority: boolean, teacherLogin: string): SingleQueryConstructor;
+  editMeetingPlace(id: string, description: string, priority: boolean, teacherLogin: string, offline: boolean): SingleQueryConstructor;
   deleteMeetingPlace(id: string): SingleQueryConstructor;
 }

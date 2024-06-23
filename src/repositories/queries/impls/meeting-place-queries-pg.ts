@@ -6,7 +6,7 @@ export class MeetingPlaceQueriesPg implements MeetingPlaceQueries {
   private readonly create: string =
     `INSERT INTO "meeting_places" (id, description, priority, teacher_login, offline) VALUES ($1, $2, $3, $4, $5) RETURNING *;`;
   private readonly edit: string =
-    `UPDATE "meeting_places" SET description=$2, priority=$3, teacher_login=$4 WHERE id=$1 RETURNING *;`;
+    `UPDATE "meeting_places" SET description=$2, priority=$3, teacher_login=$4, offline=$5 WHERE id=$1 RETURNING *;`;
   private readonly delete: string =
     `DELETE FROM "meeting_places" WHERE id=$1 RETURNING *;`;
   private readonly getById: string =
@@ -17,14 +17,14 @@ export class MeetingPlaceQueriesPg implements MeetingPlaceQueries {
     'SELECT * FROM "meeting_places" WHERE teacher_login=$1 AND offline=$2;';
   private readonly getPriorityByTeacher: string =
     'SELECT * FROM "meeting_places" WHERE priority=true AND offline=$2 AND teacher_login=$1;';
-  public createMeetingPlace(id: string, description: string, priority: boolean, teacherLogin: string): SingleQueryConstructor {
+  public createMeetingPlace(id: string, description: string, priority: boolean, teacherLogin: string, offline: boolean): SingleQueryConstructor {
     Assert.notNullOrUndefined(id,"Meeting place id must not be null");
     Assert.notNullOrUndefined(description,"Meeting place description must not be null");
     Assert.notNullOrUndefined(teacherLogin,"Meeting place teacher login must not be null");
 
     const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
 
-    const parameters: Array<any> = new Array<any>(id, description, priority, teacherLogin);
+    const parameters: Array<any> = new Array<any>(id, description, priority, teacherLogin, offline);
 
     queryConstructor.setQuery(this.create);
     queryConstructor.setParameters(parameters);
@@ -82,14 +82,14 @@ export class MeetingPlaceQueriesPg implements MeetingPlaceQueries {
     return queryConstructor;
   };
 
-  public editMeetingPlace(id: string, description: string, priority: boolean, teacherLogin: string): SingleQueryConstructor {
+  public editMeetingPlace(id: string, description: string, priority: boolean, teacherLogin: string, offline: boolean): SingleQueryConstructor {
     Assert.notNullOrUndefined(id,"Meeting place id must not be null");
     Assert.notNullOrUndefined(description,"Meeting place description must not be null");
     Assert.notNullOrUndefined(teacherLogin,"Meeting place teacher login must not be null");
 
     const queryConstructor: SingleQueryConstructor = new SingleQueryConstructor();
 
-    const parameters: Array<any> = new Array<any>(id, description, priority, teacherLogin);
+    const parameters: Array<any> = new Array<any>(id, description, priority, teacherLogin, offline);
 
     queryConstructor.setQuery(this.edit);
     queryConstructor.setParameters(parameters);

@@ -1,5 +1,5 @@
 import { MeetingPlaceRepository } from "../meeting-place-repository";
-import { CreateMeetingPlaceModel, MeetingPlaceModel } from "../../models/meeting-place-models";
+import { CreateMeetingPlaceModel, EditMeetingPlaceModel, MeetingPlaceModel } from "../../models/meeting-place-models";
 import { TransactionRunner } from "../../database/transaction-runners/transaction-runner";
 import { QueryConstructor } from "../../database/query-constructors/query-constructor";
 import { DegreeLevelQueries } from "../queries/degree-level-queries";
@@ -15,10 +15,10 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
     this.transactionRunner = transactionRunner;
     this.meetingPlaceQueries = meetingPlaceQueries;
   }
-  public async createMeetingPlace(createMeetingPlaceModel: CreateMeetingPlaceModel): Promise<MeetingPlaceModel> {
+  public async createMeetingPlace(createMeetingPlaceModel: CreateMeetingPlaceModel, teacherLogin: string): Promise<MeetingPlaceModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
-    const meetingPlaceModel: MeetingPlaceModel = this.createModelWithId(createMeetingPlaceModel);
+    const meetingPlaceModel: MeetingPlaceModel = this.createModelWithId(createMeetingPlaceModel, teacherLogin);
 
     queryConstructors.push(this.meetingPlaceQueries.createMeetingPlace(
       meetingPlaceModel.id,
@@ -79,7 +79,7 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       description: data.description,
       priority: data.priority,
       teacherLogin: data.teacher_login,
-      offline: meetingPlaceData.offline
+      offline: data.offline
     }));
 
     return meetingPlaceModels;
@@ -121,20 +121,21 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
       description: data.description,
       priority: data.priority,
       teacherLogin: data.teacher_login,
-      offline: meetingPlaceData.offline
+      offline: data.offline
     }));
 
     return meetingPlaceModels;
   };
 
-  public async editMeetingPlace(meetingPlaceModel: MeetingPlaceModel): Promise<MeetingPlaceModel> {
+  public async editMeetingPlace(meetingPlaceModel: EditMeetingPlaceModel, teacherLogin: string): Promise<MeetingPlaceModel> {
     const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
 
     queryConstructors.push(this.meetingPlaceQueries.editMeetingPlace(
       meetingPlaceModel.id,
       meetingPlaceModel.description,
       meetingPlaceModel.priority,
-      meetingPlaceModel.teacherLogin)
+      teacherLogin,
+      meetingPlaceModel.offline)
     );
 
     const results = await this.transactionRunner.run(queryConstructors);
@@ -172,11 +173,12 @@ export class MeetingPlaceRepositoryImpl implements MeetingPlaceRepository {
     };
   };
 
-  private createModelWithId (createMeetingPlaceModel: CreateMeetingPlaceModel): MeetingPlaceModel {
+  private createModelWithId (createMeetingPlaceModel: CreateMeetingPlaceModel, teacherLogin: string): MeetingPlaceModel {
     const guid: string = crypto.randomUUID();
     return {
       ...createMeetingPlaceModel,
       id: guid,
+      teacherLogin: teacherLogin
     };
   };
 }

@@ -2,7 +2,7 @@ import { MeetingPlaceController } from "../meeting-place-controller";
 import { MeetingPlaceService } from "../../services/meeting-place-service";
 import { Request, Response } from "express";
 import { ErrorHandler } from "../../utils/error-handler";
-import { CreateMeetingPlaceModel, MeetingPlaceModel } from "../../models/meeting-place-models";
+import { CreateMeetingPlaceModel, EditMeetingPlaceModel, MeetingPlaceModel } from "../../models/meeting-place-models";
 import { verifyUser } from "../../middlewares/verify-user";
 import { CreateDegreeLevelModel, DegreeLevelModel } from "../../models/degree-level-models";
 import { AuthServiceResponse } from "../dtos/auth-service-response";
@@ -28,8 +28,9 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
         return;
       }
 
+      const teacherLogin: string = authStatus.login;
       const createMeetingPlaceModel: CreateMeetingPlaceModel = req.body;
-      const meetingPlaceModel: MeetingPlaceModel = await this.meetingPlaceService.createMeetingPlace(createMeetingPlaceModel);
+      const meetingPlaceModel: MeetingPlaceModel = await this.meetingPlaceService.createMeetingPlace(createMeetingPlaceModel, teacherLogin);
 
       this.setFullAPIResponse(res, meetingPlaceModel);
 
@@ -146,8 +147,9 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
         return;
       }
 
-      const meetingPlace: MeetingPlaceModel = req.body;
-      const updatedMeetingPlace: MeetingPlaceModel = await this.meetingPlaceService.editMeetingPlace(meetingPlace);
+      const teacherLogin: string = authStatus.login;
+      const meetingPlace: EditMeetingPlaceModel = req.body;
+      const updatedMeetingPlace: MeetingPlaceModel = await this.meetingPlaceService.editMeetingPlace(meetingPlace, teacherLogin);
       this.setFullAPIResponse(res, updatedMeetingPlace);
     }
     catch (err:any) {

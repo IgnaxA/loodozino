@@ -1,7 +1,7 @@
 import { MeetingPlaceService } from "../meeting-place-service";
 import { StudyProgramRepository } from "../../repositories/study-program-repository";
 import { MeetingPlaceRepository } from "../../repositories/meeting-place-repository";
-import { CreateMeetingPlaceModel, MeetingPlaceModel } from "../../models/meeting-place-models";
+import { CreateMeetingPlaceModel, EditMeetingPlaceModel, MeetingPlaceModel } from "../../models/meeting-place-models";
 import { DegreeLevelModel } from "../../models/degree-level-models";
 import { Assert } from "../../utils/assert";
 import { ErrorHandler } from "../../utils/error-handler";
@@ -13,8 +13,8 @@ export class MeetingPlaceServiceImpl implements MeetingPlaceService {
     this.meetingPlaceRepository = meetingPlaceRepository;
   }
 
-  public async createMeetingPlace(createMeetingPlaceModel:CreateMeetingPlaceModel): Promise<MeetingPlaceModel> {
-      const meetingPlaceModel: MeetingPlaceModel = await this.meetingPlaceRepository.createMeetingPlace(createMeetingPlaceModel);
+  public async createMeetingPlace(createMeetingPlaceModel:CreateMeetingPlaceModel, teacherLogin: string): Promise<MeetingPlaceModel> {
+      const meetingPlaceModel: MeetingPlaceModel = await this.meetingPlaceRepository.createMeetingPlace(createMeetingPlaceModel, teacherLogin);
       Assert.notNullOrUndefined(meetingPlaceModel, `Meeting place could not be created`);
       return meetingPlaceModel;
   };
@@ -43,8 +43,8 @@ export class MeetingPlaceServiceImpl implements MeetingPlaceService {
       return meetingPlaces;
   };
 
-  public async editMeetingPlace(meetingPlaceModel: MeetingPlaceModel): Promise<MeetingPlaceModel> {
-      const meetingPlace: MeetingPlaceModel = await this.meetingPlaceRepository.editMeetingPlace(meetingPlaceModel);
+  public async editMeetingPlace(meetingPlaceModel: EditMeetingPlaceModel, teacherLogin: string): Promise<MeetingPlaceModel> {
+      const meetingPlace: MeetingPlaceModel = await this.meetingPlaceRepository.editMeetingPlace(meetingPlaceModel, teacherLogin);
       Assert.notNullOrUndefined(meetingPlace, `There are no meeting place with ID ${meetingPlace.id}`);
       return meetingPlace;
   };
