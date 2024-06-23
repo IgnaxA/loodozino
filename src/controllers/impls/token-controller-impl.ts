@@ -15,7 +15,7 @@ export class TokenControllerImpl implements TokenController {
     public verifyAndGet = async (req: Request, res: Response): Promise<void> => {
         try {
             const tokenDtoInput: TokenControllerDtoInput = new TokenControllerDtoInput()
-                .setToken(req.get("token") as string);
+                .setToken(req.get("Authorization") as string);
 
             const tokenDtoOutput: TokenControllerDtoOutput = await this.tokenService.verifyAndGet(tokenDtoInput);
 
