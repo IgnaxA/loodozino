@@ -7,6 +7,7 @@ export interface StudentModel {
   course: number;
   admissionYear: number;
   socials: string;
+  teacherLogin: string;
 }
 
 export interface InputStudentModel {
@@ -17,4 +18,5 @@ export interface InputStudentModel {
   course: number;
   admissionYear: number;
   socials: string;
+  teacherLogin: string;
 }

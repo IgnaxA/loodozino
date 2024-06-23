@@ -21,6 +21,12 @@ export class StudentServiceImpl implements StudentService {
       return students;
   };
 
+  public async getAllStudentsByTeacher(teacherLogin: string):Promise<Array<StudentModel>> {
+    const students: Array<StudentModel> = await this.studentRepository.getAllStudentsByTeacher(teacherLogin);
+    Assert.notNullOrUndefined(students, `There are no students for the teacher ${teacherLogin} yet`);
+    return students;
+  };
+
   public async editStudent(inputStudentModel: InputStudentModel, login: string): Promise<StudentModel> {
       const updatedStudent: StudentModel = await this.studentRepository.editStudent(inputStudentModel, login);
       Assert.notNullOrUndefined(updatedStudent, `Student with login ${login} not found`);

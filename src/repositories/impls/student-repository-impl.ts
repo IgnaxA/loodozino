@@ -42,7 +42,8 @@ export class StudentRepositoryImpl implements StudentRepository {
       degreeLevelId: studentData.degree_level_id,
       course: studentData.course,
       admissionYear: studentData.admission_year,
-      socials: studentData.socials
+      socials: studentData.socials,
+      teacherLogin: studentData.teacherLogin
     };
   };
 
@@ -65,7 +66,36 @@ export class StudentRepositoryImpl implements StudentRepository {
       degreeLevelId: data.degree_level_id,
       course: data.course,
       admission_year: data.admission_year,
-      socials: data.socials
+      socials: data.socials,
+      teacherLogin: studentData.teacherLogin
+    }));
+
+    return studentModels;
+  };
+
+
+
+  public async getAllStudentsByTeacher(teacherLogin: string): Promise<Array<StudentModel>> {
+    const queryConstructors: Array<SingleQueryConstructor> = new Array<SingleQueryConstructor>();
+
+    queryConstructors.push(this.studentQueries.getAllStudentsByTeacher(teacherLogin));
+
+    const results = await this.transactionRunner.run(queryConstructors);
+
+    Assert.notNullOrUndefined(results, `There are no students for the teacher ${teacherLogin} in the database`);
+
+    const studentData = results[0];
+
+    const studentModels = studentData.map((data: any) => ({
+      login: data.login,
+      fullName: data.full_name,
+      phoneNumber: data.phone_number,
+      studyProgramId: data.study_program_id,
+      degreeLevelId: data.degree_level_id,
+      course: data.course,
+      admission_year: data.admission_year,
+      socials: data.socials,
+      teacherLogin: studentData.teacherLogin
     }));
 
     return studentModels;
@@ -84,7 +114,8 @@ export class StudentRepositoryImpl implements StudentRepository {
       studentModel.degreeLevelId,
       studentModel.course,
       studentModel.admissionYear,
-      studentModel.socials
+      studentModel.socials,
+      studentModel.teacherLogin
       )
     );
 
@@ -102,7 +133,8 @@ export class StudentRepositoryImpl implements StudentRepository {
       degreeLevelId: studentData.degree_level_id,
       course: studentData.course,
       admissionYear: studentData.admission_year,
-      socials: studentData.socials
+      socials: studentData.socials,
+      teacherLogin: studentData.teacherLogin
     };
   };
 
@@ -125,7 +157,8 @@ export class StudentRepositoryImpl implements StudentRepository {
       degreeLevelId: studentData.degree_level_id,
       course: studentData.course,
       admissionYear: studentData.admission_year,
-      socials: studentData.socials
+      socials: studentData.socials,
+      teacherLogin: studentData.teacherLogin
     };
   };
 
@@ -152,7 +185,8 @@ export class StudentRepositoryImpl implements StudentRepository {
       degreeLevelId: studentData.degree_level_id,
       course: studentData.course,
       admissionYear: studentData.admission_year,
-      socials: studentData.socials
+      socials: studentData.socials,
+      teacherLogin: studentData.teacherLogin
     }
   }
 

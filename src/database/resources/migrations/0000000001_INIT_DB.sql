@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS "students" (
   "degree_level_id" uuid,
   "course" integer,
   "admission_year" integer,
-  "socials" varchar(400)
+  "socials" varchar(400),
+  "teacher_login" varchar(40)
 );
 
 CREATE TABLE IF NOT EXISTS "teachers" (
