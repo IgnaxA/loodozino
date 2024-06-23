@@ -71,7 +71,7 @@ export class StudentControllerImpl implements StudentController {
         return;
       }
 
-      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 1) {
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 2) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
@@ -119,7 +119,7 @@ export class StudentControllerImpl implements StudentController {
         return;
       }
 
-      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 1) {
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 2) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
