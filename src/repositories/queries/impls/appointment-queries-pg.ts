@@ -14,13 +14,13 @@ export class AppointmentQueriesPg implements AppointmentQueries {
   private readonly getAll: string =
     `SELECT * FROM "appointments"`;
   private readonly getAllByMonthByTeacher: string =
-    `SELECT * FROM "appointments" WHERE EXTRACT(MONTH FROM datetime) = $1 AND EXTRACT(YEAR FROM datetime) = $2 AND teacher_login=$3;`;
+    `SELECT * FROM "appointments" WHERE EXTRACT(MONTH FROM meeting_date) = $1 AND EXTRACT(YEAR FROM meeting_date) = $2 AND teacher_login=$3;`;
   private readonly getAllByMonthByStudent: string =
-    `SELECT * FROM "appointments" WHERE EXTRACT(MONTH FROM datetime) = $1 AND EXTRACT(YEAR FROM datetime) = $2 AND student_login=$3;`;
+    `SELECT * FROM "appointments" WHERE appointments.id IN (SELECT requests.appointment_id FROM requests WHERE student_login=$3) AND EXTRACT(MONTH FROM meeting_date)=$1 AND EXTRACT(YEAR FROM meeting_date)=$2;`;
   private readonly getAllByTeacher: string =
     `SELECT * FROM "appointments" WHERE teacher_login=$1;`;
   private readonly getAllByStudent: string =
-    `SELECT * FROM "timetables" WHERE student_login=$1;`;
+    `SELECT * FROM "appointments" WHERE appointments.id IN (SELECT requests.appointment_id FROM requests WHERE student_login=$1);`;
 
   public createAppointment(id: string, meetingDate: Date, place: string, additionalInfo: string, teacherLogin: string) : SingleQueryConstructor {
     Assert.notNullOrUndefined(id,"Timetable id must not be null");
