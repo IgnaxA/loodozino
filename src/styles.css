@@ -1,0 +1,227 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-control {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 250px;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+.button-container {
+  margin-bottom: 20px; 
+}
+
+.calendar-container {
+  width: 400px;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); 
+  gap: 5px;
+}
+
+.day {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.btn-danger {
+  background-color: red;
+  color: white;
+}
+
+.month-controls button {
+  width: 50px;
+  height: 50px; 
+  border: none; 
+  background-color: transparent; 
+  cursor: pointer;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.month-controls button:first-child {
+  background-image: url('/public/images/left-arrow.svg');
+  
+}
+
+.month-controls button:last-child {
+  background-image: url('/public/images/right-arrow.svg');
+  margin-left: 300px;
+}
+
+.profile-container {
+  width: 400px;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.student-slider {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.student-slider span {
+  margin-right: 10px;
+}
+
+.month-controls button {
+  width: 50px;
+  height: 50px; 
+  border: none; 
+  background-color: transparent; 
+  cursor: pointer;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center; 
+}
+
+.month-controls button:first-child {
+  background-image: url('../public/images/left-arrow.svg'); 
+  background-position: 10px 10px; 
+}
+
+.month-controls button:last-child {
+  background-image: url('../public/images/right-arrow.svg'); 
+  background-position: calc(100% - 10px) calc(100% - 10px); 
+}
+
+.event-button {
+  width: 100%;
+  height: 100%; 
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+
+.event-modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.event-modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.event-info {
+  margin-bottom: 10px;
+}
+
+.student-slider {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.student-slider span {
+  margin-right: 10px;
+}

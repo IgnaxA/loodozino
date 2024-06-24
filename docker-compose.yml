@@ -1,0 +1,16 @@
+
+networks:
+  app:
+    driver: bridge
+    external: true
+
+services:
+  frontend:
+    image: ignaxa/frontend
+    container_name: frontend
+    build:
+      context: ./
+    networks:
+      app:
+    ports:
+      - "3000:3000"
