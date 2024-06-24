@@ -1,9 +1,9 @@
-import { AuthServiceResponse } from "../controllers/dtos/auth-service-response";
+import { Request, Response, NextFunction } from "express";
 import { ParseHelper } from "../utils/parse-helper";
-import {Request, Response, NextFunction} from "express";
 import axios, { AxiosResponse } from "axios";
+import { AuthServiceResponse } from "../controllers/dtos/auth-service-response";
 
-export async function verifyUser(req: Request): Promise<AuthServiceResponse> {
+export async function verifyUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const protocol: string = ParseHelper.parseString(process.env.AUTH_API_PROTOCOL);
     const authPort: string = ParseHelper.parseString(process.env.AUTH_API_PORT);
@@ -11,7 +11,7 @@ export async function verifyUser(req: Request): Promise<AuthServiceResponse> {
     const authAPIPrefix: string = ParseHelper.parseString(process.env.AUTH_API_PREFIX);
     const authServiceUrl: string = protocol+authHost+":"+authPort+authAPIPrefix;
 
-    const token: string | undefined= req.get("token");
+    const token: string| undefined= req.get("token");
 
     const response: AxiosResponse<any> = await axios.get(`${authServiceUrl}/verifyAndGet`,
       {
@@ -22,10 +22,8 @@ export async function verifyUser(req: Request): Promise<AuthServiceResponse> {
     );
 
     if (response.status === 200) {
-      return response.data;
-    }
-    else {
-      throw new Error('Authentication error');
+      res.locals.authData = response.data;
+      next();
     }
 
   } catch (error) {

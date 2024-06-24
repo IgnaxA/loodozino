@@ -1,9 +1,8 @@
 import { AppointmentController } from "../appointment-controller";
 import { AppointmentRepository } from "../../repositories/appointment-repository";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { AuthServiceResponse } from "../dtos/auth-service-response";
-import { verifyUser } from "../../middlewares/verify-user";
-import { InputAppointmentModel, AppointmentModel, AppointmentInfo } from "../../models/appointment-models";
+import { AppointmentModel, AppointmentInfo } from "../../models/appointment-models";
 import { ErrorHandler } from "../../utils/error-handler";
 
 export class AppointmentControllerImpl implements AppointmentController {
@@ -13,9 +12,9 @@ export class AppointmentControllerImpl implements AppointmentController {
     this.appointmentRepository = appointmentRepository;
   }
 
-  public createAppointmentForTeacher = async(req: Request, res: Response): Promise<void> => {
+  public createAppointmentForTeacher = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -38,9 +37,9 @@ export class AppointmentControllerImpl implements AppointmentController {
     }
   };
 
-  public createAppointment = async(req: Request, res: Response): Promise<void> => {
+  public createAppointment = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -64,9 +63,9 @@ export class AppointmentControllerImpl implements AppointmentController {
   };
 
 
-  public editAppointmentForTeacher = async(req: Request, res: Response): Promise<void> => {
+  public editAppointmentForTeacher = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -89,9 +88,9 @@ export class AppointmentControllerImpl implements AppointmentController {
     }
   };
 
-  public editAppointment = async(req: Request, res: Response): Promise<void> => {
+  public editAppointment = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -114,9 +113,9 @@ export class AppointmentControllerImpl implements AppointmentController {
     }
   };
 
-  public deleteAppointment = async(req: Request, res: Response): Promise<void> => {
+  public deleteAppointment = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -138,9 +137,9 @@ export class AppointmentControllerImpl implements AppointmentController {
     }
   };
 
-  public getAppointmentById = async(req: Request, res: Response): Promise<void> => {
+  public getAppointmentById = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -157,9 +156,9 @@ export class AppointmentControllerImpl implements AppointmentController {
     }
   };
 
-  public getAllAppointments = async(req: Request, res: Response): Promise<void> => {
+  public getAllAppointments = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -180,9 +179,9 @@ export class AppointmentControllerImpl implements AppointmentController {
     }
   };
 
-  public getAllAppointmentsByMonthForTeacher = async(req: Request, res: Response): Promise<void> => {
+  public getAllAppointmentsByMonthForTeacher = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -206,9 +205,9 @@ export class AppointmentControllerImpl implements AppointmentController {
     }
   };
 
-  public getAllAppointmentsByMonthForStudent = async(req: Request, res: Response): Promise<void> => {
+  public getAllAppointmentsByMonthForStudent = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -232,9 +231,9 @@ export class AppointmentControllerImpl implements AppointmentController {
     }
   };
 
-  public getAllAppointmentsForTeacher = async(req: Request, res: Response): Promise<void> => {
+  public getAllAppointmentsForTeacher = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -256,9 +255,9 @@ export class AppointmentControllerImpl implements AppointmentController {
     }
   };
 
-  public getAllAppointmentsForStudent = async(req: Request, res: Response): Promise<void> => {
+  public getAllAppointmentsForStudent = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
