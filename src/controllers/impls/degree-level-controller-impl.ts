@@ -70,7 +70,7 @@ export class DegreeLevelControllerImpl implements DegreeLevelController {
         return;
       }
 
-      if (authStatus.accessLevel !== 0) {
+      if (authStatus.accessLevel !== 0 && authStatus.accessLevel !== 2) {
         this.setUnableToAccessAPIResponse(res);
         return;
       }
