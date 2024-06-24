@@ -1,17 +1,23 @@
-export interface TimetableModel {
+export interface AppointmentModel {
   id: string;
   meetingDate: Date;
   place: string;
   additionalInfo: string;
   teacherLogin: string;
-  studentLogin: string;
 }
 
-export interface InputTimetableModel {
+export interface InputAppointmentModel {
   meetingDate: Date;
   place: string;
   additionalInfo: string;
   teacherLogin: string;
-  studentLogin: string;
 }
+
+export interface AppointmentInfo {
+  id: string;
+  meetingDate: Date;
+  place: string;
+  additionalInfo: string;
+}
+
 
