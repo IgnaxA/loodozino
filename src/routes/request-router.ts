@@ -14,6 +14,7 @@ export class RequestRouter {
     this.requestRouter.post("/create-for-student", this.requestController.createRequestForStudent);
     this.requestRouter.post("/create", this.requestController.createRequest);
     this.requestRouter.post("/accept", this.requestController.acceptRequest);
+    this.requestRouter.post("/accept", this.requestController.acceptRequest);
     this.requestRouter.post("/deny", this.requestController.denyRequest);
     this.requestRouter.post("/cancel-appointment", this.requestController.cancelAllRequestsByAppointment);
 
