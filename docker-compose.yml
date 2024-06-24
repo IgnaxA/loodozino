@@ -23,16 +23,16 @@ services:
       timeout: 5s
       retries: 10
 
-#  calendarservice_back:
-#    image: couldl1e/calendarservice_back:latest
-#    container_name: calendarservice_back
-#    build:
-#      context: ./
-#    networks:
-#      app:
-#    depends_on:
-#      calendarservice_db:
-#        condition: service_healthy
-#    ports:
-#      - "8078:8078"
+  calendarservice_back:
+    image: couldl1e/calendarservice_back:latest
+    container_name: calendarservice_back
+    build:
+      context: ./
+    networks:
+      app:
+    depends_on:
+      calendarservice_db:
+        condition: service_healthy
+    ports:
+      - "8078:8078"
 
