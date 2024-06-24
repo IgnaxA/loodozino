@@ -1,6 +1,6 @@
 import { TeacherController } from "../teacher-controller";
 import { TeacherService } from "../../services/teacher-service";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { InputTeacherModel, TeacherModel } from "../../models/teacher-models";
 import { ErrorHandler } from "../../utils/error-handler";
 import { verifyUser } from "../../middlewares/verify-user";
@@ -14,9 +14,9 @@ export class TeacherControllerImpl implements TeacherController {
     this.teacherService = teacherService;
   }
 
-  public createTeacher = async (req: Request, res: Response): Promise<void> => {
+  public createTeacher = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -38,9 +38,9 @@ export class TeacherControllerImpl implements TeacherController {
     }
   };
 
-  public getAllTeachers = async (req: Request, res: Response): Promise<void> => {
+  public getAllTeachers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -61,9 +61,9 @@ export class TeacherControllerImpl implements TeacherController {
     }
   };
 
-  public getAllStudentsByTeacher = async(req: Request, res: Response): Promise<void> => {
+  public getAllStudentsByTeacher = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -84,9 +84,9 @@ export class TeacherControllerImpl implements TeacherController {
     }
   };
 
-  public editTeacher = async (req: Request, res: Response): Promise<void> => {
+  public editTeacher = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -109,9 +109,9 @@ export class TeacherControllerImpl implements TeacherController {
     }
   };
 
-  public deleteTeacher = async (req: Request, res: Response): Promise<void> => {
+  public deleteTeacher = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -133,9 +133,9 @@ export class TeacherControllerImpl implements TeacherController {
     }
   };
 
-  public getTeacherByLogin = async (req: Request, res: Response): Promise<void> => {
+  public getTeacherByLogin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);

@@ -1,6 +1,6 @@
 import { MeetingPlaceController } from "../meeting-place-controller";
 import { MeetingPlaceService } from "../../services/meeting-place-service";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ErrorHandler } from "../../utils/error-handler";
 import { CreateMeetingPlaceModel, EditMeetingPlaceModel, MeetingPlaceModel } from "../../models/meeting-place-models";
 import { verifyUser } from "../../middlewares/verify-user";
@@ -14,9 +14,9 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
     this.meetingPlaceService = meetingPlaceService;
   }
 
-  public createMeetingPlace = async (req: Request, res: Response): Promise<void> => {
+  public createMeetingPlace = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -39,9 +39,9 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
     }
   };
 
-  public getMeetingPlaceById = async (req: Request, res: Response): Promise<void> => {
+  public getMeetingPlaceById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -63,9 +63,9 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
     }
   };
 
-  public getAllMeetingPlaces = async (req: Request, res: Response): Promise<void> => {
+  public getAllMeetingPlaces = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -85,9 +85,9 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
     }
   };
 
-  public getPriorityMeetingPlaceForTeacher = async (req: Request, res: Response): Promise<void> => {
+  public getPriorityMeetingPlaceForTeacher = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -109,9 +109,9 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
     }
   };
 
-  public getAllMeetingPlacesByTeacher = async (req: Request, res: Response): Promise<void> => {
+  public getAllMeetingPlacesByTeacher = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -133,9 +133,9 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
     }
   };
 
-  public editMeetingPlace = async (req: Request, res: Response): Promise<void> => {
+  public editMeetingPlace = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -157,9 +157,9 @@ export class MeetingPlaceControllerImpl implements MeetingPlaceController {
     }
   };
 
-  public deleteMeetingPlace = async (req: Request, res: Response): Promise<void> => {
+  public deleteMeetingPlace = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);

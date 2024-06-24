@@ -1,7 +1,7 @@
 import { StudyProgramController } from "../study-program-controller";
 import { MeetingPlaceService } from "../../services/meeting-place-service";
 import { StudyProgramService } from "../../services/study-program-service";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { CreateDegreeLevelModel, DegreeLevelModel } from "../../models/degree-level-models";
 import { ErrorHandler } from "../../utils/error-handler";
 import { CreateStudyProgramModel, StudyProgramModel } from "../../models/study-program-models";
@@ -16,9 +16,9 @@ export class StudyProgramControllerImpl implements StudyProgramController {
     this.studyProgramService = studyProgramService;
   }
 
-  public createStudyProgram = async (req: Request, res: Response): Promise<void> => {
+  public createStudyProgram = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -40,9 +40,9 @@ export class StudyProgramControllerImpl implements StudyProgramController {
     }
   };
 
-  public getStudyProgramById = async (req: Request, res: Response): Promise<void> => {
+  public getStudyProgramById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -64,9 +64,9 @@ export class StudyProgramControllerImpl implements StudyProgramController {
     }
   };
 
-  public getAllStudyPrograms = async (req: Request, res: Response): Promise<void> => {
+  public getAllStudyPrograms = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -86,9 +86,9 @@ export class StudyProgramControllerImpl implements StudyProgramController {
     }
   };
 
-  public editStudyProgram = async (req: Request, res: Response): Promise<void> => {
+  public editStudyProgram = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -109,9 +109,9 @@ export class StudyProgramControllerImpl implements StudyProgramController {
     }
   };
 
-  public deleteStudyProgram = async (req: Request, res: Response): Promise<void> => {
+  public deleteStudyProgram = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);

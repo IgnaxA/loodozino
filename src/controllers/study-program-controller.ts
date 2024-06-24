@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 export interface StudyProgramController {
-  createStudyProgram(req: Request, res: Response): Promise<void>;
-  getStudyProgramById(req: Request, res: Response): Promise<void>
-  getAllStudyPrograms(req: Request, res: Response): Promise<void>
-  editStudyProgram(req: Request, res: Response): Promise<void>
-  deleteStudyProgram(req: Request, res: Response): Promise<void>
+  createStudyProgram(req: Request, res: Response, next: NextFunction): Promise<void>;
+  getStudyProgramById(req: Request, res: Response, next: NextFunction): Promise<void>
+  getAllStudyPrograms(req: Request, res: Response, next: NextFunction): Promise<void>
+  editStudyProgram(req: Request, res: Response, next: NextFunction): Promise<void>
+  deleteStudyProgram(req: Request, res: Response, next: NextFunction): Promise<void>
 }

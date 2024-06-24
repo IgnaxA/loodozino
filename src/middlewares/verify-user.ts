@@ -3,7 +3,7 @@ import { ParseHelper } from "../utils/parse-helper";
 import axios, { AxiosResponse } from "axios";
 import { AuthServiceResponse } from "../controllers/dtos/auth-service-response";
 
-export async function verifyUser(req: Request): Promise<AuthServiceResponse> {
+export async function verifyUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const protocol: string = ParseHelper.parseString(process.env.AUTH_API_PROTOCOL);
     const authPort: string = ParseHelper.parseString(process.env.AUTH_API_PORT);
@@ -22,10 +22,8 @@ export async function verifyUser(req: Request): Promise<AuthServiceResponse> {
     );
 
     if (response.status === 200) {
-      return response.data;
-    }
-    else {
-      throw new Error('Authentication error');
+      res.locals.authData = response.data;
+      next();
     }
 
   } catch (error) {

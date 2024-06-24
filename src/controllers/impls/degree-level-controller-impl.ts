@@ -1,7 +1,7 @@
 import { DegreeLevelController } from "../degree-level-controller";
 import { ErrorHandler } from "../../utils/error-handler";
 import { CreateDegreeLevelModel, DegreeLevelModel } from "../../models/degree-level-models";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { DegreeLevelService } from "../../services/degree-level-service";
 import { ParseHelper } from "../../utils/parse-helper";
 import { verifyUser } from "../../middlewares/verify-user";
@@ -13,9 +13,9 @@ export class DegreeLevelControllerImpl implements DegreeLevelController {
   constructor(degreeLevelService: DegreeLevelService) {
     this.degreeLevelService = degreeLevelService;
   }
-  public createDegreeLevel = async(req: Request, res: Response): Promise<void> => {
+  public createDegreeLevel = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -37,9 +37,9 @@ export class DegreeLevelControllerImpl implements DegreeLevelController {
     }
   };
 
-  public getDegreeLevelById = async(req: Request, res: Response): Promise<void> => {
+  public getDegreeLevelById = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -61,9 +61,9 @@ export class DegreeLevelControllerImpl implements DegreeLevelController {
     }
   };
 
-  public getAllDegreeLevels = async(req: Request, res: Response): Promise<void> => {
+  public getAllDegreeLevels = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -83,9 +83,9 @@ export class DegreeLevelControllerImpl implements DegreeLevelController {
     }
   };
 
-  public editDegreeLevel = async(req: Request, res: Response): Promise<void> => {
+  public editDegreeLevel = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -106,9 +106,9 @@ export class DegreeLevelControllerImpl implements DegreeLevelController {
     }
   };
 
-  public deleteDegreeLevel = async(req: Request, res: Response): Promise<void> => {
+  public deleteDegreeLevel = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);

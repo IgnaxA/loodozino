@@ -1,6 +1,6 @@
 import { StudentController } from "../student-controller";
 import { StudentService } from "../../services/student-service";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   InputStudentModel,
   StudentModel,
@@ -16,9 +16,9 @@ export class StudentControllerImpl implements StudentController {
     this.studentService = studentService;
   }
 
-  public createStudent = async(req: Request, res: Response): Promise<void> => {
+  public createStudent = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -34,15 +34,15 @@ export class StudentControllerImpl implements StudentController {
       const createdStudent: StudentModel = await this.studentService.createStudent(studentBody);
 
       this.setAPIResponse(res, createdStudent);
-
+      next();
     } catch (err: any) {
       ErrorHandler.setError(res, err);
     }
   };
 
-  public getAllStudents = async(req: Request, res: Response): Promise<void> => {
+  public getAllStudents = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -56,15 +56,17 @@ export class StudentControllerImpl implements StudentController {
 
       const students :Array<StudentModel> = await this.studentService.getAllStudents();
       this.setManyAPIResponse(res, students);
+
+      next();
     }
     catch (err:any) {
       ErrorHandler.setError(res, err);
     }
   };
 
-  public editStudent = async(req: Request, res: Response): Promise<void> => {
+  public editStudent = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -80,15 +82,16 @@ export class StudentControllerImpl implements StudentController {
       const inputStudentModel: InputStudentModel = req.body;
       const updatedStudent: StudentModel = await this.studentService.editStudent(inputStudentModel, login);
       this.setAPIResponse(res, updatedStudent);
+      next();
     }
     catch (err:any) {
       ErrorHandler.setError(res, err);
     }
   };
 
-  public deleteStudent = async(req: Request, res: Response): Promise<void> => {
+  public deleteStudent = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -104,15 +107,16 @@ export class StudentControllerImpl implements StudentController {
       const student :StudentModel = await this.studentService.deleteStudent(login);
 
       this.setAPIResponse(res, student);
+      next();
     }
     catch (err:any) {
       ErrorHandler.setError(res, err);
     }
   };
 
-  public getStudentByLogin = async(req: Request, res: Response): Promise<void> => {
+  public getStudentByLogin = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const authStatus: AuthServiceResponse = await verifyUser(req);
+      const authStatus: AuthServiceResponse = res.locals.authData;
 
       if (authStatus.isTokenExpired) {
         this.setUnableToAccessAPIResponse(res);
@@ -128,6 +132,7 @@ export class StudentControllerImpl implements StudentController {
       const student :StudentModel = await this.studentService.getStudentByLogin(login);
 
       this.setAPIResponse(res, student);
+      next();
     }
     catch (err:any) {
       ErrorHandler.setError(res, err);

@@ -1,6 +1,7 @@
 import express, { Router } from "express";
 import { DegreeLevelController } from "../controllers/degree-level-controller";
 import { StudyProgramController } from "../controllers/study-program-controller";
+import { verifyUser } from "../middlewares/verify-user";
 
 export class StudyProgramRouter {
   private readonly studyProgramRouter: Router;
@@ -12,11 +13,11 @@ export class StudyProgramRouter {
   }
 
   public setRouter(): void {
-    this.studyProgramRouter.get("/get", this.studyProgramController.getStudyProgramById);
-    this.studyProgramRouter.get("/get-all", this.studyProgramController.getAllStudyPrograms);
-    this.studyProgramRouter.post("/edit", this.studyProgramController.editStudyProgram);
-    this.studyProgramRouter.delete("/delete", this.studyProgramController.deleteStudyProgram);
-    this.studyProgramRouter.post("/create", this.studyProgramController.createStudyProgram);
+    this.studyProgramRouter.get("/get", verifyUser, this.studyProgramController.getStudyProgramById);
+    this.studyProgramRouter.get("/get-all", verifyUser, this.studyProgramController.getAllStudyPrograms);
+    this.studyProgramRouter.post("/edit", verifyUser, this.studyProgramController.editStudyProgram);
+    this.studyProgramRouter.delete("/delete", verifyUser, this.studyProgramController.deleteStudyProgram);
+    this.studyProgramRouter.post("/create", verifyUser, this.studyProgramController.createStudyProgram);
   }
 
   public getRouter(): Router {
