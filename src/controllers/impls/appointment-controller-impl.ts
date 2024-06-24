@@ -147,7 +147,7 @@ export class AppointmentControllerImpl implements AppointmentController {
         return;
       }
 
-      const appointmentId: string = req.body.appointmentId;
+      const appointmentId: string = req.body.id;
       const appointmentModel: AppointmentModel = await this.appointmentRepository.getAppointmentById(appointmentId);
 
       this.setFullAPIResponse(res, appointmentModel);

@@ -14,9 +14,9 @@ export class AppointmentQueriesPg implements AppointmentQueries {
   private readonly getAll: string =
     `SELECT * FROM "appointments"`;
   private readonly getAllByMonthByTeacher: string =
-    `SELECT * FROM "appointments" WHERE EXTRACT(MONTH FROM datetime) = $1 AND EXTRACT(YEAR FROM datetime) = $2 AND teacher_login=$3;`;
+    `SELECT * FROM "appointments" WHERE EXTRACT(MONTH FROM meeting_date) = $1 AND EXTRACT(YEAR FROM meeting_date) = $2 AND teacher_login=$3;`;
   private readonly getAllByMonthByStudent: string =
-    `SELECT * FROM "appointments" WHERE EXTRACT(MONTH FROM datetime) = $1 AND EXTRACT(YEAR FROM datetime) = $2 AND student_login=$3;`;
+    `SELECT * FROM "appointments" WHERE EXTRACT(MONTH FROM meeting_date) = $1 AND EXTRACT(YEAR FROM meeting_date) = $2 AND student_login=$3;`;
   private readonly getAllByTeacher: string =
     `SELECT * FROM "appointments" WHERE teacher_login=$1;`;
   private readonly getAllByStudent: string =
