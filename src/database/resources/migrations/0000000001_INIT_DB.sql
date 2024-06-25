@@ -41,3 +41,5 @@ ALTER TABLE "meeting_places" ADD FOREIGN KEY ("teacher_login") REFERENCES "teach
 ALTER TABLE "students" ADD FOREIGN KEY ("study_program_id") REFERENCES "study_programs" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE "students" ADD FOREIGN KEY ("degree_level_id") REFERENCES "degree_levels" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE "students" ADD FOREIGN KEY ("teacher_login") REFERENCES "teachers" ("login") ON UPDATE CASCADE ON DELETE CASCADE;
