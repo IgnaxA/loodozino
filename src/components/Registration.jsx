@@ -19,7 +19,7 @@ const Registration = () => {
       .then((data) => data.ip);
 
     try {
-      const response = await fetch('http://localhost:8081/api/authservice/signUp', {
+      const response = await fetch('/api/authservice/signUp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

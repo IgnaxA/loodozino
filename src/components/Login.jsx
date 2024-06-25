@@ -13,7 +13,7 @@ const Login = () => {
     setErrorMessage(null);
 
     try {
-      const response = await fetch('http://localhost:8081/api/authservice/signIn', {
+      const response = await fetch('/api/authservice/signIn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

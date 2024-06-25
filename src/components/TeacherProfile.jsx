@@ -18,7 +18,7 @@ const TeacherProfile = () => {
     const accessToken = Cookies.get('access_token');
     if (accessToken) {
       // Запрос на получение данных преподавателя
-      fetch('http://localhost:8079/api/profileservice/teachers/get', {
+      fetch('/api/profileservice/teachers/get', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -45,7 +45,7 @@ const TeacherProfile = () => {
       });
 
       // Запрос на получение данных для выпадающего списка "онлайн место встречи"
-      fetch('http://localhost:8079/api/profileservice/meeting-places/get-all-by-teacher?offline=false', {
+      fetch('/api/profileservice/meeting-places/get-all-by-teacher?offline=false', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -68,7 +68,7 @@ const TeacherProfile = () => {
       });
 
       // Запрос на получение данных для выпадающего списка "оффлайн место встречи"
-      fetch('http://localhost:8079/api/profileservice/meeting-places/get-all-by-teacher?offline=true', {
+      fetch('/api/profileservice/meeting-places/get-all-by-teacher?offline=true', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -91,7 +91,7 @@ const TeacherProfile = () => {
       });
 
       // Запрос на получение списка студентов
-      fetch('http://localhost:8079/api/profileservice/students/get-all', {
+      fetch('/api/profileservice/students/get-all', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -142,7 +142,7 @@ const TeacherProfile = () => {
 
     try {
       // Сохранение изменений в профиле преподавателя
-      const response = await fetch('http://localhost:8079/api/profileservice/teachers/edit', {
+      const response = await fetch('/api/profileservice/teachers/edit', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${Cookies.get('access_token')}`,
@@ -177,7 +177,7 @@ const TeacherProfile = () => {
     try {
       if (type === 'add') {
         // Создание новой локации
-        const response = await fetch('http://localhost:8079/api/profileservice/meeting-places/create', {
+        const response = await fetch('/api/profileservice/meeting-places/create', {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${Cookies.get('access_token')}`,
@@ -195,7 +195,7 @@ const TeacherProfile = () => {
           // ... обработка успешного создания ...
           setIsLocationModalOpen(false);
           // Обновить список локаций после создания
-          fetch('http://localhost:8079/api/profileservice/meeting-places/get-all-by-teacher?offline=' + isLocationModalType, {
+          fetch('/api/profileservice/meeting-places/get-all-by-teacher?offline=' + isLocationModalType, {
             method: 'GET',
             headers: {
               Authorization: `Bearer ${Cookies.get('access_token')}`,
@@ -226,7 +226,7 @@ const TeacherProfile = () => {
         }
       } else if (type === 'delete') {
         // Удаление локации
-        const response = await fetch('http://localhost:8079/api/profileservice/meeting-places/delete', {
+        const response = await fetch('/api/profileservice/meeting-places/delete', {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${Cookies.get('access_token')}`,
@@ -241,7 +241,7 @@ const TeacherProfile = () => {
           // ... обработка успешного удаления ...
           setIsLocationModalOpen(false);
           // Обновить список локаций после удаления
-          fetch('http://localhost:8079/api/profileservice/meeting-places/get-all-by-teacher?offline=' + (selectedLocationDescription.toLowerCase().includes("оффлайн") ? true : false), {
+          fetch('/api/profileservice/meeting-places/get-all-by-teacher?offline=' + (selectedLocationDescription.toLowerCase().includes("оффлайн") ? true : false), {
             method: 'GET',
             headers: {
               Authorization: `Bearer ${Cookies.get('access_token')}`,

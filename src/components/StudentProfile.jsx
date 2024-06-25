@@ -21,10 +21,10 @@ const StudentProfile = () => {
   useEffect(() => {
     const accessToken = Cookies.get('access_token');
     if (accessToken) {
-      fetch('http://localhost:8079/api/profileservice/students/get', {
+      fetch('/api/profileservice/students/get', {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          token: `${accessToken}`,
           'Content-Type': 'application/json',
         },
       })
@@ -52,10 +52,10 @@ const StudentProfile = () => {
       });
 
       // Запрос на получение данных для выпадающего списка "образовательная программа"
-      fetch('http://localhost:8079/api/profileservice/study-programs/get-all', {
+      fetch('/api/profileservice/study-programs/get-all', {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          token: `${accessToken}`,
           'Content-Type': 'application/json',
         },
       })
@@ -79,10 +79,10 @@ const StudentProfile = () => {
       });
 
       // Запрос на получение данных для выпадающего списка "статус обучения"
-      fetch('http://localhost:8079/api/profileservice/degree-levels/get-all', {
+      fetch('/api/profileservice/degree-levels/get-all', {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          token: `${accessToken}`,
           'Content-Type': 'application/json',
         },
       })
@@ -102,10 +102,10 @@ const StudentProfile = () => {
       });
 
       // Запрос на получение данных для выпадающего списка "научный руководитель"
-      fetch('http://localhost:8079/api/profileservice/teachers/get-all', {
+      fetch('/api/profileservice/teachers/get-all', {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          token: `${accessToken}`,
           'Content-Type': 'application/json',
         },
       })
@@ -131,15 +131,13 @@ const StudentProfile = () => {
     setErrorMessage(null);
 
     try {
-      const response = await fetch('http://localhost:8079/api/profileservice/students/edit', {
+      const response = await fetch('/api/profileservice/students/edit', {
         method: 'POST',
         headers: {
-          Authorization: `${Cookies.get('access_token')}`,
+          token: `${Cookies.get('access_token')}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          login: login || null,
-          fullName: fullName || null,
           fullName: fullName || null, // Установка null, если поле пустое
           phoneNumber: phoneNumber || null,
           studyProgramId: studyProgramId || null, 

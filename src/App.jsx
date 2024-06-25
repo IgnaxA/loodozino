@@ -16,10 +16,10 @@ function App() {
   useEffect(() => {
     const accessToken = Cookies.get('access_token');
     if (accessToken) {
-      fetch('/api/user', { 
+      fetch('user/api/', { 
         method: 'GET',
         headers: { 
-          Authorization: `Bearer ${accessToken}`, 
+          token: `${accessToken}`, 
           'Content-Type': 'application/json',
         },
       })

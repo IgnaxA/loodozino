@@ -59,7 +59,7 @@ const StudentCalendar = () => {
     const accessToken = Cookies.get('access_token');
     if (accessToken) {
       // Запрос на получение событий для текущего месяца и года
-      fetch('http://localhost:8078/api/calendarservice/appointments/get-all-by-month-for-student', {
+      fetch('/api/calendarservice/appointments/get-all-by-month-for-student', {
         method: 'POST',
         headers: {
           Authorization: `${accessToken}`,
